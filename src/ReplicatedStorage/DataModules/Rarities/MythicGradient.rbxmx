@@ -1,0 +1,20 @@
+<roblox version="4">
+  <Item class="UIGradient" referent="0">
+    <Properties>
+      <string name="Name">MythicGradient</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <ColorSequence name="Color">0 1 0 0.43529412 0 1 1 0.43137255 0.4392157 0 </ColorSequence>
+      <bool name="Enabled">true</bool>
+      <Vector2 name="Offset">
+        <X>0</X>
+        <Y>0</Y>
+      </Vector2>
+      <float name="Rotation">0</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <NumberSequence name="Transparency">0 0 0 1 0 0 </NumberSequence>
+    </Properties>
+  </Item>
+</roblox>

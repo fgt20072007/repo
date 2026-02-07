@@ -1,0 +1,17 @@
+<roblox version="4">
+  <Item class="ClickDetector" referent="0">
+    <Properties>
+      <string name="Name">ClickDetector</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Content name="CursorIconContent">
+        <null>
+        </null>
+      </Content>
+      <float name="MaxActivationDistance">83.92383</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

@@ -1,0 +1,13 @@
+<roblox version="4">
+  <Item class="StringValue" referent="0">
+    <Properties>
+      <string name="Name">brush</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <string name="Value">{"rotation":{"min":0,"mode":"Random","fixed":0,"max":360},"radius":3,"orientation":{"custom":{"y":1,"x":0,"z":0},"mode":"Normal"},"spacing":6,"scale":{"min":0.7000000000000001,"mode":"Random","fixed":1,"max":1.1},"ignoreWater":false,"ignoreInvisible":false,"wobble":{"min":0,"mode":"None","max":10}}</string>
+    </Properties>
+  </Item>
+</roblox>
