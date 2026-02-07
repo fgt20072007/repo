@@ -1,0 +1,20 @@
+<roblox version="4">
+  <Item class="UIGradient" referent="0">
+    <Properties>
+      <string name="Name">UIGradient</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <ColorSequence name="Color">0 0.6330275 0.04220179 0.1985967 0 0.18512112 0.6330275 0.29293036 0.012412303 0 0.37543255 0.6330275 0.4245008 0.004964921 0 0.60380626 0.34257963 0.6330275 0.029789528 0 0.8079585 0.069508895 0.50145704 0.6330275 0 1 0.47166768 0.096815966 0.6330275 0 </ColorSequence>
+      <bool name="Enabled">true</bool>
+      <Vector2 name="Offset">
+        <X>0</X>
+        <Y>0</Y>
+      </Vector2>
+      <float name="Rotation">43</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <NumberSequence name="Transparency">0 0 0 1 0 0 </NumberSequence>
+    </Properties>
+  </Item>
+</roblox>

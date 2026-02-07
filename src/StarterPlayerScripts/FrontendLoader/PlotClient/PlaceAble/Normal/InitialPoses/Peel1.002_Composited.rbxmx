@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Peel1.002_Composited</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>-46.928154</X>
+        <Y>-43.594517</Y>
+        <Z>19.1933</Z>
+        <R00>-0.88351345</R00>
+        <R01>-0.44237447</R01>
+        <R02>-0.15397695</R02>
+        <R10>-0.34481356</R10>
+        <R11>0.8367369</R11>
+        <R12>-0.4254117</R12>
+        <R20>0.31702942</R20>
+        <R21>-0.32276365</R21>
+        <R22>-0.891805</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

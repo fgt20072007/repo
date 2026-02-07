@@ -1,0 +1,22 @@
+<roblox version="4">
+  <Item class="BodyPartDescription" referent="0">
+    <Properties>
+      <string name="Name">BodyPartDescription</string>
+      <int64 name="AssetId">27112039</int64>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <token name="BodyPart">3</token>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="Color">
+        <R>0.8</R>
+        <G>0.5568628</G>
+        <B>0.4117647</B>
+      </Color3>
+      <BinaryString name="HeadShape">
+      </BinaryString>
+      <Ref name="Instance">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

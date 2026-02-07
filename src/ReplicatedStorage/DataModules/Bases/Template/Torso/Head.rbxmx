@@ -1,0 +1,45 @@
+<roblox version="4">
+  <Item class="Motor6D" referent="0">
+    <Properties>
+      <string name="Name">Head</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="C0">
+        <X>3.4799957</X>
+        <Y>1.3499999</Y>
+        <Z>-0.024993896</Z>
+        <R00>0.9999964</R00>
+        <R01>0</R01>
+        <R02>0.000008940716</R02>
+        <R10>0</R10>
+        <R11>1</R11>
+        <R12>0</R12>
+        <R20>-0.000008940749</R20>
+        <R21>0</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <CoordinateFrame name="C1">
+        <X>-1.7700057</X>
+        <Y>-0.6500001</Y>
+        <Z>-0.000015825024</Z>
+        <R00>1</R00>
+        <R01>0</R01>
+        <R02>0.000000000096407174</R02>
+        <R10>0</R10>
+        <R11>1</R11>
+        <R12>0</R12>
+        <R20>-0.00000000009640718</R20>
+        <R21>0</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <float name="DesiredAngle">0</float>
+      <bool name="Enabled">true</bool>
+      <float name="MaxVelocity">0</float>
+      <Ref name="Part0">null</Ref>
+      <Ref name="Part1">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

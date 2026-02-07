@@ -1,0 +1,27 @@
+<roblox version="4">
+  <Item class="Bone" referent="0">
+    <Properties>
+      <string name="Name">Peel4.003</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.0000007286242</X>
+        <Y>1.0674801</Y>
+        <Z>-0.0000013115234</Z>
+        <R00>0.4480999</R00>
+        <R01>0.55202895</R01>
+        <R02>-0.7031861</R02>
+        <R10>-0.33265206</R10>
+        <R11>0.8330537</R11>
+        <R12>0.44200027</R12>
+        <R20>0.8297886</R20>
+        <R21>0.035856027</R21>
+        <R22>0.5569248</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <bool name="Visible">false</bool>
+    </Properties>
+  </Item>
+</roblox>

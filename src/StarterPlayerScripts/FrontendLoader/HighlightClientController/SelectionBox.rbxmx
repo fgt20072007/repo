@@ -1,0 +1,28 @@
+<roblox version="4">
+  <Item class="SelectionBox" referent="0">
+    <Properties>
+      <string name="Name">SelectionBox</string>
+      <Ref name="Adornee">null</Ref>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="Color3">
+        <R>0.72156864</R>
+        <G>0.72156864</G>
+        <B>0.72156864</B>
+      </Color3>
+      <float name="LineThickness">0.05</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <bool name="StudioSelectionBox">false</bool>
+      <Color3 name="SurfaceColor3">
+        <R>0.050980397</R>
+        <G>0.41176474</G>
+        <B>0.6745098</B>
+      </Color3>
+      <float name="SurfaceTransparency">1</float>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Transparency">0</float>
+      <bool name="Visible">true</bool>
+    </Properties>
+  </Item>
+</roblox>

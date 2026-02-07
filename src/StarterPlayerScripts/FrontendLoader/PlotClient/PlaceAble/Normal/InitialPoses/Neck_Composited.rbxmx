@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Neck_Composited</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>2.1521366</X>
+        <Y>26.87268</Y>
+        <Z>64.34484</Z>
+        <R00>-1</R00>
+        <R01>-0.00000016670302</R01>
+        <R02>-0.00000059034704</R02>
+        <R10>0.00000010206374</R10>
+        <R11>0.9037379</R11>
+        <R12>-0.4280864</R12>
+        <R20>0.0000006048823</R20>
+        <R21>-0.42808643</R21>
+        <R22>-0.9037378</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

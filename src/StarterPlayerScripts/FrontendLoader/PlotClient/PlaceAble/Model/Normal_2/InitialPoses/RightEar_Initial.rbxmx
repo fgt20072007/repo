@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">RightEar_Initial</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>40.29222</X>
+        <Y>-44.194</Y>
+        <Z>-37.030907</Z>
+        <R00>-0.0000020731238</R00>
+        <R01>0.85420823</R01>
+        <R02>0.519931</R02>
+        <R10>-1</R10>
+        <R11>-0.00000033826197</R11>
+        <R12>-0.0000034315665</R12>
+        <R20>-0.0000027553992</R20>
+        <R21>-0.519931</R21>
+        <R22>0.8542083</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

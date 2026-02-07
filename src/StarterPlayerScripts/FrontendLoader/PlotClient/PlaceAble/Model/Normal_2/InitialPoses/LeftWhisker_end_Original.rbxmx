@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">LeftWhisker_end_Original</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>-0.0001373291</X>
+        <Y>34.307053</Y>
+        <Z>0.000061035156</Z>
+        <R00>1</R00>
+        <R01>-0.00000026822093</R01>
+        <R02>0.00000023667917</R02>
+        <R10>0.00000026822093</R10>
+        <R11>1</R11>
+        <R12>-0.000000049260464</R12>
+        <R20>-0.00000023667883</R20>
+        <R21>0.000000049260592</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

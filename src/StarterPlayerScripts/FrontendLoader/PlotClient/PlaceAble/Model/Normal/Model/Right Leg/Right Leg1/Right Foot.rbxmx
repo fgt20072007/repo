@@ -1,0 +1,27 @@
+<roblox version="4">
+  <Item class="Bone" referent="0">
+    <Properties>
+      <string name="Name">Right Foot</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.11729542</X>
+        <Y>1.1826675</Y>
+        <Z>0.0000009975063</Z>
+        <R00>-0.13819589</R00>
+        <R01>0.9904049</R01>
+        <R02>0.000010017534</R02>
+        <R10>-0.99040496</R10>
+        <R11>-0.13819587</R11>
+        <R12>0.0000095155565</R12>
+        <R20>0.000010808636</R20>
+        <R21>-0.000008606404</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <bool name="Visible">false</bool>
+    </Properties>
+  </Item>
+</roblox>

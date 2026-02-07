@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">PlantBottom</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.0000002644956</X>
+        <Y>-0.00000055134296</Y>
+        <Z>0.00000039022416</Z>
+        <R00>0.9996433</R00>
+        <R01>-0.026353193</R01>
+        <R02>0.00035726375</R02>
+        <R10>0.026352182</R10>
+        <R11>0.99930525</R11>
+        <R12>-0.026352204</R12>
+        <R20>0.0003574423</R20>
+        <R21>0.02635319</R21>
+        <R22>0.99964404</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

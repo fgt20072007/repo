@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">RightEarInside</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.00000032037497</X>
+        <Y>-0.0000007143244</Y>
+        <Z>0.00000023841858</Z>
+        <R00>0.9993274</R00>
+        <R01>0.018739993</R01>
+        <R02>0.03151985</R02>
+        <R10>-0.018802917</R10>
+        <R11>0.9998218</R11>
+        <R12>0.0017015041</R12>
+        <R20>-0.031482354</R20>
+        <R21>-0.0022930254</R21>
+        <R22>0.9995017</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

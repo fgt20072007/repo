@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Tail5_Composited</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>2.1520758</X>
+        <Y>-155.86125</Y>
+        <Z>-92.48535</Z>
+        <R00>-1</R00>
+        <R01>-0.0000003134445</R01>
+        <R02>-0.00000046949464</R02>
+        <R10>0.00000019190607</R10>
+        <R11>0.5933936</R11>
+        <R12>-0.8049125</R12>
+        <R20>0.0000005308905</R20>
+        <R21>-0.80491245</R21>
+        <R22>-0.5933936</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

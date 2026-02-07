@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Back Right.001_Composited</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>66.74531</X>
+        <Y>-170.59137</Y>
+        <Z>59.815216</Z>
+        <R00>-0.00000004803916</R00>
+        <R01>-0.00000008599726</R01>
+        <R02>-1</R02>
+        <R10>-0.11518823</R10>
+        <R11>-0.9933438</R11>
+        <R12>0.00000009095837</R12>
+        <R20>-0.9933437</R20>
+        <R21>0.11518824</R21>
+        <R22>0.000000037813525</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

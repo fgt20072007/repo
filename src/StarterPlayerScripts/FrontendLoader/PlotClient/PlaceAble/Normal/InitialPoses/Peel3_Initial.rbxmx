@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Peel3_Initial</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>-0.000019073486</X>
+        <Y>56.091312</Y>
+        <Z>0.000005722046</Z>
+        <R00>0.82649726</R00>
+        <R01>-0.54694825</R01>
+        <R02>0.13322979</R02>
+        <R10>0.49422514</R10>
+        <R11>0.5916842</R11>
+        <R12>-0.6369077</R12>
+        <R20>0.26952553</R20>
+        <R21>0.5922479</R21>
+        <R22>0.7593409</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

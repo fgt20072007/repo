@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Neck2_Original</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>0.0000038146973</X>
+        <Y>68.28036</Y>
+        <Z>-0.000054210424</Z>
+        <R00>0.998289</R00>
+        <R01>0.05847457</R01>
+        <R02>-0.00000044741876</R02>
+        <R10>-0.05847454</R10>
+        <R11>0.9982891</R11>
+        <R12>0.00000000439465</R12>
+        <R20>0.00000044691024</R20>
+        <R21>0.000000021775463</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

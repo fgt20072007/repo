@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Right Arm1_Composited</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>138.12949</X>
+        <Y>-24.808311</Y>
+        <Z>29.493038</Z>
+        <R00>-0.00000030454254</R00>
+        <R01>0.21061459</R01>
+        <R02>0.9775693</R02>
+        <R10>-0.000000000000003156476</R10>
+        <R11>-0.9775693</R11>
+        <R12>0.21061459</R12>
+        <R20>1</R20>
+        <R21>0.0000000641411</R21>
+        <R22>0.0000002977114</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>

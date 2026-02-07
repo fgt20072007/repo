@@ -1,0 +1,56 @@
+<roblox version="4">
+  <Item class="WrapTarget" referent="0">
+    <Properties>
+      <string name="Name">LeftLowerLeg</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <Content name="CageMeshContent">
+        <uri>https://assetdelivery.roblox.com/v1/asset/?id=7430071153</uri>
+      </Content>
+      <CoordinateFrame name="CageOrigin">
+        <X>-0.0012997389</X>
+        <Y>-0.08555305</Y>
+        <Z>-0.0065032244</Z>
+        <R00>1</R00>
+        <R01>0</R01>
+        <R02>0</R02>
+        <R10>0</R10>
+        <R11>1</R11>
+        <R12>0</R12>
+        <R20>0</R20>
+        <R21>0</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <ContentId name="HSRAssetId">
+        <url>https://www.roblox.com//asset/?id=13251297556</url>
+      </ContentId>
+      <SharedString name="HSRData">rxNJufX5oaagQE3qNtzJSQ==</SharedString>
+      <SharedString name="HSRMeshIdData">rxNJufX5oaagQE3qNtzJSQ==</SharedString>
+      <CoordinateFrame name="ImportOrigin">
+        <X>0.50129974</X>
+        <Y>1.2899865</Y>
+        <Z>0.0062533617</Z>
+        <R00>1</R00>
+        <R01>0</R01>
+        <R02>0</R02>
+        <R10>0</R10>
+        <R11>1</R11>
+        <R12>0</R12>
+        <R20>0</R20>
+        <R21>0</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <float name="Stiffness">0</float>
+      <BinaryString name="Tags"></BinaryString>
+      <ContentId name="TemporaryCageMeshId">
+        <null>
+        </null>
+      </ContentId>
+    </Properties>
+  </Item>
+  <SharedStrings>
+    <SharedString md5="rxNJufX5oaagQE3qNtzJSQ=="></SharedString>
+  </SharedStrings>
+</roblox>

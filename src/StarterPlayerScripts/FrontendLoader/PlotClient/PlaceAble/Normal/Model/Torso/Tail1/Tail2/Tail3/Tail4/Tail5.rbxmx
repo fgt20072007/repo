@@ -1,0 +1,27 @@
+<roblox version="4">
+  <Item class="Bone" referent="0">
+    <Properties>
+      <string name="Name">Tail5</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.0000000045539004</X>
+        <Y>0.7327669</Y>
+        <Z>-0.00000029144962</Z>
+        <R00>1</R00>
+        <R01>0.000000036134875</R01>
+        <R02>0.0000000027542484</R02>
+        <R10>-0.000000036134878</R10>
+        <R11>0.9884479</R11>
+        <R12>0.15156098</R12>
+        <R20>0.0000000027542058</R20>
+        <R21>-0.15156098</R21>
+        <R22>0.9884479</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <bool name="Visible">false</bool>
+    </Properties>
+  </Item>
+</roblox>

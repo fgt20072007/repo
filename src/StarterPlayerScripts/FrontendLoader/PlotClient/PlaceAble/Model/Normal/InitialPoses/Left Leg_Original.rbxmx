@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">Left Leg_Original</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>-52.582836</X>
+        <Y>27.035133</Y>
+        <Z>114.351814</Z>
+        <R00>-0.000010585009</R00>
+        <R01>0.0000004139115</R01>
+        <R02>1</R02>
+        <R10>0.993586</R10>
+        <R11>-0.11307865</R11>
+        <R12>0.000010563921</R12>
+        <R20>0.11307865</R20>
+        <R21>0.993586</R21>
+        <R22>0.0000007856818</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>
