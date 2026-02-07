@@ -1,0 +1,43 @@
+<roblox version="4">
+  <Item class="Weld" referent="0">
+    <Properties>
+      <string name="Name">Handle -&gt; Meshes/startersinglefix_NurbsPath.001 Weld</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="C0">
+        <X>-1388.9663</X>
+        <Y>-92.77937</Y>
+        <Z>150.38486</Z>
+        <R00>-0.000000000000028376595</R00>
+        <R01>0.00000000000000022204712</R01>
+        <R02>-0.9999974</R02>
+        <R10>0.0000000000000011102273</R10>
+        <R11>1</R11>
+        <R12>0.00000000000000022204654</R12>
+        <R20>0.9999975</R20>
+        <R21>-0.0000000000000008881835</R21>
+        <R22>-0.000000000000021281577</R22>
+      </CoordinateFrame>
+      <CoordinateFrame name="C1">
+        <X>150.72641</X>
+        <Y>-95.16552</Y>
+        <Z>1388.9521</Z>
+        <R00>0.9999975</R00>
+        <R01>-0.0000000000000002220454</R01>
+        <R02>-0.0000000000000071080294</R02>
+        <R10>0.00000000000000044409085</R10>
+        <R11>1</R11>
+        <R12>0.0000000000000000000000000000011821341</R12>
+        <R20>0.000000000000014208249</R20>
+        <R21>-0.000000000000000000000000000007099766</R21>
+        <R22>0.9999974</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="Enabled">true</bool>
+      <Ref name="Part0">null</Ref>
+      <Ref name="Part1">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

@@ -1,0 +1,43 @@
+<roblox version="4">
+  <Item class="Weld" referent="0">
+    <Properties>
+      <string name="Name">Handle -&gt; Coloured Part Weld</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="C0">
+        <X>-1395.1141</X>
+        <Y>-92.77937</Y>
+        <Z>160.12817</Z>
+        <R00>-0.000000000000049666875</R00>
+        <R01>0.00000000000000022205061</R01>
+        <R02>-0.9999974</R02>
+        <R10>0.0000000000000017763452</R10>
+        <R11>1</R11>
+        <R12>0.00000000000000022205003</R12>
+        <R20>0.9999975</R20>
+        <R21>-0.0000000000000015543031</R21>
+        <R22>-0.00000000000004257012</R22>
+      </CoordinateFrame>
+      <CoordinateFrame name="C1">
+        <X>160.39957</X>
+        <Y>-92.2523</Y>
+        <Z>1395.122</Z>
+        <R00>0.9999975</R00>
+        <R01>-0.0000000000000002220454</R01>
+        <R02>-0.000000000000007109764</R02>
+        <R10>0.00000000000000044409085</R10>
+        <R11>1</R11>
+        <R12>0.0000000000000000000000000000011813637</R12>
+        <R20>0.0000000000000142065145</R20>
+        <R21>-0.000000000000000000000000000007099766</R21>
+        <R22>0.9999974</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="Enabled">true</bool>
+      <Ref name="Part0">null</Ref>
+      <Ref name="Part1">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

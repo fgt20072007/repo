@@ -1,0 +1,52 @@
+<roblox version="4">
+  <Item class="Texture" referent="0">
+    <Properties>
+      <string name="Name">Top</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="Color3">
+        <R>1</R>
+        <G>1</G>
+        <B>1</B>
+      </Color3>
+      <token name="Face">1</token>
+      <Content name="MetalnessMapContent">
+        <null>
+        </null>
+      </Content>
+      <Content name="NormalMapContent">
+        <null>
+        </null>
+      </Content>
+      <float name="OffsetStudsU">0</float>
+      <float name="OffsetStudsV">0</float>
+      <Content name="RoughnessMapContent">
+        <null>
+        </null>
+      </Content>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <float name="StudsPerTileU">15.19173</float>
+      <float name="StudsPerTileV">15.19173</float>
+      <BinaryString name="Tags"></BinaryString>
+      <Content name="TextureContent">
+        <uri>rbxassetid://10024132565</uri>
+      </Content>
+      <ContentId name="TexturePack">
+        <null>
+        </null>
+      </ContentId>
+      <string name="TexturePackMetadata"></string>
+      <float name="Transparency">0.9</float>
+      <Vector2 name="UVOffset">
+        <X>0</X>
+        <Y>0</Y>
+      </Vector2>
+      <Vector2 name="UVScale">
+        <X>1</X>
+        <Y>1</Y>
+      </Vector2>
+      <int name="ZIndex">1</int>
+    </Properties>
+  </Item>
+</roblox>

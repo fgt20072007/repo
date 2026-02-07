@@ -1,0 +1,20 @@
+<roblox version="4">
+  <Item class="UIGradient" referent="0">
+    <Properties>
+      <string name="Name">Rarity</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <ColorSequence name="Color">0 1 0.84705883 0.30980393 0 0.2768166 0.9411765 0.6039216 0.07450981 0 0.49826992 1 0.827451 0.20392157 0 0.7231834 0.9529412 0.6862745 0.1882353 0 1 0.87058824 0.45490196 0.105882354 0 </ColorSequence>
+      <bool name="Enabled">true</bool>
+      <Vector2 name="Offset">
+        <X>0</X>
+        <Y>0</Y>
+      </Vector2>
+      <float name="Rotation">64</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <NumberSequence name="Transparency">0 0 0 1 0 0 </NumberSequence>
+    </Properties>
+  </Item>
+</roblox>

@@ -1,0 +1,28 @@
+<roblox version="4">
+  <Item class="UIPadding" referent="0">
+    <Properties>
+      <string name="Name">UIPadding</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <UDim name="PaddingBottom">
+        <S>0</S>
+        <O>0</O>
+      </UDim>
+      <UDim name="PaddingLeft">
+        <S>0.01</S>
+        <O>0</O>
+      </UDim>
+      <UDim name="PaddingRight">
+        <S>0.01</S>
+        <O>0</O>
+      </UDim>
+      <UDim name="PaddingTop">
+        <S>0.03</S>
+        <O>0</O>
+      </UDim>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

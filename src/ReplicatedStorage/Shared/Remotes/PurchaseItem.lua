@@ -1,0 +1,10 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Shared = ReplicatedStorage:WaitForChild("Shared")
+
+local Red = require(Shared.Packages:WaitForChild("Red"))
+local Guard = require(Shared.Packages:WaitForChild("Guard"))
+
+return Red.Event("PurchaseItem", function(Category, ItemName)
+	return Guard.String(Category), Guard.String(ItemName)
+end)

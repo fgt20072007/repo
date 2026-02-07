@@ -1,0 +1,43 @@
+<roblox version="4">
+  <Item class="Weld" referent="0">
+    <Properties>
+      <string name="Name">Weld</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="C0">
+        <X>0</X>
+        <Y>-2.2618637</Y>
+        <Z>0</Z>
+        <R00>0.9999999</R00>
+        <R01>0</R01>
+        <R02>0.000000000000014210865</R02>
+        <R10>-0.0000000055879354</R10>
+        <R11>0.00000000000002842171</R11>
+        <R12>-0.99999964</R12>
+        <R20>-0.000000029802319</R20>
+        <R21>0.9999996</R21>
+        <R22>0.000000005587964</R22>
+      </CoordinateFrame>
+      <CoordinateFrame name="C1">
+        <X>90.95384</X>
+        <Y>1.7354965</Y>
+        <Z>25.63861</Z>
+        <R00>0.99999994</R00>
+        <R01>0.00000000000000024947492</R01>
+        <R02>-0.00000013393598</R02>
+        <R10>-0.00000013393598</R10>
+        <R11>-0.000000281627</R11>
+        <R12>-1</R12>
+        <R20>-0.000000000000037969482</R20>
+        <R21>0.9999996</R21>
+        <R22>-0.0000002816271</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="Enabled">true</bool>
+      <Ref name="Part0">null</Ref>
+      <Ref name="Part1">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

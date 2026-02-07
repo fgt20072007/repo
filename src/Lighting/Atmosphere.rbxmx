@@ -5,19 +5,19 @@
       <BinaryString name="AttributesSerialize"></BinaryString>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
       <Color3 name="Color">
-        <R>0.7843</R>
-        <G>0.6667</G>
-        <B>0.4235</B>
+        <R>0.2784314</R>
+        <G>0.2784314</G>
+        <B>0.2784314</B>
       </Color3>
       <Color3 name="Decay">
-        <R>0.3608</R>
-        <G>0.2353</G>
-        <B>0.0549</B>
+        <R>0.33333334</R>
+        <G>0</G>
+        <B>0.49803925</B>
       </Color3>
-      <float name="Density">0.3</float>
-      <float name="Glare">0</float>
-      <float name="Haze">0</float>
-      <float name="Offset">0</float>
+      <float name="Density">0.326</float>
+      <float name="Glare">1.69</float>
+      <float name="Haze">0.25</float>
+      <float name="Offset">0.481</float>
       <bool name="DefinesCapabilities">false</bool>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

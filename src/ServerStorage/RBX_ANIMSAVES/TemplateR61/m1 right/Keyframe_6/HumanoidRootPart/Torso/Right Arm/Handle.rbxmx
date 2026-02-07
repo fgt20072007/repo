@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">Handle</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.21065181</X>
+        <Y>0.57429624</Y>
+        <Z>0.19410002</Z>
+        <R00>0.9756069</R00>
+        <R01>0.04234189</R01>
+        <R02>0.2154027</R02>
+        <R10>-0.0079039335</R10>
+        <R11>0.98736143</R11>
+        <R12>-0.15828775</R12>
+        <R20>-0.21938251</R20>
+        <R21>0.15272409</R21>
+        <R22>0.96361125</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>
