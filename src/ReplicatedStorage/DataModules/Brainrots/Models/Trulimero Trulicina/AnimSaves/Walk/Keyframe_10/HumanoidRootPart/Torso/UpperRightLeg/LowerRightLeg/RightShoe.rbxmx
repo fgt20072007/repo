@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">RightShoe</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.0000028014183</X>
+        <Y>-0.0000005066395</Y>
+        <Z>-0.00000001169974</Z>
+        <R00>0.9829743</R00>
+        <R01>-0.18373035</R01>
+        <R02>0.00019493105</R02>
+        <R10>0.1837299</R10>
+        <R11>0.9829749</R11>
+        <R12>-0.0018820909</R12>
+        <R20>0.0001541846</R20>
+        <R21>0.0018858715</R21>
+        <R22>0.9999958</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

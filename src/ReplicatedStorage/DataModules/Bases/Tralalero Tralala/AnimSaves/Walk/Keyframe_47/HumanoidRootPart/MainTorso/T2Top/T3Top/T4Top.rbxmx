@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">T4Top</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.000000000000009992007</X>
+        <Y>0.000000461936</Y>
+        <Z>0.00000011920929</Z>
+        <R00>1</R00>
+        <R01>-0.0000000058997185</R01>
+        <R02>0.00000000023086474</R02>
+        <R10>0.0000000058997163</R10>
+        <R11>0.99694216</R11>
+        <R12>-0.078144126</R12>
+        <R20>0.00000000023087154</R20>
+        <R21>0.078144126</R21>
+        <R22>0.99694216</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">BlueHeadLowerPart</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.00000016856939</X>
+        <Y>-0.0000003874302</Y>
+        <Z>0.00000023841858</Z>
+        <R00>0.999999</R00>
+        <R01>-0.0011821088</R01>
+        <R02>0.0008176395</R02>
+        <R10>0.0011055993</R10>
+        <R11>0.99612486</R11>
+        <R12>0.08794421</R12>
+        <R20>-0.0009183914</R20>
+        <R21>-0.087943114</R21>
+        <R22>0.9961251</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

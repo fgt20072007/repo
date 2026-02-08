@@ -17,12 +17,29 @@ local Fireworks = require(ReplicatedStorage.Utilities.Fireworks)
 local DevProducts = require(ReplicatedStorage.DataModules.DevProducts)
 local ServerUtilities = require(ServerStorage.ServerUtilities)
 
+local Bases = require(ReplicatedStorage.DataModules.Bases)
 local Gears = require(ReplicatedStorage.DataModules.Gears)
 local InventoryHandler = require("./InventoryHandler")
 
 local Zones = require(ReplicatedStorage.DataModules.Zones)
 
 local SignalBank = require(ServerStorage.SignalBank)
+local PURCHASED_BASE_NOTIFICATION_COLOR = Color3.new(0.45098, 1, 0)
+
+local function unlockBaseForPlayer(plr: Player, baseNumber: number)
+	local baseSchema = Bases[baseNumber]
+	if not plr or not baseSchema then
+		return
+	end
+
+	local ownedBases = DataService.server:get(plr, "bases")
+	if table.find(ownedBases, baseNumber) then
+		return
+	end
+
+	DataService.server:arrayInsert(plr, "bases", baseNumber)
+	RemoteBank.SendNotification:FireClient(plr, "Purchased base", PURCHASED_BASE_NOTIFICATION_COLOR)
+end
 
 local DevProductsData = {
 	[DevProducts.StarterPack.Id] = function(plr)
@@ -37,7 +54,7 @@ local DevProductsData = {
 	[DevProducts.InsanePack.Id] = function(plr)
 		ServerUtilities.ParseTableForRewards(plr, DevProducts.InsanePack.Rewards)
 	end,
-	
+
 	[DevProducts.MythicalUnit.Id] = function(plr)
 		ServerUtilities.ParseTableForRewards(plr, {[DevProducts.MythicalUnit.EntityName] = "Entity"})
 	end,
@@ -47,7 +64,7 @@ local DevProductsData = {
 	[DevProducts.CosmicUnit.Id] = function(plr)
 		ServerUtilities.ParseTableForRewards(plr, {[DevProducts.CosmicUnit.EntityName] = "Entity"})
 	end,
-	
+
 	[DevProducts.Cash1.Id] = function(plr)
 		DataService.server:update(plr, "cash", function(old)
 			return old + DevProducts.Cash1.Amount
@@ -88,6 +105,15 @@ for i, v in Gears do
 	end
 end
 
+for baseNumber, baseSchema in Bases do
+	local baseDevProductId = baseSchema.BaseDevProductId
+	if type(baseDevProductId) == "number" and baseDevProductId > 0 then
+		DevProductsData[baseDevProductId] = function(plr)
+			unlockBaseForPlayer(plr, baseNumber)
+		end
+	end
+end
+
 local Receiving = {}
 local MarketplaceHandler = {}
 
@@ -97,7 +123,8 @@ function MarketplaceHandler.Purchase(Player, IsGamepass, Id, ...)
 	if not Id or IsGamepass == nil then return end
 	local processedSignal = Signal.new()
 	InProcessing[Player] = processedSignal
-	
+	Receiving[Player] = Receiving[Player] or {}
+
 	if IsGamepass then
 		MarketplaceService:PromptGamePassPurchase(Player, tonumber(Id))
 	else
@@ -113,19 +140,26 @@ function MarketplaceHandler.Initialize()
 		if Player then
 			local devProductFunction = DevProductsData[ProcessReceipt.ProductId]
 			if devProductFunction then
-				local arguments = Receiving[Player][ProcessReceipt.ProductId] or {}
+				local playerReceiving = Receiving[Player] or {}
+				local arguments = playerReceiving[ProcessReceipt.ProductId] or {}
+				playerReceiving[ProcessReceipt.ProductId] = nil
+				Receiving[Player] = playerReceiving
 				devProductFunction(Player, table.unpack(arguments))
 			end		
-			
+
 			return Enum.ProductPurchaseDecision.PurchaseGranted
 		end
 		return Enum.ProductPurchaseDecision.NotProcessedYet
 	end
 
 	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(a0: Player, a1: number, a2: boolean)
-		InProcessing[a0]:Fire(a2)
-		InProcessing[a0]:Destroy(a2)
-		
+		local signal = InProcessing[a0]
+		if signal then
+			signal:Fire(a2)
+			signal:Destroy()
+			InProcessing[a0] = nil
+		end
+
 		if a2 then
 			Fireworks.PlayFireworks(a0)
 			RemoteBank.SendNotification:FireClient(a0, "Thanks for purchasing! ❤️")
@@ -133,11 +167,19 @@ function MarketplaceHandler.Initialize()
 			InventoryHandler.AddToolsAndClear(a0)
 		end
 	end)
-	
+
 	MarketplaceService.PromptProductPurchaseFinished:Connect(function(userid, productid, ispurchased)
 		local player = Players:GetPlayerByUserId(userid)
-		InProcessing[player]:Fire(ispurchased)
-		InProcessing[player]:Destroy()
+		if not player then
+			return
+		end
+
+		local signal = InProcessing[player]
+		if signal then
+			signal:Fire(ispurchased)
+			signal:Destroy()
+			InProcessing[player] = nil
+		end
 		if ispurchased then
 			Fireworks.PlayFireworks(player)
 			RemoteBank.SendNotification:FireClient(player, "Thanks for purchasing! ❤️")
@@ -146,9 +188,18 @@ function MarketplaceHandler.Initialize()
 	end)
 
 	RemoteBank.Purchase.OnServerInvoke = MarketplaceHandler.Purchase
-	
+
+	for _, player in Players:GetPlayers() do
+		Receiving[player] = {}
+	end
+
 	Players.PlayerAdded:Connect(function(Player)
 		Receiving[Player] = {}
+	end)
+
+	Players.PlayerRemoving:Connect(function(Player)
+		Receiving[Player] = nil
+		InProcessing[Player] = nil
 	end)
 end
 

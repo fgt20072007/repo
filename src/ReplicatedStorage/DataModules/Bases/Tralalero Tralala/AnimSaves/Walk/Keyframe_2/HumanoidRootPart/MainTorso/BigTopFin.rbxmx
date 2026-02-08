@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">BigTopFin</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.00000009440521</X>
+        <Y>-0.000008821487</Y>
+        <Z>-0.0000045597553</Z>
+        <R00>1</R00>
+        <R01>0.00000000012517276</R01>
+        <R02>-0.00000005413688</R02>
+        <R10>0.000000098032544</R10>
+        <R11>0.99998987</R11>
+        <R12>0.00087198615</R12>
+        <R20>0.00000008161753</R20>
+        <R21>-0.00087213516</R21>
+        <R22>0.99998987</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

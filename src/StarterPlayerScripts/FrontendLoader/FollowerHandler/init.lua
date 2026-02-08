@@ -42,7 +42,7 @@ function FollowerHandler:Initialize()
 		local Informations = Bases[BaseNumber]
 
 		local OwnsBase = table.find(BasesOwned, BaseNumber)
-		local PurchaseZone = v:FindFirstChild("PurchaseZone")
+		local PurchaseZone = v:FindFirstChild("PurchaseZone") or v:FindFirstChild("Zone")
 
 		local connection
 

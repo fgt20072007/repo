@@ -28,6 +28,8 @@ local RemoteBank = require(ReplicatedStorage.RemoteBank)
 
 local BasesHandler = {}
 local SpawnedBases = {}
+local PURCHASED_BASE_NOTIFICATION_COLOR = Color3.new(0.45098, 1, 0)
+local NOT_ENOUGH_MONEY_NOTIFICATION_COLOR = Color3.new(1, 0.180392, 0.180392)
 
 function BasesHandler._getAvailableStandNumber(baseNumber, excludeStands)
 	local baseInformations = SpawnedBases[baseNumber]
@@ -193,16 +195,21 @@ function BasesHandler:Initialize()
 				RemoteBank.SendNotification:FireClient(plr, "Already purchased base ( how did you get here? )")
 				return
 			else 
-				local purchased = false
 				DataService.server:update(plr, "cash", function(old)
 					if old >= baseInformations.BasePrice then
-						RemoteBank.SendNotification:FireClient(plr, "Purchased base", Color3.new(0.45098, 1, 0))
+						RemoteBank.SendNotification:FireClient(plr, "Purchased base", PURCHASED_BASE_NOTIFICATION_COLOR)
 
 						DataService.server:arrayInsert(plr, "bases", baseNumber)
 
 						return old - baseInformations.BasePrice
 					else
-						RemoteBank.SendNotification:FireClient(plr, "You don't have enough to purchase.", Color3.new(1, 0.180392, 0.180392))
+						local baseDevProductId = baseInformations.BaseDevProductId
+						if type(baseDevProductId) == "number" and baseDevProductId > 0 then
+							RemoteBank.SendNotification:FireClient(plr, "Not enough cash, unlock this base with Robux.", NOT_ENOUGH_MONEY_NOTIFICATION_COLOR)
+							MarketplaceHandler.Purchase(plr, false, baseDevProductId)
+						else
+							RemoteBank.SendNotification:FireClient(plr, "You don't have enough to purchase.", NOT_ENOUGH_MONEY_NOTIFICATION_COLOR)
+						end
 					end
 
 					return old

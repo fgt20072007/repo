@@ -11,7 +11,7 @@ local LuckyBoxes = {
 		["Default"] = {
 			SpawnWeight = 100,
 			Brainrots = {
-				["Test"] = 100
+				["Trulimero Trulicina"] = 100
 			},
 		},
 	}

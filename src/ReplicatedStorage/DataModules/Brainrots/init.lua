@@ -40,11 +40,11 @@ local function resolveModel(modelName: string, fallbackName: string?)
 end
 
 return {
-	["Test"] = {
+	["Trulimero Trulicina"] = {
 		Rarity = "Common",
 		MoneyPerSecond = 250,
-		Animation = "rbxassetid://",
-		DisplayName = "Test",
-		Model = resolveModel("Models", "Test"),
+		Animation = "rbxassetid://73603575720334",
+		DisplayName = "Trulimero Trulicina",
+		Model = resolveModel("Models", "Trulimero Trulicina"),
 	},
 }
