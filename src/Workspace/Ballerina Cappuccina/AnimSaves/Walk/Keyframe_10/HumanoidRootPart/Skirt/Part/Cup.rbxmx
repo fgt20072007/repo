@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">Cup</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0</X>
+        <Y>0.00000047683716</Y>
+        <Z>0.000000008614734</Z>
+        <R00>1</R00>
+        <R01>-0.0000005920738</R01>
+        <R02>-0.0000002785755</R02>
+        <R10>0.0000005913025</R10>
+        <R11>0.999997</R11>
+        <R12>-0.0024390225</R12>
+        <R20>0.0000002795323</R20>
+        <R21>0.002439024</R21>
+        <R22>0.999997</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

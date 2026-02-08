@@ -1,5 +1,8 @@
 local DataModules = script.Parent.Parent
-local EntitiesFolder = DataModules:FindFirstChild("Entities")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local DataModules = ReplicatedStorage:WaitForChild("DataModules")
+local Brainrots = DataModules:WaitForChild("Brainrots")
+local ModelsFolder = Brainrots:WaitForChild("Models")
 
 --[[
 
@@ -46,5 +49,13 @@ return {
 		Animation = "rbxassetid://73603575720334",
 		DisplayName = "Trulimero Trulicina",
 		Model = resolveModel("Models", "Trulimero Trulicina"),
+	},
+
+	["FluriFlura"] = {
+		Rarity = "Common",
+		MoneyPerSecond = 250,
+		Animation = "rbxassetid://137210644909122",
+		DisplayName = "FluriFlura",
+		Model = resolveModel("Models", "FluriFlura"),
 	},
 }

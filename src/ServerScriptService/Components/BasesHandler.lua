@@ -30,6 +30,11 @@ local BasesHandler = {}
 local SpawnedBases = {}
 local PURCHASED_BASE_NOTIFICATION_COLOR = Color3.new(0.45098, 1, 0)
 local NOT_ENOUGH_MONEY_NOTIFICATION_COLOR = Color3.new(1, 0.180392, 0.180392)
+local LastTimedSpawnAt = {
+	Mythical = 0,
+	Secret = 0,
+	Godly = 0,
+}
 
 function BasesHandler._getAvailableStandNumber(baseNumber, excludeStands)
 	local baseInformations = SpawnedBases[baseNumber]
@@ -73,7 +78,7 @@ function BasesHandler.SpawnEntityOnStand(baseNumber, standNumber, forceRemove, e
 
 		local BaseInformations = Bases[baseNumber]
 		local NewEntityRandom = entityName
-			or LuckyBoxes.GetRandomLuckyBoxForBase()
+			or LuckyBoxes.GetRandomLuckyBoxForBase(BaseInformations and BaseInformations.LuckyBoxes)
 			or SharedFunctions.GetRandomEntity(BaseInformations.Percentages)
 		local BaseModel: Base = baseInformations.BaseModel
 
@@ -218,51 +223,43 @@ function BasesHandler:Initialize()
 		end
 	end
 
-	task.spawn(function()
-		while task.wait(1) do
-			local currentTime = os.time()
-			local timeSinceLastEvent = currentTime % GlobalConfiguration.MythicalSpawnAmount
-			local timeRemaining = GlobalConfiguration.MythicalSpawnAmount - timeSinceLastEvent
-
-			if timeRemaining <= 1 then
-				local RandomBase = math.random(1, #Bases)
-				local standNumber = BasesHandler._getAvailableStandNumber(RandomBase, SpawnedBases[RandomBase].RobuxStands)
-				if standNumber then
-					BasesHandler.SpawnEntityOnStand(RandomBase, standNumber, true, SharedFunctions.GetRandomEntity({["Mythical"] = 100}))
-				end
-			end
+	local function tryTimedSpawn(rarity: string, interval: number)
+		if typeof(interval) ~= "number" or interval <= 0 then
+			return
 		end
-	end)
 
-	task.spawn(function()
-		while task.wait(1) do
-			local currentTime = os.time()
-			local timeSinceLastEvent = currentTime % GlobalConfiguration.SecretSpawnAmount
-			local timeRemaining = GlobalConfiguration.SecretSpawnAmount - timeSinceLastEvent
-
-			if timeRemaining <= 1 then
-				local RandomBase = math.random(1, #Bases)
-				local standNumber = BasesHandler._getAvailableStandNumber(RandomBase, SpawnedBases[RandomBase].RobuxStands)
-				if standNumber then
-					BasesHandler.SpawnEntityOnStand(RandomBase, standNumber, true, SharedFunctions.GetRandomEntity({["Secret"] = 100}))
-				end
-			end
+		local currentTime = os.time()
+		local lastSpawnAt = LastTimedSpawnAt[rarity] or 0
+		if currentTime - lastSpawnAt < interval then
+			return
 		end
-	end)
+
+		local timeSinceLastEvent = currentTime % interval
+		local timeRemaining = interval - timeSinceLastEvent
+		if timeRemaining > 1 then
+			return
+		end
+
+		local randomBase = math.random(1, #Bases)
+		local randomBaseInfo = SpawnedBases[randomBase]
+		if not randomBaseInfo then
+			return
+		end
+
+		local standNumber = BasesHandler._getAvailableStandNumber(randomBase, randomBaseInfo.RobuxStands)
+		if not standNumber then
+			return
+		end
+
+		LastTimedSpawnAt[rarity] = currentTime
+		BasesHandler.SpawnEntityOnStand(randomBase, standNumber, true, SharedFunctions.GetRandomEntity({[rarity] = 100}))
+	end
 
 	task.spawn(function()
 		while task.wait(1) do
-			local currentTime = os.time()
-			local timeSinceLastEvent = currentTime % GlobalConfiguration.GodlySpawnAmount
-			local timeRemaining = GlobalConfiguration.GodlySpawnAmount - timeSinceLastEvent
-
-			if timeRemaining <= 1 then
-				local RandomBase = math.random(1, #Bases)
-				local standNumber = BasesHandler._getAvailableStandNumber(RandomBase, SpawnedBases[RandomBase].RobuxStands)
-				if standNumber then
-					BasesHandler.SpawnEntityOnStand(RandomBase, standNumber, true, SharedFunctions.GetRandomEntity({["Godly"] = 100}))
-				end
-			end
+			tryTimedSpawn("Mythical", GlobalConfiguration.MythicalSpawnAmount)
+			tryTimedSpawn("Secret", GlobalConfiguration.SecretSpawnAmount)
+			tryTimedSpawn("Godly", GlobalConfiguration.GodlySpawnAmount)
 		end
 	end)
 

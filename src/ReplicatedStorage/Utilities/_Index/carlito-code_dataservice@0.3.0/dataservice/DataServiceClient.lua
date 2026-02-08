@@ -116,6 +116,7 @@ end
 	:::
 ]=]
 function DataServiceClient.set(self: DataServiceClient, path: Path, value: any)
+	self:waitForData()
 	self._data:set(path, value)
 end
 
@@ -140,6 +141,7 @@ end
 	:::
 ]=]
 function DataServiceClient.update(self: DataServiceClient, path: Path, callback: (any) -> any): any
+	self:waitForData()
 	return self._data:update(path, callback)
 end
 
@@ -162,6 +164,7 @@ end
 	:::
 ]=]
 function DataServiceClient.arrayInsert(self: DataServiceClient, path: Path, value: any, index: number?)
+	self:waitForData()
 	self._data:arrayInsert(path, value, index)
 end
 
@@ -183,6 +186,7 @@ end
 	:::
 ]=]
 function DataServiceClient.arrayRemove(self: DataServiceClient, path: Path, index: number): any
+	self:waitForData()
 	return self._data:arrayRemove(path, index)
 end
 
@@ -202,6 +206,7 @@ end
 	```
 ]=]
 function DataServiceClient.getChangedSignal(self: DataServiceClient, path: Path): Signal<any>
+	self:waitForData()
 	return self._data:getChangedSignal(path)
 end
 
@@ -221,6 +226,7 @@ end
 	```
 ]=]
 function DataServiceClient.getIndexChangedSignal(self: DataServiceClient, path: Path): Signal<any>
+	self:waitForData()
 	return self._data:getIndexChangedSignal(path)
 end
 
@@ -240,6 +246,7 @@ end
 	```
 ]=]
 function DataServiceClient.getArrayInsertedSignal(self: DataServiceClient, path: Path): Signal<any>
+	self:waitForData()
 	return self._data:getArrayInsertedSignal(path)
 end
 
@@ -259,6 +266,7 @@ end
 	```
 ]=]
 function DataServiceClient.getArrayRemovedSignal(self: DataServiceClient, path: Path): Signal<any>
+	self:waitForData()
 	return self._data:getArrayRemovedSignal(path)
 end
 

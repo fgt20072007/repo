@@ -4,7 +4,7 @@
       <string name="Name">RightLowerArm</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.8928222</X>
+        <X>1.37371</X>
         <Y>0</Y>
         <Z>0</Z>
         <R00>-0.00000004371139</R00>
@@ -18,7 +18,7 @@
         <R22>-0.00000004371139</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-1.2499512</X>
+        <X>-1.9231943</X>
         <Y>0</Y>
         <Z>0</Z>
         <R00>-0.00000004371139</R00>

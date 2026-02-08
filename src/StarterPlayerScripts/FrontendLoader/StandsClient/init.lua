@@ -125,9 +125,22 @@ end
 
 -- Initialization function for the script
 function StandsClient:Initialize()
-	task.spawn(function()
-		task.wait(2)
+	RemoteBank.StandAdded.OnClientEvent:Connect(function(player, stand, standNumber)
+		StandsClient.HandleStand(player == Players.LocalPlayer, stand, standNumber, player)
+	end)
 
+	RemoteBank.JumpEntity.OnClientEvent:Connect(StandsClient.MakeEntityJump)
+
+	RemoteBank.UpgradeStand.OnClientEvent:Connect(function(standnumber)
+		task.delay(0.1, function()
+			local cacheFn = UpgradeGuisCaches[standnumber]
+			if cacheFn then
+				cacheFn()
+			end
+		end)
+	end)
+
+	task.spawn(function()
 		local CurrentlyLoadedStands = RemoteBank.GetStands:InvokeServer()
 		for player, container in CurrentlyLoadedStands do
 			for standMumber, model in container do
@@ -136,18 +149,6 @@ function StandsClient:Initialize()
 				StandsClient.HandleStand(owns, model, standMumber, Players:FindFirstChild(player))
 			end
 		end
-
-		RemoteBank.StandAdded.OnClientEvent:Connect(function(player, stand, standNumber)
-			StandsClient.HandleStand(player == Players.LocalPlayer, stand, standNumber, player)
-		end)
-
-		RemoteBank.JumpEntity.OnClientEvent:Connect(StandsClient.MakeEntityJump)
-
-		RemoteBank.UpgradeStand.OnClientEvent:Connect(function(standnumber)
-			task.delay(0.1, function()
-				UpgradeGuisCaches[standnumber]()
-			end)
-		end)
 	end)
 end
 

@@ -5,8 +5,8 @@
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
         <X>0</X>
-        <Y>-0.7384052</Y>
-        <Z>-1.3500681</Z>
+        <Y>-1.7853241</Y>
+        <Z>-3.264209</Z>
         <R00>-1</R00>
         <R01>0</R01>
         <R02>0</R02>
@@ -19,8 +19,8 @@
       </CoordinateFrame>
       <CoordinateFrame name="C1">
         <X>0</X>
-        <Y>-0.02367926</Y>
-        <Z>-1.5889527</Z>
+        <Y>-0.057251967</Y>
+        <Z>-3.8417866</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0</R02>

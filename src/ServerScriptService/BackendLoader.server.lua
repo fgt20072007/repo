@@ -7,7 +7,24 @@ local DataService = require(ReplicatedStorage.Utilities.DataService)
 local GlobalConfiguration = require(ReplicatedStorage.DataModules.GlobalConfiguration)
 local ModelTween = require(ReplicatedStorage.Utilities.ModelTween)
 
-local physicsService = game:GetService("PhysicsService")
+local currentStoreIndex = GlobalConfiguration.CurrentDatastoreVersion
+DataService.server:init({
+	useMock = GlobalConfiguration.MockInStudio and RunService:IsStudio(),
+	template = {
+		rebirth = GlobalConfiguration.StarterRebirth,
+		cash = GlobalConfiguration.StarterCash,
+
+		bases = {
+			1
+		},
+		index = {},
+		stands = {},
+		inventory = {},
+		gears = {},
+	},
+	profileStoreIndex = "DatastoreVersion#" .. currentStoreIndex
+})
+
 do 
 	local physicsService = game:GetService("PhysicsService")
 	physicsService:RegisterCollisionGroup("Entities")
@@ -59,24 +76,6 @@ do
 	end)
 
 end
-
-local currentStoreIndex = GlobalConfiguration.CurrentDatastoreVersion
-DataService.server:init({
-	useMock = GlobalConfiguration.MockInStudio and RunService:IsStudio(),
-	template = {
-		rebirth = GlobalConfiguration.StarterRebirth,
-		cash = GlobalConfiguration.StarterCash,
-
-		bases = {
-			1
-		},
-		index = {},
-		stands = {},
-		inventory = {},
-		gears = {},
-	},
-	profileStoreIndex = "DatastoreVersion#" .. currentStoreIndex
-})
 
 local function LoadModule(Module: ModuleScript)
 	local success, requiredOrError = pcall(function()

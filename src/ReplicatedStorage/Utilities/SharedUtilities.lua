@@ -7,7 +7,7 @@ return {
 		local success, informations = pcall(function()
 			return marketplace:GetProductInfoAsync(id, inforType)
 		end)
-		
+
 		if not success then
 			return "NULL"
 		else
@@ -19,11 +19,11 @@ return {
 			return informations.PriceInRobux, informations.DisplayName
 		end
 	end,
-	
+
 	ownsGamepass = function(player, id)
 		return marketplace:UserOwnsGamePassAsync(player.UserId, id)
 	end,
-	
+
 	getLenghtOfT = function(t: {})
 		local lenght = 0
 		for _, v in t do
@@ -31,11 +31,11 @@ return {
 		end
 		return lenght
 	end,
-	
+
 	getToolsForBackpackAndEquipped = function(player)
 		return TableUtil.Extend(player.Backpack:GetChildren(), (player.Character and player.Character:GetChildren() or {}))
 	end,
-	
+
 	createWeld = function(part1, part2, offset)
 		local Weld = Instance.new("Weld")
 		part2.Anchored = false
@@ -45,7 +45,7 @@ return {
 		Weld.Parent = part1
 		return Weld
 	end,
-	
+
 	attachToTouchEvents = function(part, callback, debounceTime)
 		local debounces = {}
 		part.Touched:Connect(function(hit)
@@ -53,23 +53,19 @@ return {
 			if char then
 				local player = Players:GetPlayerFromCharacter(char)
 				if not player then return end
-				
+
 				local debounce = debounces[player]
-				
-				
 				if debounce then
 					return
 				end
-				
+				debounces[player] = true
+
 				task.delay(debounceTime or 0.1, function()
-					debounces[player] = false
+					debounces[player] = nil
 				end)
-				
-				debounce = true
+
 				callback(player, char)
 			end
 		end)
-		
-		
 	end,
 }

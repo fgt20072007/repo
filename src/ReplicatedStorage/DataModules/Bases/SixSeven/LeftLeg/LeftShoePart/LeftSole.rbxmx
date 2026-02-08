@@ -4,9 +4,9 @@
       <string name="Name">LeftSole</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.01594938</X>
-        <Y>-0.723447</Y>
-        <Z>-0.00007298162</Z>
+        <X>-0.02139536</X>
+        <Y>-0.9704709</Y>
+        <Z>-0.00009790149</Z>
         <R00>-0.00000008742276</R00>
         <R01>-0.00014235763</R01>
         <R02>-1</R02>

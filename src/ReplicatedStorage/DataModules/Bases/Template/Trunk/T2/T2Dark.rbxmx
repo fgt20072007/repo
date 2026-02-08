@@ -14,18 +14,18 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>170.81323</X>
-        <Y>12.761677</Y>
-        <Z>155.0751</Z>
-        <R00>-0.00000027022597</R00>
-        <R01>-0.00000012600786</R01>
-        <R02>-1</R02>
-        <R10>-0.42262128</R10>
-        <R11>0.9063066</R11>
-        <R12>-0.00000000000028421937</R12>
-        <R20>0.9062989</R20>
-        <R21>0.42261705</R21>
-        <R22>-0.00000029815874</R22>
+        <X>68.83104</X>
+        <Y>14.481242</Y>
+        <Z>83.90304</Z>
+        <R00>0.906305</R00>
+        <R01>0.42262414</R01>
+        <R02>-0.00000029816368</R02>
+        <R10>-0.42262414</R10>
+        <R11>0.9063051</R11>
+        <R12>0.0000000000013223385</R12>
+        <R20>0.00000027022782</R20>
+        <R21>0.00000012600998</R21>
+        <R22>1</R22>
       </CoordinateFrame>
       <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
@@ -38,7 +38,7 @@
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="formFactorRaw">1</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -49,7 +49,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized">Studs</string>
       <CoordinateFrame name="PivotOffset">
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>1.3499997</X>
-        <Y>1.85</Y>
-        <Z>0.8499999</Z>
+        <X>2.1291356</X>
+        <Y>2.917705</Y>
+        <Z>1.340567</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

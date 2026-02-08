@@ -4,9 +4,9 @@
       <string name="Name">Head</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>3.4799957</X>
-        <Y>1.3499999</Y>
-        <Z>-0.024993896</Z>
+        <X>5.488433</X>
+        <Y>2.1291358</Y>
+        <Z>-0.039418824</Z>
         <R00>0.9999964</R00>
         <R01>0</R01>
         <R02>0.000008940716</R02>
@@ -18,9 +18,9 @@
         <R22>1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-1.7700057</X>
-        <Y>-0.6500001</Y>
-        <Z>-0.000015825024</Z>
+        <X>-2.791543</X>
+        <Y>-1.0251397</Y>
+        <Z>-0.000024958246</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0.000000000096407174</R02>

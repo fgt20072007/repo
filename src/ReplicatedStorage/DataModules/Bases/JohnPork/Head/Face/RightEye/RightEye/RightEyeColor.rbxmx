@@ -4,9 +4,9 @@
       <string name="Name">RightEyeColor</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.07141924</X>
-        <Y>-0.035712343</Y>
-        <Z>-0.054231975</Z>
+        <X>-0.10988675</X>
+        <Y>-0.054947563</Y>
+        <Z>-0.08344215</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0</R02>

@@ -1,13 +1,19 @@
-task.wait(5)
+local StarterGui = game:GetService("StarterGui")
 
 require(script.Packages.topbarplus)
 
-local success
-repeat
-	success = pcall(function()
-		game:GetService('StarterGui'):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
-	end)
-	task.wait(1)
-until success
+task.spawn(function()
+	local timeoutAt = os.clock() + 10
+	repeat
+		local success = pcall(function()
+			StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, false)
+		end)
+		if success then
+			return
+		end
+
+		task.wait(0.1)
+	until os.clock() >= timeoutAt
+end)
 
 return require(script.Packages["satchel"])

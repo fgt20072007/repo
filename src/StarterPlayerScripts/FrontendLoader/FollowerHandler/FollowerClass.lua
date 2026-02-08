@@ -18,7 +18,7 @@ local INITIAL_STABILIZE_TIME = 0.15
 
 local function toAnimationAssetId(value)
 	local numericValue = tonumber(value)
-	if not numericValue then
+	if not numericValue or numericValue <= 0 then
 		return nil
 	end
 
@@ -123,7 +123,7 @@ local function setupChaserPhysics(model: Model, modelRoot: BasePart, facingPart:
 
 		part.Anchored = false
 		if part == modelRoot then
-			part.CanCollide = true
+			part.CanCollide = false
 			part.Massless = false
 		else
 			part.CanCollide = false
@@ -230,6 +230,11 @@ local function startFollowing(model: Model, checkForElegibility, normalSpeed, id
 		return
 	end
 
+	if model:GetAttribute("FollowerLoopStarted") then
+		return
+	end
+	model:SetAttribute("FollowerLoopStarted", true)
+
 	applyVisualYawOffset(model, modelRoot, orientationDegrees)
 
 	local facingPart = getFacingPart(model)
@@ -257,6 +262,8 @@ local function startFollowing(model: Model, checkForElegibility, normalSpeed, id
 		walkingAnimation.AnimationId = walkingAnimationAssetId
 		idleTrack = animator:LoadAnimation(idleAnimation)
 		walkingTrack = animator:LoadAnimation(walkingAnimation)
+		idleAnimation:Destroy()
+		walkingAnimation:Destroy()
 		idleTrack:Play()
 	end
 
@@ -288,50 +295,100 @@ local function startFollowing(model: Model, checkForElegibility, normalSpeed, id
 	local attackCooldownRemaining = 0
 	local maxHorizontalSpeed = normalSpeed * DEFENDER_SPEED_MULTIPLIER
 	local stabilizeRemaining = INITIAL_STABILIZE_TIME
+	local isChasingPlayer = false
+
+	local function applyIdleMotion(targetRoot: BasePart?)
+		humanoid.WalkSpeed = 0
+		modelRoot.CFrame = withFixedY(modelRoot.CFrame, fixedY)
+		modelRoot.AssemblyLinearVelocity = Vector3.zero
+		modelRoot.AssemblyAngularVelocity = Vector3.zero
+		setAnimationState("Idle")
+
+		if targetRoot then
+			updateModelFacing(modelRoot, targetRoot, fixedY)
+			if facingPart and facingPositionOffset then
+				updateFacingPart(facingPart, modelRoot, targetRoot, facingPositionOffset)
+			end
+		elseif facingPart and facingPositionOffset then
+			setFacingIdle(facingPart, modelRoot, facingPositionOffset)
+		end
+	end
 
 	local heartbeatConnection: RBXScriptConnection?
+	local destroyConnection: RBXScriptConnection?
+	local function cleanupFollower()
+		pcall(function()
+			model:SetAttribute("FollowerLoopStarted", nil)
+		end)
+		if heartbeatConnection then
+			heartbeatConnection:Disconnect()
+			heartbeatConnection = nil
+		end
+		if destroyConnection then
+			destroyConnection:Disconnect()
+			destroyConnection = nil
+		end
+		if idleTrack then
+			idleTrack:Stop()
+			idleTrack:Destroy()
+			idleTrack = nil
+		end
+		if walkingTrack then
+			walkingTrack:Stop()
+			walkingTrack:Destroy()
+			walkingTrack = nil
+		end
+	end
+
+	destroyConnection = model.Destroying:Connect(cleanupFollower)
 	heartbeatConnection = RunService.Heartbeat:Connect(function(deltaTime)
 		if not model.Parent or not humanoid.Parent then
-			if heartbeatConnection then
-				heartbeatConnection:Disconnect()
-			end
+			cleanupFollower()
 			return
 		end
 
 		attackCooldownRemaining = math.max(0, attackCooldownRemaining - deltaTime)
 		if stabilizeRemaining > 0 then
 			stabilizeRemaining = math.max(0, stabilizeRemaining - deltaTime)
-			modelRoot.CFrame = withFixedY(modelRoot.CFrame, fixedY)
-			zeroModelMotion(model)
-			setAnimationState("Idle")
-			if facingPart and facingPositionOffset then
-				setFacingIdle(facingPart, modelRoot, facingPositionOffset)
-			end
+			applyIdleMotion()
 			return
 		end
 
 		local currentStatus = checkForElegibility()
 		local playerRoot = getCharacterRoot()
-		if currentStatus ~= true or not playerRoot then
-			humanoid.WalkSpeed = 0
-			modelRoot.CFrame = withFixedY(modelRoot.CFrame, fixedY)
-			zeroModelMotion(model)
-			setAnimationState("Idle")
-			if facingPart and facingPositionOffset then
-				setFacingIdle(facingPart, modelRoot, facingPositionOffset)
+		if currentStatus ~= true then
+			if isChasingPlayer then
+				isChasingPlayer = false
+				zeroModelMotion(model)
 			end
+			applyIdleMotion(playerRoot)
 			return
+		end
+
+		if not playerRoot then
+			applyIdleMotion()
+			return
+		end
+
+		if not isChasingPlayer then
+			isChasingPlayer = true
+			modelRoot.CFrame = withFixedY(modelRoot.CFrame, fixedY)
 		end
 
 		local desiredVelocity, distanceToPlayer = getDesiredHorizontalVelocity(modelRoot.Position, playerRoot.Position, maxHorizontalSpeed)
 		local isMoving = desiredVelocity.Magnitude > 0.01
 		setAnimationState(if isMoving then "Walking" else "Idle")
-		modelRoot.AssemblyLinearVelocity = Vector3.new(desiredVelocity.X, 0, desiredVelocity.Z)
-		modelRoot.AssemblyAngularVelocity = Vector3.zero
-		updateModelFacing(modelRoot, playerRoot, fixedY)
 
-		if facingPart and facingPositionOffset then
-			updateFacingPart(facingPart, modelRoot, playerRoot, facingPositionOffset)
+		if isMoving then
+			modelRoot.AssemblyLinearVelocity = Vector3.new(desiredVelocity.X, 0, desiredVelocity.Z)
+			modelRoot.AssemblyAngularVelocity = Vector3.zero
+			updateModelFacing(modelRoot, playerRoot, fixedY)
+
+			if facingPart and facingPositionOffset then
+				updateFacingPart(facingPart, modelRoot, playerRoot, facingPositionOffset)
+			end
+		else
+			applyIdleMotion(playerRoot)
 		end
 
 		if distanceToPlayer < ATTACK_DISTANCE and attackCooldownRemaining <= 0 then
@@ -365,13 +422,25 @@ return function(spawnPosition, model, baseNumber, zone, baseSpeed, idleAnimation
 	end
 
 	local previousValue = false
-	Player:GetAttributeChangedSignal("Carrying"):Connect(function()
+	local carryingConnection
+	carryingConnection = Player:GetAttributeChangedSignal("Carrying"):Connect(function()
 		local currentAttributeValue = Player:GetAttribute("Carrying")
 		if previousValue == baseNumber then
 			model:PivotTo(withFixedY(spawnPosition, fixedY))
 			zeroModelMotion(model)
 		end
 		previousValue = currentAttributeValue
+	end)
+
+	model.Destroying:Connect(function()
+		if carryingConnection then
+			carryingConnection:Disconnect()
+			carryingConnection = nil
+		end
+		if newZone then
+			newZone:destroy()
+			newZone = nil
+		end
 	end)
 
 	startFollowing(model, check, baseSpeed, idleAnimationId, walkingAnimationId, orientationDegrees, fixedY)

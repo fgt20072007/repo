@@ -15,9 +15,9 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>169.42188</X>
-        <Y>27.695587</Y>
-        <Z>154.59737</Z>
+        <X>169.41647</X>
+        <Y>34.11045</Y>
+        <Z>152.3778</Z>
         <R00>-0.000000087422606</R00>
         <R01>0</R01>
         <R02>0.9999981</R02>
@@ -28,7 +28,7 @@
         <R21>0.0000000000000017763535</R21>
         <R22>-0.00000008742262</R22>
       </CoordinateFrame>
-      <bool name="CanCollide">true</bool>
+      <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
       <bool name="CanTouch">true</bool>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -40,7 +40,7 @@
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
       <bool name="DoubleSided">false</bool>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="FluidFidelityInternal">0</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -64,7 +64,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized">Studs</string>
       <Content name="MeshContent">
@@ -101,9 +101,9 @@
       </Vector3>
       <bool name="DefinesCapabilities">false</bool>
       <Vector3 name="size">
-        <X>0.8356822</X>
-        <Y>2.1898913</Y>
-        <Z>6.688666</Z>
+        <X>1.2608216</X>
+        <Y>3.3039618</Y>
+        <Z>10.091413</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

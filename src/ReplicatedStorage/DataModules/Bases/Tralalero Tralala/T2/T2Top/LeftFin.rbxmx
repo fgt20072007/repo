@@ -4,9 +4,9 @@
       <string name="Name">LeftFin</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-1.699997</X>
-        <Y>-0.5249791</Y>
-        <Z>0.675375</Z>
+        <X>-4.110271</X>
+        <Y>-1.2693001</Y>
+        <Z>1.6329288</Z>
         <R00>0</R00>
         <R01>-1</R01>
         <R02>0</R02>
@@ -18,9 +18,9 @@
         <R22>-1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-0.000014305067</X>
-        <Y>-0.75</Y>
-        <Z>0.20002076</Z>
+        <X>-0.000034586945</X>
+        <Y>-1.8133581</Y>
+        <Z>0.48361233</Z>
         <R00>0.9999951</R00>
         <R01>0</R01>
         <R02>0</R02>

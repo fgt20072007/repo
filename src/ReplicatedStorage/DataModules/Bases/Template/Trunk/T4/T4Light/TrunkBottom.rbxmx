@@ -4,9 +4,9 @@
       <string name="Name">TrunkBottom</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.0001296997</X>
-        <Y>-0.27039123</Y>
-        <Z>-0.00019836426</Z>
+        <X>0.00020455432</X>
+        <Y>-0.42644426</Y>
+        <Z>-0.00031284778</Z>
         <R00>1</R00>
         <R01>-0.00000039488464</R01>
         <R02>0</R02>
@@ -18,8 +18,8 @@
         <R22>1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-0.0000037941354</X>
-        <Y>0.23000002</Y>
+        <X>-0.0000059838744</X>
+        <Y>0.36274174</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>-0.0000003054772</R01>

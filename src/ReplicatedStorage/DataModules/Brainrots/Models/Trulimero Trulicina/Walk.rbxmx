@@ -3,7 +3,7 @@
     <Properties>
       <string name="Name">Walk</string>
       <ContentId name="AnimationId">
-        <url>rbxassetid://136828477212522</url>
+        <url>rbxassetid://94622848631907</url>
       </ContentId>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>

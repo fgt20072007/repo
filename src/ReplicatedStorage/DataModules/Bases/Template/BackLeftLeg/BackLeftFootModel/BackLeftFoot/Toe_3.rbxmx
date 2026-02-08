@@ -4,9 +4,9 @@
       <string name="Name">Toe</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-1.199997</X>
-        <Y>-0.125</Y>
-        <Z>0.6749878</Z>
+        <X>-1.8925607</X>
+        <Y>-0.19714224</Y>
+        <Z>1.0645489</Z>
         <R00>0.9999988</R00>
         <R01>0</R01>
         <R02>0</R02>

@@ -14,8 +14,8 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>82.10359</X>
-        <Y>19.49211</Y>
+        <X>81.98279</X>
+        <Y>25.278889</Y>
         <Z>64.232704</Z>
         <R00>0</R00>
         <R01>0</R01>
@@ -38,7 +38,7 @@
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="formFactorRaw">1</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -49,7 +49,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized">Studs</string>
       <CoordinateFrame name="PivotOffset">
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>0.36305892</X>
-        <Y>1.1496868</Y>
-        <Z>0.36305892</Z>
+        <X>0.5080304</X>
+        <Y>1.6087633</Y>
+        <Z>0.5080304</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

@@ -4,9 +4,9 @@
       <string name="Name">LeftAnkle</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.000045776367</X>
-        <Y>-0.57499695</Y>
-        <Z>0.0000019073486</Z>
+        <X>0.00011067859</X>
+        <Y>-1.3902338</Y>
+        <Z>0.000004611608</Z>
         <R00>1</R00>
         <R01>-0.0000030696392</R01>
         <R02>-0.0000000023491062</R02>
@@ -18,8 +18,8 @@
         <R22>1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>0.000030517578</X>
-        <Y>0.5000076</Y>
+        <X>0.000073785726</X>
+        <Y>1.2089238</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>-0.0000030696392</R01>

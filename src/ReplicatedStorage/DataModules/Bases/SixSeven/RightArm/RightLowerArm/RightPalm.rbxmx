@@ -4,9 +4,9 @@
       <string name="Name">RightPalm</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.0000023168766</X>
-        <Y>1.3057684</Y>
-        <Z>-0.000004633753</Z>
+        <X>-0.0000031079835</X>
+        <Y>1.7516284</Y>
+        <Z>-0.000006215967</Z>
         <R00>0</R00>
         <R01>0</R01>
         <R02>1</R02>
@@ -18,7 +18,7 @@
         <R22>0</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-1.0325068</X>
+        <X>-1.3850604</X>
         <Y>0</Y>
         <Z>0</Z>
         <R00>1</R00>

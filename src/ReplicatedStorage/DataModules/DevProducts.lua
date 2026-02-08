@@ -1,13 +1,25 @@
--- Replace all of the following ids with yours, you can add any rewards following the template below
-
--- If you want to give out cash then you can write [number] = "Cash" with the the number being the amount of cash to give
--- If you want to give out an entity then write [string] = "Entity" with the string being the name of the entity to give
+-- Replace all of the following ids with yours.
+-- Rewards support both formats:
+-- Legacy format:
+--	{
+--		["Default"] = "Entity",
+--		[50000] = "Cash",
+--	}
+-- New readable format:
+--	{
+--		Luckybox = "Common",
+--		Cash = 50000,
+--		PermanentGear = "Bat",
+--	}
+-- PermanentGear must match a key in ReplicatedStorage/DataModules/Gears/init.lua.
+-- Luckybox must match a Lucky Box entity name.
 
 return {
 	StarterPack = {
 		Rewards = {
-			["Default"] = "Entity",
-			[50000] = "Cash"
+			Luckybox = "Common",
+			Cash = 50_000,
+			PermanentGear = "Bat",
 		},
 		Id = 3528614789,
 	},
@@ -70,7 +82,7 @@ return {
 		Secret = 3531448001,
 		Godly = 3531448071
 	},
-	
+
 	SpawnMythical = 3531449310,
 	SpawnSecret = 3531449213
 }

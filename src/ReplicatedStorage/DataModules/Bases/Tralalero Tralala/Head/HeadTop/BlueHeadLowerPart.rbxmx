@@ -4,9 +4,9 @@
       <string name="Name">BlueHeadLowerPart</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.00024604797</X>
-        <Y>-0.350029</Y>
-        <Z>1.1754141</Z>
+        <X>-0.0005948974</X>
+        <Y>-0.8463038</Y>
+        <Z>2.8419287</Z>
         <R00>-1</R00>
         <R01>0</R01>
         <R02>-0.000000059604645</R02>
@@ -18,9 +18,9 @@
         <R22>-1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-1</X>
-        <Y>-0.40000153</Y>
-        <Z>-0.00000008742791</Z>
+        <X>-2.4178107</X>
+        <Y>-0.967128</Y>
+        <Z>-0.00000021138413</Z>
         <R00>-0.000000029802322</R00>
         <R01>0</R01>
         <R02>-1</R02>

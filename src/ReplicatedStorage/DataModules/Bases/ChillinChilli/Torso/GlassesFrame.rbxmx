@@ -4,9 +4,9 @@
       <string name="Name">GlassesFrame</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.0000046165337</X>
-        <Y>0.75632095</Y>
-        <Z>1.2761576</Z>
+        <X>0.000006459942</X>
+        <Y>1.0583242</Y>
+        <Z>1.7857348</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0</R02>

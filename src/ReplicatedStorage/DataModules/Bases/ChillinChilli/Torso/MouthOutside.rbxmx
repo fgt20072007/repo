@@ -4,9 +4,9 @@
       <string name="Name">MouthOutside</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.008586753</X>
-        <Y>-0.8923402</Y>
-        <Z>2.4959936</Z>
+        <X>0.012015494</X>
+        <Y>-1.2486567</Y>
+        <Z>3.4926581</Z>
         <R00>-1</R00>
         <R01>0</R01>
         <R02>0</R02>

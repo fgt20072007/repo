@@ -1,7 +1,13 @@
 local SocialService = game:GetService('SocialService')
 local Players = game:GetService('Players')
 
-local Button = Players.LocalPlayer.PlayerGui:WaitForChild("MainGui").Right.EventButton
+local playerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+local mainGui = playerGui:WaitForChild("MainGui")
+local rightContainer = mainGui:WaitForChild("Right")
+local Button = rightContainer:FindFirstChild("EventButton")
+if not Button or not Button:IsA("GuiButton") then
+	return
+end
 
 local ReplicatedStorage = game:GetService('ReplicatedStorage')
 local GlobalConfiguration = require(ReplicatedStorage.DataModules.GlobalConfiguration)

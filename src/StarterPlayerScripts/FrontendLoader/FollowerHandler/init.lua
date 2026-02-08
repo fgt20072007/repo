@@ -19,6 +19,7 @@ local function prepareDefenderModel(model: Model)
 	for _, descendant in model:GetDescendants() do
 		if descendant:IsA("BasePart") then
 			descendant.Anchored = false
+			descendant.CanCollide = false
 		end
 	end
 end
@@ -45,28 +46,46 @@ function FollowerHandler:Initialize()
 		local PurchaseZone = v:FindFirstChild("PurchaseZone") or v:FindFirstChild("Zone")
 
 		local connection
+		local purchaseZoneController
 
 		if PurchaseZone and not OwnsBase then
-			local NewZone = Zone.new(PurchaseZone)
-			connection = NewZone.localPlayerEntered:Connect(function()
+			purchaseZoneController = Zone.new(PurchaseZone)
+			connection = purchaseZoneController.localPlayerEntered:Connect(function()
 				RemoteBank.TryPurchaseBase:InvokeServer(BaseNumber)
 			end)
 		end
 
 		if OwnsBase then
-			v:FindFirstChild("Button"):Destroy()
-			v:FindFirstChild("Lasers"):Destroy()
+			local button = v:FindFirstChild("Button")
+			local lasers = v:FindFirstChild("Lasers")
+			if button then
+				button:Destroy()
+			end
+			if lasers then
+				lasers:Destroy()
+			end
 			setBaseHitboxCollision(v, false)
 		else
 			setBaseHitboxCollision(v, true)
 		end
 
 		Cache[BaseNumber] = function()
-			v:FindFirstChild("Button"):Destroy()
-			v:FindFirstChild("Lasers"):Destroy()
+			local button = v:FindFirstChild("Button")
+			local lasers = v:FindFirstChild("Lasers")
+			if button then
+				button:Destroy()
+			end
+			if lasers then
+				lasers:Destroy()
+			end
 			setBaseHitboxCollision(v, false)
 			if connection then
 				connection:Disconnect()
+				connection = nil
+			end
+			if purchaseZoneController then
+				purchaseZoneController:destroy()
+				purchaseZoneController = nil
 			end
 		end
 		if Informations and Informations.BaseDefender then

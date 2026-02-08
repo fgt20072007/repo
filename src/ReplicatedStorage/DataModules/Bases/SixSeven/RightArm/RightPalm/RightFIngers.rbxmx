@@ -4,9 +4,9 @@
       <string name="Name">RightFIngers</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.80905324</X>
-        <Y>-0.36798948</Y>
-        <Z>-0.028794143</Z>
+        <X>1.0853077</X>
+        <Y>-0.49364096</Y>
+        <Z>-0.03862602</Z>
         <R00>0</R00>
         <R01>0</R01>
         <R02>1</R02>
@@ -20,7 +20,7 @@
       <CoordinateFrame name="C1">
         <X>0</X>
         <Y>0</Y>
-        <Z>-1.0325087</Z>
+        <Z>-1.385063</Z>
         <R00>0.99999577</R00>
         <R01>0</R01>
         <R02>0</R02>

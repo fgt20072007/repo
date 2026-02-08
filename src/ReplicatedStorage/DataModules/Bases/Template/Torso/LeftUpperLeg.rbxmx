@@ -4,9 +4,9 @@
       <string name="Name">LeftUpperLeg</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>2.4749947</X>
-        <Y>-2.2200003</Y>
-        <Z>-1.7249908</Z>
+        <X>3.903408</X>
+        <Y>-3.5012467</Y>
+        <Z>-2.7205484</Z>
         <R00>-0.9999988</R00>
         <R01>0</R01>
         <R02>0</R02>
@@ -19,7 +19,7 @@
       </CoordinateFrame>
       <CoordinateFrame name="C1">
         <X>0</X>
-        <Y>0.52999973</Y>
+        <Y>0.83588266</Y>
         <Z>0</Z>
         <R00>0.9999988</R00>
         <R01>0</R01>

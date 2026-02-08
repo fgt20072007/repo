@@ -6,12 +6,47 @@ local Brainrots = require(ReplicatedStorage.DataModules.Brainrots)
 local EntityCatalog = require(ReplicatedStorage.DataModules.EntityCatalog)
 
 local LuckyBoxes = {
-	UseConfiguredBaseSpawns = true,
 	Boxes = {
-		["Default"] = {
-			SpawnWeight = 100,
+		["Common"] = {
 			Brainrots = {
-				["Trulimero Trulicina"] = 100
+				["FluriFlura"] = 100,
+			},
+		},
+		["Rare"] = {
+			Brainrots = {
+				["Trulimero Trulicina"] = 80,
+				["FluriFlura"] = 20,
+			},
+		},
+		["Epic"] = {
+			Brainrots = {
+				["FluriFlura"] = 100,
+			},
+		},
+		["Mythical"] = {
+			Brainrots = {
+				["Trulimero Trulicina"] = 80,
+				["FluriFlura"] = 20,
+			},
+		},
+		["Secret"] = {
+			Brainrots = {
+				["Trulimero Trulicina"] = 80,
+				["FluriFlura"] = 20,
+			},
+		},
+
+		["SixSeven"] = {
+			Brainrots = {
+				["Trulimero Trulicina"] = 80,
+				["FluriFlura"] = 20,
+			},
+		},
+
+		["Strawberry"] = {
+			Brainrots = {
+				["Trulimero Trulicina"] = 80,
+				["FluriFlura"] = 20,
 			},
 		},
 	}
@@ -35,6 +70,42 @@ local function getWeightedResult(weights: {[string]: number})
 	return WeightedRNG.get(sanitizedWeights, _G.GlobalLuck or 1)
 end
 
+local function getBaseLuckyBoxWeights(baseLuckyBoxes)
+	if baseLuckyBoxes == false then
+		return {}
+	end
+
+	if typeof(baseLuckyBoxes) ~= "table" then
+		return nil
+	end
+
+	local weights = {}
+	for key, value in baseLuckyBoxes do
+		local luckyBoxName
+		local weight
+
+		if typeof(key) == "number" then
+			luckyBoxName = value
+			weight = 1
+		else
+			luckyBoxName = key
+			weight = value
+		end
+
+		if typeof(luckyBoxName) == "string" and LuckyBoxes.IsLuckyBox(luckyBoxName) then
+			if typeof(weight) == "number" then
+				if weight > 0 then
+					weights[luckyBoxName] = weight
+				end
+			else
+				weights[luckyBoxName] = 1
+			end
+		end
+	end
+
+	return weights
+end
+
 function LuckyBoxes.IsLuckyBox(entityName: string)
 	if typeof(entityName) ~= "string" then
 		return false
@@ -43,19 +114,13 @@ function LuckyBoxes.IsLuckyBox(entityName: string)
 	return LuckyBoxes.Boxes[entityName] ~= nil and Entities[entityName] ~= nil
 end
 
-function LuckyBoxes.GetRandomLuckyBoxForBase()
-	if not LuckyBoxes.UseConfiguredBaseSpawns then
+function LuckyBoxes.GetRandomLuckyBoxForBase(baseLuckyBoxes)
+	local configuredBaseWeights = getBaseLuckyBoxWeights(baseLuckyBoxes)
+	if not configuredBaseWeights or not next(configuredBaseWeights) then
 		return nil
 	end
 
-	local weights = {}
-	for luckyBoxName, luckyBoxData in LuckyBoxes.Boxes do
-		if typeof(luckyBoxData) == "table" and Entities[luckyBoxName] then
-			weights[luckyBoxName] = luckyBoxData.SpawnWeight
-		end
-	end
-
-	return getWeightedResult(weights)
+	return getWeightedResult(configuredBaseWeights)
 end
 
 function LuckyBoxes.GetRandomBrainrot(luckyBoxName: string)
@@ -69,10 +134,10 @@ function LuckyBoxes.GetRandomBrainrot(luckyBoxName: string)
 	end
 
 	local rewards = {}
-	for brainrotName, spawnWeight in luckyBoxData.Brainrots do
+	for brainrotName, weight in luckyBoxData.Brainrots do
 		local hasBrainrotDefinition = Brainrots[brainrotName] or EntityCatalog[brainrotName]
 		if hasBrainrotDefinition and not LuckyBoxes.IsLuckyBox(brainrotName) then
-			rewards[brainrotName] = spawnWeight
+			rewards[brainrotName] = weight
 		end
 	end
 

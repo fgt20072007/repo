@@ -4,8 +4,8 @@
       <string name="Name">T3</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.0000046165337</X>
-        <Y>-0.59299606</Y>
+        <X>-0.000006459942</X>
+        <Y>-0.8297828</Y>
         <Z>0</Z>
         <R00>-1</R00>
         <R01>0</R01>
@@ -19,7 +19,7 @@
       </CoordinateFrame>
       <CoordinateFrame name="C1">
         <X>0</X>
-        <Y>0.9197497</Y>
+        <Y>1.287011</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>

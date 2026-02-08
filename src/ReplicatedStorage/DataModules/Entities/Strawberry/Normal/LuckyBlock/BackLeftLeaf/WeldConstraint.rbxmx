@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="WeldConstraint" referent="0">
+    <Properties>
+      <string name="Name">WeldConstraint</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame0">
+        <X>1.5132256</X>
+        <Y>-1.0581799</Y>
+        <Z>0.04057312</Z>
+        <R00>-0.60605425</R00>
+        <R01>-0.5217201</R01>
+        <R02>0.600422</R02>
+        <R10>-0.36404857</R10>
+        <R11>0.8530804</R11>
+        <R12>0.37379685</R12>
+        <R20>-0.70722514</R20>
+        <R21>0.007958636</R21>
+        <R22>-0.7069439</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Ref name="Part0Internal">null</Ref>
+      <Ref name="Part1Internal">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <int name="State">3</int>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

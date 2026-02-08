@@ -4,8 +4,8 @@
       <string name="Name">Eyes</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.066854835</X>
-        <Y>0.53483355</Y>
+        <X>-0.10086612</X>
+        <Y>0.8069212</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>

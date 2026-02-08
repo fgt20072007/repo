@@ -29,14 +29,14 @@
       <bool name="NeedsPivotMigration">false</bool>
       <Ref name="PrimaryPart">null</Ref>
       <bool name="DefinesCapabilities">false</bool>
-      <float name="ScaleFactor">1.3370916</float>
+      <float name="ScaleFactor">2.0173144</float>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>
       <OptionalCoordinateFrame name="WorldPivotData">
         <CFrame>
-          <X>167.85974</X>
-          <Y>26.585096</Y>
-          <Z>153.04378</Z>
+          <X>167.05963</X>
+          <Y>32.435017</Y>
+          <Z>150.03384</Z>
           <R00>0.9999913</R00>
           <R01>0</R01>
           <R02>-0.000000043711008</R02>

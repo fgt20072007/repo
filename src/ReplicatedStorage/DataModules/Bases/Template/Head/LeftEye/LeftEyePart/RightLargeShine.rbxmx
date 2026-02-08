@@ -4,9 +4,9 @@
       <string name="Name">RightLargeShine</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.03750992</X>
-        <Y>0.14999962</Y>
-        <Z>0.1000061</Z>
+        <X>0.059158314</X>
+        <Y>0.23657009</Y>
+        <Z>0.15772341</Z>
         <R00>0.9999988</R00>
         <R01>0</R01>
         <R02>0</R02>

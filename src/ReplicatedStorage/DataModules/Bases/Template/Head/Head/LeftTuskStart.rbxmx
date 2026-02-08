@@ -4,9 +4,9 @@
       <string name="Name">LeftTuskStart</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>1.7991867</X>
-        <Y>-1.5720711</Y>
-        <Z>-1.244751</Z>
+        <X>2.8375657</X>
+        <Y>-2.479373</Y>
+        <Z>-1.9631438</Z>
         <R00>-0.87542623</R00>
         <R01>0.4082218</R01>
         <R02>-0.2588128</R02>

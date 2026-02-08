@@ -15,9 +15,9 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>81.7962</X>
-        <Y>12.175256</Y>
-        <Z>57.31643</Z>
+        <X>81.55266</X>
+        <Y>15.040377</Y>
+        <Z>54.554718</Z>
         <R00>0</R00>
         <R01>0</R01>
         <R02>-1</R02>
@@ -40,7 +40,7 @@
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
       <bool name="DoubleSided">false</bool>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="FluidFidelityInternal">0</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -64,7 +64,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized">Studs</string>
       <Content name="MeshContent">
@@ -101,9 +101,9 @@
       </Vector3>
       <bool name="DefinesCapabilities">false</bool>
       <Vector3 name="size">
-        <X>1.6712822</X>
-        <Y>1.2599957</Y>
-        <Z>0.9173237</Z>
+        <X>2.3386347</X>
+        <Y>1.7631192</Y>
+        <Z>1.2836163</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

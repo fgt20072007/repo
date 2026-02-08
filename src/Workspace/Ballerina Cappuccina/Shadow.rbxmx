@@ -1,0 +1,27 @@
+<roblox version="4">
+  <Item class="Highlight" referent="0">
+    <Properties>
+      <string name="Name">Shadow</string>
+      <Ref name="Adornee">null</Ref>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="DepthMode">1</token>
+      <bool name="Enabled">true</bool>
+      <Color3 name="FillColor">
+        <R>1</R>
+        <G>0</G>
+        <B>0</B>
+      </Color3>
+      <float name="FillTransparency">1</float>
+      <Color3 name="OutlineColor">
+        <R>0</R>
+        <G>0</G>
+        <B>0</B>
+      </Color3>
+      <float name="OutlineTransparency">0.65</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

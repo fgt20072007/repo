@@ -4,9 +4,9 @@
       <string name="Name">LeftEarTop</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-1.7996929</X>
-        <Y>1.5422286</Y>
-        <Z>-0.00008718967</Z>
+        <X>-2.769035</X>
+        <Y>2.3728967</Y>
+        <Z>-0.00013415137</Z>
         <R00>0.9659223</R00>
         <R01>0.2588181</R01>
         <R02>0</R02>
@@ -18,8 +18,8 @@
         <R22>1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-0.004949036</X>
-        <Y>0.29445416</Y>
+        <X>-0.0076146633</X>
+        <Y>0.45305172</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>

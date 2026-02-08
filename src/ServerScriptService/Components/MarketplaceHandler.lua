@@ -121,6 +121,12 @@ local InProcessing = {}
 
 function MarketplaceHandler.Purchase(Player, IsGamepass, Id, ...)
 	if not Id or IsGamepass == nil then return end
+
+	local previousSignal = InProcessing[Player]
+	if previousSignal then
+		previousSignal:Destroy()
+	end
+
 	local processedSignal = Signal.new()
 	InProcessing[Player] = processedSignal
 	Receiving[Player] = Receiving[Player] or {}

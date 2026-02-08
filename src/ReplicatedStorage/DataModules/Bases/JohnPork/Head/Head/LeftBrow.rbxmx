@@ -4,9 +4,9 @@
       <string name="Name">LeftBrow</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.898871</X>
-        <Y>1.3537054</Y>
-        <Z>-1.8214796</Z>
+        <X>-1.3830168</X>
+        <Y>2.082832</Y>
+        <Z>-2.8025565</Z>
         <R00>0.9961947</R00>
         <R01>-0.08715574</R01>
         <R02>0</R02>

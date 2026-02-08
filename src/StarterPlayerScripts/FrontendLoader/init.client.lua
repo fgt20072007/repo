@@ -3,15 +3,7 @@ local SoundService = game:GetService('SoundService')
 local RunService = game:GetService('RunService')
 local LoaderFolder = script
 
-local DataService = require(ReplicatedStorage.Utilities.DataService)
-local NotificationComponent = require(ReplicatedStorage.Utilities.NotificationComponent)
-NotificationComponent:Initialize()
-DataService.client:init()
-
-local Fireworks = require(ReplicatedStorage.Utilities.Fireworks)
 local RemoteBank = require(ReplicatedStorage.RemoteBank)
-local ModelTween = require(ReplicatedStorage.Utilities.ModelTween)
-local ReplicaClient = require(ReplicatedStorage.Utilities.ReplicaClient)
 
 RemoteBank.PlaySound.OnClientEvent:Connect(function(soundName)
 	if RunService:IsStudio() then
@@ -23,6 +15,22 @@ RemoteBank.PlaySound.OnClientEvent:Connect(function(soundName)
 		sound:Play()
 	end
 end)
+
+local DataService = require(ReplicatedStorage.Utilities.DataService)
+local NotificationComponent = require(ReplicatedStorage.Utilities.NotificationComponent)
+NotificationComponent:Initialize()
+task.spawn(function()
+	local success, err = pcall(function()
+		DataService.client:init()
+	end)
+	if not success then
+		warn(`[FrontendLoader] DataService client init failed: {err}`)
+	end
+end)
+
+local Fireworks = require(ReplicatedStorage.Utilities.Fireworks)
+local ModelTween = require(ReplicatedStorage.Utilities.ModelTween)
+local ReplicaClient = require(ReplicatedStorage.Utilities.ReplicaClient)
 
 local function LoadModule(Module: ModuleScript)
 	if Module:HasTag("Ignore") then return end

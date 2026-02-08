@@ -14,18 +14,18 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>170.81322</X>
-        <Y>14.110669</Y>
-        <Z>155.92677</Z>
-        <R00>-0.00000022840523</R00>
-        <R01>-0.00000019165529</R01>
-        <R02>-1</R02>
+        <X>70.174225</X>
+        <Y>16.60879</Y>
+        <Z>83.90306</Z>
+        <R00>0.76603687</R00>
+        <R01>0.6427889</R01>
+        <R02>-0.00000029815874</R02>
         <R10>-0.64279234</R10>
         <R11>0.7660408</R11>
         <R12>-0.00000000000028421937</R12>
-        <R20>0.76603687</R20>
-        <R21>0.6427889</R21>
-        <R22>-0.00000029815874</R22>
+        <R20>0.00000022840523</R20>
+        <R21>0.00000019165529</R21>
+        <R22>1</R22>
       </CoordinateFrame>
       <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
@@ -38,7 +38,7 @@
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="formFactorRaw">1</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -49,7 +49,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized">Studs</string>
       <CoordinateFrame name="PivotOffset">
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>1.5499997</X>
-        <Y>1.8499999</Y>
-        <Z>1.05</Z>
+        <X>2.4445634</X>
+        <Y>2.917705</Y>
+        <Z>1.6559945</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

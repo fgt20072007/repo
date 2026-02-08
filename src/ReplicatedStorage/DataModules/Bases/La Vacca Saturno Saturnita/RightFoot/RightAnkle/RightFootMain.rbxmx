@@ -4,9 +4,9 @@
       <string name="Name">RightFootMain</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.029463613</X>
-        <Y>-0.26808497</Y>
-        <Z>-0.035602186</Z>
+        <X>0.04445273</X>
+        <Y>-0.40446872</Y>
+        <Z>-0.0537142</Z>
         <R00>0</R00>
         <R01>0.00000095367227</R01>
         <R02>1</R02>
@@ -18,9 +18,9 @@
         <R22>0</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-1.9387866</X>
-        <Y>0.7354034</Y>
-        <Z>-0.000003602292</Z>
+        <X>-2.9251118</X>
+        <Y>1.1095276</Y>
+        <Z>-0.0000054348975</Z>
         <R00>0.99999887</R00>
         <R01>0</R01>
         <R02>0</R02>

@@ -11,6 +11,7 @@ local Signal = require(ReplicatedStorage.Utilities.Signal)
 
 
 local random = Random.new()
+local BUTTON_HANDLED_ATTRIBUTE = "EasyAnimationsHandled"
 
 --// Buttons Variables
 local RoationEnabled = AnimationSettings.Roatation.Enabled
@@ -80,6 +81,11 @@ function AnimationFunctions:SetText(TextLabelName: string, text: string)
 end
 
 function AnimationFunctions:HandleButton(instance: GuiButton)
+	if instance:GetAttribute(BUTTON_HANDLED_ATTRIBUTE) then
+		return
+	end
+	instance:SetAttribute(BUTTON_HANDLED_ATTRIBUTE, true)
+
 	task.defer(function()
 		local ButtonNormalSize = instance.Size
 		local ButtonRoation = instance.Rotation
@@ -194,7 +200,7 @@ function AnimationFunctions:OpenFrame(FrameInstance)
 		if Informations.State == true then
 			return
 		end
-		
+
 		AnimationFunctions:CloseAllFrames(FrameInstance.Name)
 
 		Informations.State = true
@@ -440,14 +446,14 @@ function AnimationFunctions:BindCloseButtonToFrame(buttonInstance: GuiButton, Fr
 		warn("Button Instance not provided in cloe button function")
 		return
 	end
-	
+
 	local newsignal = Signal.new()
 
 	buttonInstance.MouseButton1Click:Connect(function()
 		AnimationFunctions:CloseFrame(FrameToClose)
 		newsignal:Fire()
 	end)
-	
+
 	return newsignal
 end
 

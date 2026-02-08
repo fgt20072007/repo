@@ -4,9 +4,9 @@
       <string name="Name">Horns</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-1.6205382</X>
-        <Y>1.6453362</Y>
-        <Z>-0.010769916</Z>
+        <X>-2.4449599</X>
+        <Y>2.4823735</Y>
+        <Z>-0.01624893</Z>
         <R00>0.99999994</R00>
         <R01>-0.0000000000000017763568</R01>
         <R02>0.0000000000000071054274</R02>

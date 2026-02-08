@@ -4,8 +4,8 @@
       <string name="Name">T3Light</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.008358002</X>
-        <Y>-0.7575779</Y>
+        <X>-0.013181722</X>
+        <Y>-1.1948049</Y>
         <Z>0</Z>
         <R00>0.96592826</R00>
         <R01>-0.25880995</R01>
@@ -18,8 +18,8 @@
         <R22>1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>0.007495329</X>
-        <Y>0.8779777</Y>
+        <X>0.011821168</X>
+        <Y>1.384692</Y>
         <Z>0</Z>
         <R00>1.0000002</R00>
         <R01>0.00000499189</R01>

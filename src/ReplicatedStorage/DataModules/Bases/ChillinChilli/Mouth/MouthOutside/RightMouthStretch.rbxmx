@@ -4,8 +4,8 @@
       <string name="Name">RightMouthStretch</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>1.2647133</X>
-        <Y>0.58109236</Y>
+        <X>1.7697206</X>
+        <Y>0.8131259</Y>
         <Z>0</Z>
         <R00>0.8660254</R00>
         <R01>0.5</R01>

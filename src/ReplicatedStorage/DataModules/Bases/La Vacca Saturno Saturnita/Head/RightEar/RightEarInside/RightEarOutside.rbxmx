@@ -4,9 +4,9 @@
       <string name="Name">RightEarOutside</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.03337832</X>
-        <Y>0.000031878746</Y>
-        <Z>0.0000025502998</Z>
+        <X>0.050358985</X>
+        <Y>0.000048096525</Y>
+        <Z>0.000003847722</Z>
         <R00>1</R00>
         <R01>-0.00003259336</R01>
         <R02>0</R02>

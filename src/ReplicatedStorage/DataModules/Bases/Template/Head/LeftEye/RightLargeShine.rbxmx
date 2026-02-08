@@ -14,18 +14,18 @@
       <token name="BottomSurface">3</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>169.68823</X>
-        <Y>15.4501915</Y>
-        <Z>155.77385</Z>
-        <R00>0.0000002981602</R00>
+        <X>69.93304</X>
+        <Y>18.7214</Y>
+        <Z>85.677315</Z>
+        <R00>-1</R00>
         <R01>0</R01>
-        <R02>1</R02>
+        <R02>0.00000029816178</R02>
         <R10>0</R10>
         <R11>1</R11>
         <R12>0</R12>
-        <R20>-0.99999464</R20>
+        <R20>-0.00000029816178</R20>
         <R21>0</R21>
-        <R22>0.00000029816056</R22>
+        <R22>-1</R22>
       </CoordinateFrame>
       <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
@@ -38,7 +38,7 @@
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="formFactorRaw">1</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -49,7 +49,7 @@
       <token name="LeftSurface">3</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">272</token>
       <string name="MaterialVariantSerialized"></string>
       <CoordinateFrame name="PivotOffset">
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>0.024999952</X>
-        <Y>0.2</Y>
-        <Z>0.19999994</Z>
+        <X>0.039428372</X>
+        <Y>0.3154276</Y>
+        <Z>0.3154275</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

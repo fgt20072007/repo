@@ -4,9 +4,9 @@
       <string name="Name">BottomLip</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.00008160959</X>
-        <Y>-0.000015939373</Y>
-        <Z>1.1030684</Z>
+        <X>-0.0001231271</X>
+        <Y>-0.000024048262</Y>
+        <Z>1.664236</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0</R02>

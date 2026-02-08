@@ -14,18 +14,18 @@
       <token name="BottomSurface">3</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>425.5</X>
-        <Y>34.150227</Y>
-        <Z>-60.127415</Z>
+        <X>-6.25</X>
+        <Y>7.999998</Y>
+        <Z>67.25</Z>
         <R00>-1</R00>
         <R01>0</R01>
         <R02>0</R02>
         <R10>0</R10>
-        <R11>-1</R11>
+        <R11>1</R11>
         <R12>0</R12>
         <R20>0</R20>
         <R21>0</R21>
-        <R22>1</R22>
+        <R22>-1</R22>
       </CoordinateFrame>
       <bool name="CanCollide">true</bool>
       <bool name="CanQuery">true</bool>
@@ -34,7 +34,7 @@
       <bool name="CastShadow">true</bool>
       <string name="CollisionGroup">Default</string>
       <int name="CollisionGroupId">0</int>
-      <Color3uint8 name="Color3uint8">9539468</Color3uint8>
+      <Color3uint8 name="Color3uint8">7100491</Color3uint8>
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
@@ -48,7 +48,7 @@
       <float name="LeftParamB">0.5</float>
       <token name="LeftSurface">3</token>
       <token name="LeftSurfaceInput">0</token>
-      <bool name="Locked">false</bool>
+      <bool name="Locked">true</bool>
       <bool name="Massless">false</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized"></string>
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>8.964527</X>
-        <Y>2.5612934</Y>
-        <Z>10.245173</Z>
+        <X>22</X>
+        <Y>16</Y>
+        <Z>368</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

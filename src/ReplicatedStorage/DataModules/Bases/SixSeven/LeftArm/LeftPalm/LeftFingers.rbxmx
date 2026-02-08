@@ -4,9 +4,9 @@
       <string name="Name">LeftFingers</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.8698111</X>
-        <Y>0.36796635</Y>
-        <Z>-0.028792985</Z>
+        <X>1.1668117</X>
+        <Y>0.49360996</Y>
+        <Z>-0.038624465</Z>
         <R00>0</R00>
         <R01>0</R01>
         <R02>1</R02>
@@ -20,7 +20,7 @@
       <CoordinateFrame name="C1">
         <X>0</X>
         <Y>0</Y>
-        <Z>-0.9717675</Z>
+        <Z>-1.3035815</Z>
         <R00>0.9999964</R00>
         <R01>0</R01>
         <R02>0</R02>

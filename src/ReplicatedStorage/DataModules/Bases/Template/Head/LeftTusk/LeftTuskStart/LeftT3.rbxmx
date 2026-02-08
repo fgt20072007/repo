@@ -4,9 +4,9 @@
       <string name="Name">LeftT3</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-2.1718178</X>
-        <Y>0.24382973</Y>
-        <Z>-0.000015258789</Z>
+        <X>-3.4252563</X>
+        <Y>0.3845531</Y>
+        <Z>-0.000024065215</Z>
         <R00>0.8660239</R00>
         <R01>0.4999989</R01>
         <R02>-0.0000002682209</R02>

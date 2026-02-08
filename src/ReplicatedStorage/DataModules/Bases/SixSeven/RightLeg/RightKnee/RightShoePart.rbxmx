@@ -4,9 +4,9 @@
       <string name="Name">RightShoePart</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.000032436274</X>
-        <Y>-1.2147037</Y>
-        <Z>0.000023168765</Z>
+        <X>0.00004351177</X>
+        <Y>-1.6294692</Y>
+        <Z>0.000031079835</Z>
         <R00>-1</R00>
         <R01>0</R01>
         <R02>-0.000000087422116</R02>
@@ -18,9 +18,9 @@
         <R22>-1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>0.00000007964528</X>
-        <Y>0.9717675</Y>
-        <Z>-0.91103035</Z>
+        <X>0.00000010684049</X>
+        <Y>1.3035815</Y>
+        <Z>-1.2221054</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>-0.00000000000081001617</R02>

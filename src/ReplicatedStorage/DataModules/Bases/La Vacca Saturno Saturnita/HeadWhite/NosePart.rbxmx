@@ -4,8 +4,8 @@
       <string name="Name">NosePart</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>2.5739021</X>
-        <Y>-0.36770222</Y>
+        <X>3.8833315</X>
+        <Y>-0.55476457</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>

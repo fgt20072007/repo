@@ -4,9 +4,9 @@
       <string name="Name">RightEyebrow</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>2.0749588</X>
-        <Y>0.69400024</Y>
-        <Z>1.3250275</Z>
+        <X>3.2724962</X>
+        <Y>1.0945342</Y>
+        <Z>2.089751</Z>
         <R00>1</R00>
         <R01>-0.0000016043037</R01>
         <R02>-0.000009098454</R02>

@@ -4,9 +4,9 @@
       <string name="Name">FaceMiddlePart</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>2.024971</X>
-        <Y>0.57500076</Y>
-        <Z>0.000015258789</Z>
+        <X>3.1936586</X>
+        <Y>0.9068554</Y>
+        <Z>0.000024065215</Z>
         <R00>-1</R00>
         <R01>0</R01>
         <R02>0.000009238813</R02>

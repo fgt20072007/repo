@@ -4,9 +4,9 @@
       <string name="Name">Nostrils</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.20056067</X>
-        <Y>0.334278</Y>
-        <Z>-0.00016066889</Z>
+        <X>0.30259255</X>
+        <Y>0.5043363</Y>
+        <Z>-0.0002424065</Z>
         <R00>0</R00>
         <R01>0</R01>
         <R02>-1</R02>

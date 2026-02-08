@@ -14,18 +14,18 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>169.3048</X>
-        <Y>13.202479</Y>
-        <Z>155.10228</Z>
-        <R00>0.23457134</R00>
-        <R01>-0.10938312</R01>
-        <R02>-0.9659247</R02>
+        <X>68.873886</X>
+        <Y>15.176448</Y>
+        <Z>86.28207</Z>
+        <R00>0.8754189</R00>
+        <R01>-0.4082175</R01>
+        <R02>0.25881994</R02>
         <R10>0.42262086</R10>
         <R11>0.9063027</R11>
         <R12>-0.0000000018913475</R12>
-        <R20>0.8754189</R20>
-        <R21>-0.4082175</R21>
-        <R22>0.25881994</R22>
+        <R20>-0.23457134</R20>
+        <R21>0.10938312</R21>
+        <R22>0.9659247</R22>
       </CoordinateFrame>
       <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
@@ -38,7 +38,7 @@
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="formFactorRaw">1</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -49,7 +49,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized">Studs</string>
       <CoordinateFrame name="PivotOffset">
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>0.7499995</X>
-        <Y>0.7</Y>
-        <Z>0.6999998</Z>
+        <X>1.1828527</X>
+        <Y>1.1039965</Y>
+        <Z>1.1039962</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

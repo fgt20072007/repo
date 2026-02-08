@@ -4,6 +4,7 @@ local Players = game:GetService('Players')
 local ServerStorage = game:GetService('ServerStorage')
 local RunService = game:GetService('RunService')
 local ServerScriptService = game:GetService('ServerScriptService')
+local CollectionService = game:GetService("CollectionService")
 
 -- DataModules
 local SignalBank = require(ServerStorage.SignalBank)
@@ -56,8 +57,102 @@ local StandStateEnum = {
 	Luckyblock = "Luckyblock"
 }
 
+local LUCKYBLOCK_HATCH_BOUNCES = 3
+local LUCKYBLOCK_HATCH_BOUNCE_TIME = 0.13
+local LUCKYBLOCK_HATCH_BOUNCE_OVERLAP = 0.7
+local LUCKYBLOCK_HATCH_BOUNCE_START_SCALE = 1.06
+local LUCKYBLOCK_HATCH_BOUNCE_SCALE_STEP = 0.045
+local LUCKYBLOCK_HATCH_BOUNCE_START_HEIGHT = 0.75
+local LUCKYBLOCK_HATCH_BOUNCE_HEIGHT_STEP = 0.28
+local LUCKYBLOCK_HATCH_TENSION_SCALE = 0.88
+local LUCKYBLOCK_HATCH_TENSION_TIME = 0.1
+local LUCKYBLOCK_HATCH_FINAL_POP_MULTIPLIER = 1.42
+local LUCKYBLOCK_HATCH_FINAL_POP_TIME = 0.2
+local LUCKYBLOCK_HATCH_FINAL_JUMP_HEIGHT = 2.6
+local APPEAR_LUCKYBLOCK_VFX_NAME = "AppearLuckyBlock"
+local APPEAR_LUCKYBLOCK_VFX_CLEANUP_TIME = 4
+local APPEAR_LUCKYBLOCK_HATCH_BURSTS = 1
+local APPEAR_LUCKYBLOCK_REVEAL_BURSTS = 3
+local APPEAR_LUCKYBLOCK_BURST_DELAY = 0.07
+
+local function getStandBillboardConnectionIndex(standNumber: number): string
+	return "StandBillboardConnection_" .. tostring(standNumber)
+end
+
+local function getStandMoneyLoopIndex(standNumber: number): string
+	return "StandMoneyLoop_" .. tostring(standNumber)
+end
+
+local function getStandSignalCleanupIndex(standNumber: number): string
+	return "StandSignalCleanup_" .. tostring(standNumber)
+end
+
 local function isValidAnimationId(animationId)
 	return typeof(animationId) == "string" and string.match(animationId, "^rbxassetid://%d+$") ~= nil
+end
+
+local function parseDegreesValue(value): number?
+	if typeof(value) == "number" then
+		return value
+	end
+
+	if typeof(value) == "string" then
+		return tonumber(value)
+	end
+
+	return nil
+end
+
+local function getPreviewRotationDegrees(model: Model): number?
+	local directValue = parseDegreesValue(model:GetAttribute("Prev"))
+	if directValue then
+		return directValue
+	end
+
+	local root = SharedFunctions.FindRoot(model)
+	if root then
+		local rootValue = parseDegreesValue(root:GetAttribute("Prev"))
+		if rootValue then
+			return rootValue
+		end
+	end
+
+	local prevValueObject = model:FindFirstChild("Prev", true)
+	if prevValueObject then
+		if prevValueObject:IsA("NumberValue") or prevValueObject:IsA("IntValue") then
+			return prevValueObject.Value
+		end
+		if prevValueObject:IsA("StringValue") then
+			local objectValue = tonumber(prevValueObject.Value)
+			if objectValue then
+				return objectValue
+			end
+		end
+	end
+
+	for _, tagName in ipairs(CollectionService:GetTags(model)) do
+		local tagValue = tagName:match("^Prev[:_%s]?([%-]?%d+%.?%d*)$")
+		if tagValue then
+			local parsed = tonumber(tagValue)
+			if parsed then
+				return parsed
+			end
+		end
+	end
+
+	if root then
+		for _, tagName in ipairs(CollectionService:GetTags(root)) do
+			local tagValue = tagName:match("^Prev[:_%s]?([%-]?%d+%.?%d*)$")
+			if tagValue then
+				local parsed = tonumber(tagValue)
+				if parsed then
+					return parsed
+				end
+			end
+		end
+	end
+
+	return nil
 end
 
 local function EmitVFX(VFX)
@@ -66,6 +161,125 @@ local function EmitVFX(VFX)
 			v:Emit(v:GetAttribute("EmitCount") or 12)
 		end
 	end
+end
+
+local function getAppearLuckyblockTemplate(): Instance?
+	local vfxFolder = ReplicatedStorage.Assets:FindFirstChild("VFX")
+	if not vfxFolder then
+		return nil
+	end
+
+	return vfxFolder:FindFirstChild(APPEAR_LUCKYBLOCK_VFX_NAME)
+		or vfxFolder:FindFirstChild("Upgrade")
+		or vfxFolder:FindFirstChild("CashClaimed")
+end
+
+local function playAppearLuckyblockVFX(model: Model, bursts: number?)
+	local effectTemplate = getAppearLuckyblockTemplate()
+	if not effectTemplate then
+		return
+	end
+
+	local totalBursts = math.max(1, math.floor(bursts or 1))
+	for i = 0, totalBursts - 1 do
+		task.delay(i * APPEAR_LUCKYBLOCK_BURST_DELAY, function()
+			if not model.Parent then
+				return
+			end
+
+			local root = SharedFunctions.FindRoot(model)
+			if not root then
+				return
+			end
+
+			local effectClone = effectTemplate:Clone()
+			effectClone.Parent = root
+			EmitVFX(effectClone)
+
+			task.delay(APPEAR_LUCKYBLOCK_VFX_CLEANUP_TIME, function()
+				if effectClone and effectClone.Parent then
+					effectClone:Destroy()
+				end
+			end)
+		end)
+	end
+end
+
+local function playLuckyblockHatching(self: Stand)
+	local luckyblockModel = self.entityModel
+	if not luckyblockModel or not luckyblockModel.Parent then
+		return
+	end
+
+	local baseScale = luckyblockModel:GetScale()
+	if baseScale <= 0 then
+		return
+	end
+
+	-- Simulator-style hatch: chained bounces, tension, reveal pop.
+	for step = 1, LUCKYBLOCK_HATCH_BOUNCES do
+		if self.entityModel ~= luckyblockModel or not luckyblockModel.Parent then
+			return
+		end
+
+		local pulseTime = math.max(0.08, LUCKYBLOCK_HATCH_BOUNCE_TIME - ((step - 1) * 0.008))
+		local pulseScale = baseScale * (LUCKYBLOCK_HATCH_BOUNCE_START_SCALE + ((step - 1) * LUCKYBLOCK_HATCH_BOUNCE_SCALE_STEP))
+		local jumpHeight = LUCKYBLOCK_HATCH_BOUNCE_START_HEIGHT + ((step - 1) * LUCKYBLOCK_HATCH_BOUNCE_HEIGHT_STEP)
+
+		RemoteBank.ScaleTween:FireClient(
+			self.ownership,
+			luckyblockModel,
+			baseScale,
+			pulseScale,
+			true,
+			pulseTime
+		)
+
+		RemoteBank.JumpEntity:FireClient(
+			self.ownership,
+			luckyblockModel,
+			luckyblockModel:GetPivot(),
+			CFrame.new(0, jumpHeight, 0)
+		)
+
+		playAppearLuckyblockVFX(luckyblockModel, APPEAR_LUCKYBLOCK_HATCH_BURSTS)
+		task.wait(math.max(0.08, (pulseTime * 2) * LUCKYBLOCK_HATCH_BOUNCE_OVERLAP))
+	end
+
+	if self.entityModel ~= luckyblockModel or not luckyblockModel.Parent then
+		return
+	end
+
+	RemoteBank.ScaleTween:FireClient(
+		self.ownership,
+		luckyblockModel,
+		baseScale,
+		baseScale * LUCKYBLOCK_HATCH_TENSION_SCALE,
+		false,
+		LUCKYBLOCK_HATCH_TENSION_TIME
+	)
+	task.wait(LUCKYBLOCK_HATCH_TENSION_TIME + 0.01)
+
+	if self.entityModel ~= luckyblockModel or not luckyblockModel.Parent then
+		return
+	end
+
+	RemoteBank.ScaleTween:FireClient(
+		self.ownership,
+		luckyblockModel,
+		baseScale * LUCKYBLOCK_HATCH_TENSION_SCALE,
+		baseScale * LUCKYBLOCK_HATCH_FINAL_POP_MULTIPLIER,
+		false,
+		LUCKYBLOCK_HATCH_FINAL_POP_TIME
+	)
+	RemoteBank.JumpEntity:FireClient(
+		self.ownership,
+		luckyblockModel,
+		luckyblockModel:GetPivot(),
+		CFrame.new(0, LUCKYBLOCK_HATCH_FINAL_JUMP_HEIGHT, 0)
+	)
+	playAppearLuckyblockVFX(luckyblockModel, APPEAR_LUCKYBLOCK_REVEAL_BURSTS)
+	task.wait(LUCKYBLOCK_HATCH_FINAL_POP_TIME + 0.07)
 end
 
 function StandController.CacheIndexObject(player, informations)
@@ -237,26 +451,31 @@ function StandController.UpgradeCommunication(self: Stand)
 end
 
 function StandController.StartMoneyGenerationCycle(self: Stand)
-	task.spawn(function()
-		local block = false
-
-		self.signal:Once(function()
-			block = true
-		end)
-
-		while task.wait() do
-			local standData = self:GetStandData() 
-			if not standData or not standData.entity or block then break end
+	local loopIndex = getStandMoneyLoopIndex(self.standNumber)
+	self.janitor:Remove(loopIndex)
+	self.janitor:Add(task.spawn(function()
+		while true do
+			local standData = self:GetStandData()
+			if not standData or not standData.entity or not self.entityModel then
+				break
+			end
 
 			DataService.server:update(self.ownership, {"stands", self.standNumber, "cash"}, function(old)
 				local currentAmount = if typeof(old) == "number" then old else 0
-				local target = currentAmount + SharedFunctions.GetEarningsPerSecond(standData.entity.name, standData.entity.mutation,( standData.entity.upgradeLevel or 0), self.ownership, standData.entity.traits)
+				local target = currentAmount + SharedFunctions.GetEarningsPerSecond(
+					standData.entity.name,
+					standData.entity.mutation,
+					(standData.entity.upgradeLevel or 0),
+					self.ownership,
+					standData.entity.traits
+				)
 				self.cashSpring.Target = target
 				return target
-			end)
+			end, true)
+
 			task.wait(1)
 		end
-	end)
+	end), true, loopIndex)
 end
 
 function StandController.ClaimGeneratedMoney(self: Stand)
@@ -295,10 +514,30 @@ function StandController.UpdateBillboard(self: Stand)
 	OfflineLabel.Visible = OfflineEarnings and true or false
 	OfflineLabel.Text = "Offline: " .. FormatCash(OfflineEarnings or 0)
 
-	self.janitor:Add(RunService.Heartbeat:Connect(function()
-		if not self.entityModel then return end
-		self.cashBillboard.CashLabel.Text = FormatCash(math.round(self.cashSpring.Position))
-	end))
+	local connectionIndex = getStandBillboardConnectionIndex(self.standNumber)
+	self.janitor:Remove(connectionIndex)
+
+	local lastRenderedText
+	local elapsed = 0
+	self.janitor:Add(RunService.Heartbeat:Connect(function(deltaTime)
+		if not self.entityModel then
+			return
+		end
+
+		elapsed += deltaTime
+		if elapsed < 0.2 then
+			return
+		end
+		elapsed = 0
+
+		local updatedText = FormatCash(math.round(self.cashSpring.Position))
+		if updatedText == lastRenderedText then
+			return
+		end
+
+		lastRenderedText = updatedText
+		self.cashBillboard.CashLabel.Text = updatedText
+	end), "Disconnect", connectionIndex)
 end
 
 function StandController.ChangeState(self: Stand, State)
@@ -306,6 +545,9 @@ function StandController.ChangeState(self: Stand, State)
 end
 
 function StandController.DestroyCurrentModel(self: Stand)
+	self.janitor:Remove(getStandBillboardConnectionIndex(self.standNumber))
+	self.janitor:Remove(getStandMoneyLoopIndex(self.standNumber))
+
 	if self.entityModel then
 		self.entityModel:Destroy()
 		self.entityModel = nil
@@ -327,7 +569,8 @@ function StandController.UpdateScale(self: Stand)
 			PositionCFrame = StandCFrame * CFrame.new(0, StandYSize / 2 + GlobalConfiguration.DistanceFromStand + self.entityModel:GetExtentsSize().Y / 2, 0)
 		end
 
-		self.entityModel:PivotTo(PositionCFrame * CFrame.Angles(0, math.rad(GlobalConfiguration.AnglesOfRotation), 0))
+		local orientationDegrees = getPreviewRotationDegrees(self.entityModel) or GlobalConfiguration.AnglesOfRotation
+		self.entityModel:PivotTo(PositionCFrame * CFrame.Angles(0, math.rad(orientationDegrees), 0))
 	end
 end
 
@@ -564,8 +807,18 @@ function StandController.PlaceEntity(self: Stand)
 end
 
 function StandController.OpenLuckyblock(self: Stand)
+	if self.rolling then
+		return
+	end
+	self.rolling = true
+
+	local function finishOpening()
+		self.rolling = false
+	end
+
 	local standData = self:GetStandData()
 	if not standData or not standData.luckybox then
+		finishOpening()
 		return
 	end
 
@@ -573,6 +826,7 @@ function StandController.OpenLuckyblock(self: Stand)
 	local rolledBrainrot = LuckyBoxes.GetRandomBrainrot(luckyboxData.name)
 	if not rolledBrainrot or not Entities[rolledBrainrot] then
 		RemoteBank.SendNotification:FireClient(self.ownership, "This mystery box has no valid rewards.", Color3.new(1, 0.180392, 0.180392))
+		finishOpening()
 		return
 	end
 
@@ -583,6 +837,8 @@ function StandController.OpenLuckyblock(self: Stand)
 		traits = {},
 	}
 
+	playLuckyblockHatching(self)
+
 	DataService.server:set(self.ownership, {"stands", self.standNumber, "luckybox"}, false)
 	DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, rewardData)
 	DataService.server:set(self.ownership, {"stands", self.standNumber, "cash"}, 0)
@@ -590,12 +846,16 @@ function StandController.OpenLuckyblock(self: Stand)
 	if not self:SpawnEntity(rewardData) then
 		DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, false)
 		self:ChangeState(StandStateEnum.Empty)
+		finishOpening()
 		return
 	end
+
+	playAppearLuckyblockVFX(self.entityModel, APPEAR_LUCKYBLOCK_REVEAL_BURSTS)
 
 	local displayName = Entities[rolledBrainrot].DisplayName or rolledBrainrot
 	RemoteBank.LuckyblockOpened:FireClient(self.ownership, self.standNumber, rewardData)
 	RemoteBank.SendNotification:FireClient(self.ownership, "You opened a mystery box and got " .. displayName .. "!", Color3.new(0.682353, 1, 0))
+	finishOpening()
 end
 
 function StandController.CreateNewStand(player: Player, informations: {}, AddData: boolean)
@@ -657,8 +917,14 @@ function StandController.CreateNewStand(player: Player, informations: {}, AddDat
 				standNumber = StandNumber,
 				cashSpring = Spring.new(0, 1, 20),
 				janitor = informations.janitor,
-				signal = Signal.new()
+				signal = Signal.new(),
+				rolling = false
 			}, StandController)
+
+			informations.janitor:Add(function()
+				self.signal:Fire()
+				self.signal:Destroy()
+			end, true, getStandSignalCleanupIndex(StandNumber))
 
 			local Touchpart = Cloned:FindFirstChild("TouchPart", true)
 			if Touchpart then

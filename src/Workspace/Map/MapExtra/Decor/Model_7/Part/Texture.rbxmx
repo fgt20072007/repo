@@ -26,8 +26,8 @@
       </Content>
       <bool name="DefinesCapabilities">false</bool>
       <int64 name="SourceAssetId">-1</int64>
-      <float name="StudsPerTileU">11.757575</float>
-      <float name="StudsPerTileV">11.757575</float>
+      <float name="StudsPerTileU">11.753513</float>
+      <float name="StudsPerTileV">11.753513</float>
       <BinaryString name="Tags"></BinaryString>
       <Content name="TextureContent">
         <uri>rbxassetid://10630078103</uri>

@@ -15,20 +15,20 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>174.18448</X>
-        <Y>16.09591</Y>
-        <Z>159.9689</Z>
-        <R00>-0.00000000000056132876</R00>
+        <X>80.71537</X>
+        <Y>5.909798</Y>
+        <Z>2.2888436</Z>
+        <R00>-1</R00>
         <R01>0</R01>
-        <R02>1</R02>
+        <R02>-0.0000000000005613317</R02>
         <R10>0</R10>
         <R11>1</R11>
         <R12>0</R12>
-        <R20>-0.99999475</R20>
+        <R20>0.0000000000005613317</R20>
         <R21>0</R21>
-        <R22>-0.00000000000055422333</R22>
+        <R22>-1</R22>
       </CoordinateFrame>
-      <bool name="CanCollide">true</bool>
+      <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
       <bool name="CanTouch">true</bool>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -64,7 +64,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">272</token>
       <string name="MaterialVariantSerialized"></string>
       <Content name="MeshContent">
@@ -101,9 +101,9 @@
       </Vector3>
       <bool name="DefinesCapabilities">false</bool>
       <Vector3 name="size">
-        <X>3.5833962</X>
-        <Y>1.3546178</Y>
-        <Z>2.3382463</Z>
+        <X>4.8069615</X>
+        <Y>1.8171576</Y>
+        <Z>3.13665</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

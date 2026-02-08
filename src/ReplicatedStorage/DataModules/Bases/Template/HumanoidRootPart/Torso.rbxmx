@@ -4,9 +4,9 @@
       <string name="Name">Torso</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.4999962</X>
-        <Y>-0.00000047683716</Y>
-        <Z>0.000015258789</Z>
+        <X>0.78856295</X>
+        <Y>3.0836976</Y>
+        <Z>0.000024065215</Z>
         <R00>-0.9999994</R00>
         <R01>0</R01>
         <R02>0</R02>

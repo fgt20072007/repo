@@ -9,12 +9,40 @@ local Entities = require("./EntityCatalog")
 local Rarities = require("./Rarities")
 local Mutations = require("./Mutations")
 local EconomyCalculations = require("./EconomyCalculations")
+local LuckyBoxes = require(ReplicatedStorage.DataModules.LuckyBoxes)
 
 local WeightedRNG = require(ReplicatedStorage.Utilities.WeightedRNG)
 local RemoteBank = require(ReplicatedStorage.RemoteBank)
 local GlobalConfiguration = require(ReplicatedStorage.DataModules.GlobalConfiguration)
 
 local SharedFunctions = {}
+
+local function getColorFromGradient(gradient: UIGradient?): Color3?
+	if not gradient then
+		return nil
+	end
+
+	local keypoints = gradient.Color.Keypoints
+	if #keypoints == 0 then
+		return nil
+	end
+
+	-- Use the center keypoint as a representative label color.
+	return keypoints[math.ceil(#keypoints / 2)].Value
+end
+
+local function replaceLabelGradient(label: TextLabel, gradient: UIGradient?)
+	for _, child in ipairs(label:GetChildren()) do
+		if child:IsA("UIGradient") then
+			child:Destroy()
+		end
+	end
+
+	if gradient then
+		local clonedGradient = gradient:Clone()
+		clonedGradient.Parent = label
+	end
+end
 
 local function isValidAnimationId(animationId)
 	return typeof(animationId) == "string" and string.match(animationId, "^rbxassetid://%d+$") ~= nil
@@ -166,27 +194,40 @@ end
 function SharedFunctions.CreateBillboard(EntityName: string, Mutation: string, UpgradeLevel: number, Player, dontShowCash, Traits)
 	local EntityInformations = if typeof(EntityName) == "string" then Entities[EntityName] else EntityName
 	local newBillboard = script.EntityBillboardTemplate:Clone()
-	local RarityLabel, CashLabel, NameLabel = newBillboard.RarityLabel, newBillboard.CashLabel, newBillboard.NameLabel
-	NameLabel.Text = EntityInformations.DisplayName
-	RarityLabel.Text = EntityInformations.Rarity
+	local RarityLabel, MutationLabel, CashLabel, NameLabel = newBillboard.RarityLabel, newBillboard.MutationLabel, newBillboard.CashLabel, newBillboard.NameLabel
+	local isLuckyBox = if typeof(EntityName) == "string" then LuckyBoxes.IsLuckyBox(EntityName) else false
+	local rarityName = if typeof(EntityInformations.Rarity) == "string" then EntityInformations.Rarity else "Common"
+	local mutationName = if typeof(Mutation) == "string" and Mutations[Mutation] then Mutation else "Normal"
+	if mutationName == rarityName then
+		mutationName = "Normal"
+	end
 
-	if Mutation then
-		local infos = Mutations[Mutation]
-		if infos and infos.ShowLabel then
-			newBillboard.MutationLabel.Visible = true
-			newBillboard.MutationLabel.Text = Mutation
-			local newGradient = infos.Gradient:Clone()
-			newGradient.Parent = newBillboard.MutationLabel
+	NameLabel.Text = EntityInformations.DisplayName
+	NameLabel.Visible = not isLuckyBox
+	RarityLabel.Text = rarityName
+
+	MutationLabel.Visible = true
+	MutationLabel.Text = mutationName
+	local mutationInfo = Mutations[mutationName]
+	replaceLabelGradient(MutationLabel, if mutationInfo then mutationInfo.Gradient else nil)
+
+	local mutationColor = getColorFromGradient(if mutationInfo then mutationInfo.Gradient else nil)
+	if mutationColor then
+		MutationLabel.TextColor3 = mutationColor
+	end
+
+	local raritiesInfo = Rarities[rarityName]
+	if raritiesInfo then
+		replaceLabelGradient(RarityLabel, raritiesInfo.Gradient)
+
+		local rarityColor = getColorFromGradient(raritiesInfo.Gradient)
+		if rarityColor then
+			RarityLabel.TextColor3 = rarityColor
 		end
 	end
 
-	local raritiesInfo = Rarities[EntityInformations.Rarity]
-	if raritiesInfo then
-		local clonedGradient = raritiesInfo.Gradient:Clone()
-		clonedGradient.Parent = RarityLabel
-	end
-
 	CashLabel.Visible = false
+	CashLabel.Text = ""
 	if not dontShowCash then
 		CashLabel.Text = "$" .. Format.abbreviateCash(SharedFunctions.GetEarningsPerSecond(EntityName, Mutation, UpgradeLevel, Player, Traits)) .. "/s"
 		CashLabel.Visible = true

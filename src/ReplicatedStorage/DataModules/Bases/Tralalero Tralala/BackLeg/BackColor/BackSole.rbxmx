@@ -4,9 +4,9 @@
       <string name="Name">BackSole</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-0.00022888184</X>
-        <Y>-0.30202866</Y>
-        <Z>-0.00002861023</Z>
+        <X>-0.0005533929</X>
+        <Y>-0.7302481</Y>
+        <Z>-0.000069174115</Z>
         <R00>0</R00>
         <R01>0</R01>
         <R02>-1</R02>

@@ -4,8 +4,8 @@
       <string name="Name">RightEatMiddle</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.000010898709</X>
-        <Y>-0.35711253</Y>
+        <X>0.000016768921</X>
+        <Y>-0.54945886</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0.000000014901268</R01>
@@ -18,8 +18,8 @@
         <R22>1</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-0.000000000019488411</X>
-        <Y>0.5357029</Y>
+        <X>-0.00000000002998517</X>
+        <Y>0.82424074</Y>
         <Z>0</Z>
         <R00>0.9999973</R00>
         <R01>0.000000014901227</R01>

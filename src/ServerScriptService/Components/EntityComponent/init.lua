@@ -35,7 +35,6 @@ export type Entity = typeof(setmetatable({} :: {
 	billboard: BillboardGui & {ClockTimer: Frame & {TextLabel: TextLabel, ImageLabel: ImageLabel}, NameLabel: TextLabel, RarityLabel: TextLabel, CashLabel: TextLabel},
 	grabbed: Player,
 	currentTime: number,
-	timeConnection: RBXScriptConnection,
 	claimed: boolean,
 	proximity: ProximityPrompt,
 	weld: {Instance},
@@ -72,6 +71,29 @@ local Modifiers = {
 local Lenght = #Modifiers
 
 local GrabbedListPerPlayer = {}
+local ActiveTimedEntities: {[Entity]: true} = {}
+local TimedEntitiesThread: thread?
+
+local function ensureTimedEntitiesLoop()
+	if TimedEntitiesThread then
+		return
+	end
+
+	TimedEntitiesThread = task.spawn(function()
+		while true do
+			task.wait(1)
+
+			if next(ActiveTimedEntities) == nil then
+				TimedEntitiesThread = nil
+				break
+			end
+
+			for entity in pairs(ActiveTimedEntities) do
+				entity:_tickLifetimeTimer()
+			end
+		end
+	end)
+end
 
 local function getInventoryTagFromEntityName(entityName: string)
 	if LuckyBoxes.IsLuckyBox(entityName) then
@@ -162,7 +184,12 @@ end
 
 function EntityComponent._handlePurchaseAsync(self: Entity, player: Player)
 	local signal = MarketplaceHandler.Purchase(player, false, self.productId)
-	signal:Connect(function(purchased)
+	local connection
+	connection = signal:Connect(function(purchased)
+		if connection then
+			connection:Disconnect()
+			connection = nil
+		end
 		if purchased then
 			InventoryHandler.CacheTool(player, getInventoryTagFromEntityName(self.name), {name = self.name, mutation = self.mutation, traits = self.traits}, true)
 		end
@@ -173,32 +200,38 @@ function EntityComponent.RemoveFromPlayer(self: Entity, Player)
 	GrabbedListPerPlayer[Player] = nil
 end
 
+function EntityComponent._tickLifetimeTimer(self: Entity)
+	if self.claimed or not self.billboard or not self.billboard.Parent then
+		ActiveTimedEntities[self] = nil
+		return
+	end
+
+	if not self.grabbed then
+		self.currentTime -= 1
+	end
+
+	self.billboard.ClockTimer.Visible = if self.grabbed then false else true
+	self.billboard.ClockTimer.TextLabel.Text = tostring(self.currentTime) .. "s"
+
+	if self.currentTime <= 0 then
+		self:Destroy()
+	end
+end
+
 function EntityComponent.InitializeBillboardSetup(self: Entity)
 	self.billboard.Parent = self.root
 
 	self.billboard.CashLabel.Visible = not self.isLuckyBox
 	if not self.isLuckyBox then
 		self.billboard.CashLabel.Text = SharedFunctions.GetEarningsPerSecond(self.name, self.mutation) .. "$/s"
+	else
+		self.billboard.CashLabel.Text = ""
 	end
 
 	if not self.isPurchasable then
-		self.timeConnection = task.spawn(function()
-			while task.wait(1) do
-				if self.claimed then break end
-
-				if not self.grabbed then
-					self.currentTime -= 1
-				end
-
-				self.billboard.ClockTimer.Visible = if self.grabbed then false else true
-				self.billboard.ClockTimer.TextLabel.Text = tostring(self.currentTime) .. "s"
-
-				if self.currentTime == 0 then
-					self:Destroy()
-					break
-				end
-			end
-		end)
+		ActiveTimedEntities[self] = true
+		self:_tickLifetimeTimer()
+		ensureTimedEntitiesLoop()
 	else
 		self.billboard.ClockTimer.Visible = false
 	end
@@ -315,6 +348,7 @@ function EntityComponent.Destroy(self: Entity, dontsendSignal)
 	if self.isPurchasable then return end
 
 	self.claimed = true
+	ActiveTimedEntities[self] = nil
 	if not dontsendSignal then
 		self.destroyedSignal:Fire()
 	end

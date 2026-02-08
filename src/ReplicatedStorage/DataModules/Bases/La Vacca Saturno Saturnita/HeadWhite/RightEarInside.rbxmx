@@ -4,9 +4,9 @@
       <string name="Name">RightEarInside</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>-1.0691571</X>
-        <Y>0.1003951</Y>
-        <Z>1.4038635</Z>
+        <X>-1.6130729</X>
+        <Y>0.15146942</Y>
+        <Z>2.1180558</Z>
         <R00>-0.00000008742273</R00>
         <R01>-0.0000000000028494704</R01>
         <R02>1.0000015</R02>
@@ -18,8 +18,8 @@
         <R22>0.00000008742291</R22>
       </CoordinateFrame>
       <CoordinateFrame name="C1">
-        <X>-0.6016921</X>
-        <Y>-0.00001961558</Y>
+        <X>-0.90779287</X>
+        <Y>-0.000029594677</Y>
         <Z>0</Z>
         <R00>0.9999989</R00>
         <R01>-0.000000000080034965</R01>

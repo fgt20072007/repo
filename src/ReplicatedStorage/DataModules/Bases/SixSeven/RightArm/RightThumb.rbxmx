@@ -14,18 +14,18 @@
       <token name="BottomSurface">3</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>185.79935</X>
-        <Y>25.322006</Y>
-        <Z>161.60872</Z>
-        <R00>0.99999696</R00>
+        <X>82.91512</X>
+        <Y>18.286182</Y>
+        <Z>-13.291978</Z>
+        <R00>0</R00>
         <R01>0</R01>
-        <R02>0</R02>
+        <R02>0.99999654</R02>
         <R10>0</R10>
         <R11>0.9999987</R11>
         <R12>0</R12>
-        <R20>0</R20>
+        <R20>-0.99999696</R20>
         <R21>0</R21>
-        <R22>0.99999654</R22>
+        <R22>0</R22>
       </CoordinateFrame>
       <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
@@ -49,7 +49,7 @@
       <token name="LeftSurface">3</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">272</token>
       <string name="MaterialVariantSerialized"></string>
       <CoordinateFrame name="PivotOffset">
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>1.3969173</X>
-        <Y>0.48588398</Y>
-        <Z>0.48588422</Z>
+        <X>1.8739005</X>
+        <Y>0.65179104</Y>
+        <Z>0.65179133</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

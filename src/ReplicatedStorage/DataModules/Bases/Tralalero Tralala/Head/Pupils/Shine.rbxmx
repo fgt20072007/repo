@@ -4,8 +4,8 @@
       <string name="Name">Shine</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.07499981</X>
-        <Y>0.07500076</Y>
+        <X>0.18133534</X>
+        <Y>0.18133764</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>

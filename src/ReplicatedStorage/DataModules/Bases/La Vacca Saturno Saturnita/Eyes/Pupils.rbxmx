@@ -4,8 +4,8 @@
       <string name="Name">Pupils</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0.13370967</X>
-        <Y>0.06685866</Y>
+        <X>0.20173223</X>
+        <Y>0.100871876</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>

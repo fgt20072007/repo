@@ -15,20 +15,20 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>166.22755</X>
-        <Y>15.838242</Y>
-        <Z>156.96967</Z>
+        <X>164.59709</X>
+        <Y>16.220882</Y>
+        <Z>155.95697</Z>
         <R00>0</R00>
-        <R01>0.00000011921043</R01>
-        <R02>0.99999225</R02>
+        <R01>0.00000011921108</R01>
+        <R02>1</R02>
         <R10>0</R10>
-        <R11>0.9999945</R11>
-        <R12>0.00000011921043</R12>
-        <R20>-0.99999774</R20>
+        <R11>1</R11>
+        <R12>-0.00000011921107</R12>
+        <R20>-1</R20>
         <R21>0</R21>
         <R22>0</R22>
       </CoordinateFrame>
-      <bool name="CanCollide">true</bool>
+      <bool name="CanCollide">false</bool>
       <bool name="CanQuery">true</bool>
       <bool name="CanTouch">true</bool>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
@@ -40,7 +40,7 @@
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
       <bool name="DoubleSided">false</bool>
-      <bool name="EnableFluidForces">true</bool>
+      <bool name="EnableFluidForces">false</bool>
       <token name="FluidFidelityInternal">0</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -64,7 +64,7 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">false</bool>
+      <bool name="Massless">true</bool>
       <token name="Material">256</token>
       <string name="MaterialVariantSerialized">Studs</string>
       <Content name="MeshContent">
@@ -101,9 +101,9 @@
       </Vector3>
       <bool name="DefinesCapabilities">false</bool>
       <Vector3 name="size">
-        <X>6.955291</X>
-        <Y>1.504228</Y>
-        <Z>4.070762</Z>
+        <X>10.493678</X>
+        <Y>2.2694788</Y>
+        <Z>6.141694</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>
