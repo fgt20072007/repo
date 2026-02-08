@@ -19,7 +19,13 @@ local list = {
 		})
 	end,
 	Luckyblock = function(plr, a1)
-		InventoryHandler.CacheTool(plr, "Luckyblock", {
+		InventoryHandler.CacheTool(plr, "Luckybox", {
+			name = a1,
+			mutation = "Normal"
+		})
+	end,
+	Luckybox = function(plr, a1)
+		InventoryHandler.CacheTool(plr, "Luckybox", {
 			name = a1,
 			mutation = "Normal"
 		})

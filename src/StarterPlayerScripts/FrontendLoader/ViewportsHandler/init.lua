@@ -1,7 +1,14 @@
 local CameraUtils = require(script.CameraUtils)
 
+local function isValidAnimationId(animationId)
+	return typeof(animationId) == "string" and string.match(animationId, "^rbxassetid://%d+$") ~= nil
+end
+
 return function(Model, ViewportFrame, Animation)
 	ViewportFrame:ClearAllChildren()
+	if not Model or not Model:IsA("Model") then
+		return ViewportFrame
+	end
 
 	local WolrdModel = Instance.new("WorldModel")
 	WolrdModel.Parent = ViewportFrame
@@ -15,7 +22,7 @@ return function(Model, ViewportFrame, Animation)
 	Camera.Parent = ViewportFrame
 	ViewportFrame.CurrentCamera = Camera
 
-	if Animation then
+	if isValidAnimationId(Animation) then
 		local animationInstance = Instance.new("Animation")
 		animationInstance.AnimationId = Animation
 		local Humanoid = ModelClone:FindFirstChildWhichIsA("Humanoid") or ModelClone:FindFirstChildWhichIsA("AnimationController")

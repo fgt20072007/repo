@@ -25,13 +25,22 @@ do
 			v.CollisionGroup = "Effects"
 		end
 	end
-	
+
+	local brainrotsFolder = ReplicatedStorage.DataModules:FindFirstChild("Brainrots")
+	if brainrotsFolder then
+		for _, v in brainrotsFolder:GetDescendants() do
+			if v:IsA("BasePart") then
+				v.CollisionGroup = "Effects"
+			end
+		end
+	end
+
 	for _, v in workspace.TemplateBase.Uncollidable:GetDescendants() do
 		if v:IsA("BasePart") then
 			v.CollisionGroup = "FollowerUncollidable"
 		end
 	end
-	
+
 	for _, v in ReplicatedStorage.DataModules.Bases:GetDescendants() do
 		if v:IsA("BasePart") then
 			v.CollisionGroup = "Effects"
@@ -57,7 +66,7 @@ DataService.server:init({
 	template = {
 		rebirth = GlobalConfiguration.StarterRebirth,
 		cash = GlobalConfiguration.StarterCash,
-		
+
 		bases = {
 			1
 		},
@@ -70,17 +79,24 @@ DataService.server:init({
 })
 
 local function LoadModule(Module: ModuleScript)
-	local Required = require(Module)
-	if Required["Initialize"] then
-		task.spawn(function()
-			Required:Initialize()
-		end)
-		print(Module)
+	local success, requiredOrError = pcall(function()
+		return require(Module)
+	end)
+	if not success then
+		return false, requiredOrError
 	end
-	return Required
+
+	if typeof(requiredOrError) == "table" and requiredOrError.Initialize then
+		task.spawn(function()
+			requiredOrError:Initialize()
+		end)
+	end
+	return true, requiredOrError
 end
 
 for _, module in LoaderFolder:GetChildren() do
 	local success, errormsg = LoadModule(module)
-	if not success then warn(errormsg, debug.traceback()) end
+	if not success then
+		warn(errormsg, debug.traceback())
+	end
 end

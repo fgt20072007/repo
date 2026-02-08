@@ -9,6 +9,7 @@ local DataService = require(ReplicatedStorage.Utilities.DataService)
 local SharedFunctions = require(ReplicatedStorage.DataModules.SharedFunctions)
 local SharedUtilities = require(ReplicatedStorage.Utilities.SharedUtilities)
 local Format = require(ReplicatedStorage.Utilities.Format)
+local LuckyBoxes = require(ReplicatedStorage.DataModules.LuckyBoxes)
 
 local RemoteBank = require(ReplicatedStorage.RemoteBank)
 
@@ -16,16 +17,37 @@ local InventoryHandler = require("./InventoryHandler")
 
 local SellServer = {}
 
+local function canSellInventoryEntry(entry)
+	if not entry or typeof(entry) ~= "table" then
+		return false
+	end
+
+	if entry.tag ~= "Entity" then
+		return false
+	end
+
+	local informations = entry.informations
+	if typeof(informations) ~= "table" then
+		return false
+	end
+
+	return not LuckyBoxes.IsLuckyBox(informations.name)
+end
+
 function SellServer.SellEntity(Player: Player, id)
-	print("Selling entity")
+	local inventoryEntry = DataService.server:get(Player, {"inventory", id})
+	if not canSellInventoryEntry(inventoryEntry) then
+		return
+	end
+
 	local Entityvalue, Name = SharedFunctions.GetValueFromId(id, Player)
 	if Entityvalue and Name then
 		DataService.server:update(Player, "cash", function(oldCash)
 			return oldCash + Entityvalue
 		end)
-		
+
 		DataService.server:set(Player, {"inventory", id}, false)
-		
+
 		for _, v in SharedUtilities.getToolsForBackpackAndEquipped(Player) do
 			if v:HasTag("Entity") and v:IsA("Tool") then
 				if v:GetAttribute("Id") == id then
@@ -33,35 +55,34 @@ function SellServer.SellEntity(Player: Player, id)
 				end
 			end
 		end
-		
+
 		RemoteBank.SendNotification:FireClient(Player, "Succesfully sold " .. Name .. " for " .. Format.abbreviateCash(Entityvalue) .. "$" )
 	end
 end
 
 function SellServer.SellAll(Player: Player)
-	print("Selling all")
 	DataService.server:update(Player, "inventory", function(old)
 		local totalSum = 0
 		for id, info in old do
-			if info and typeof(info) == "table" and info.tag == "Entity" then
+			if canSellInventoryEntry(info) then
 				local Entityvalue = SharedFunctions.GetValueFromId(id, Player)
 				if Entityvalue then
 					totalSum += Entityvalue
 				end
 			end
 		end
-		
+
 		if totalSum == 0 then return old end
-		
+
 		DataService.server:update(Player, "cash", function(oldCash)
 			return oldCash + totalSum
 		end)
-		
+
 		RemoteBank.SendNotification:FireClient(Player, "Succesfully sold inventor for " .. Format.abbreviateCash(totalSum) .. "$" )
-		
+
 		return {}
 	end)
-	
+
 	for _, v in SharedUtilities.getToolsForBackpackAndEquipped(Player) do
 		if v:HasTag("Entity") and v:IsA("Tool") then
 			v:Destroy()

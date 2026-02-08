@@ -5,7 +5,7 @@ local Format = require(ReplicatedStorage.Utilities.Format)
 
 local Players = game:GetService('Players')
 
-local Entities = require("./Entities")
+local Entities = require("./EntityCatalog")
 local Rarities = require("./Rarities")
 local Mutations = require("./Mutations")
 local EconomyCalculations = require("./EconomyCalculations")
@@ -15,6 +15,43 @@ local RemoteBank = require(ReplicatedStorage.RemoteBank)
 local GlobalConfiguration = require(ReplicatedStorage.DataModules.GlobalConfiguration)
 
 local SharedFunctions = {}
+
+local function isValidAnimationId(animationId)
+	return typeof(animationId) == "string" and string.match(animationId, "^rbxassetid://%d+$") ~= nil
+end
+
+local function resolveEntityVariantModel(entityInfo, preferredMutation)
+	if not entityInfo or not entityInfo.Model then
+		return nil
+	end
+
+	local modelContainer = entityInfo.Model
+	local candidates = {}
+
+	if preferredMutation then
+		table.insert(candidates, preferredMutation)
+	end
+	if preferredMutation ~= "Normal" then
+		table.insert(candidates, "Normal")
+	end
+	table.insert(candidates, "Gold")
+	table.insert(candidates, "Diamond")
+
+	for _, mutationName in candidates do
+		local variantModel = modelContainer:FindFirstChild(mutationName)
+		if variantModel and variantModel:IsA("Model") then
+			return variantModel, mutationName
+		end
+	end
+
+	for _, child in modelContainer:GetChildren() do
+		if child:IsA("Model") then
+			return child, child.Name
+		end
+	end
+
+	return nil
+end
 
 function SharedFunctions.FindRoot(Model)
 	return Model.PrimaryPart or Model:FindFirstChild("HumanoidRootPart")
@@ -47,7 +84,7 @@ end
 
 function SharedFunctions.GetEarningsPerSecond(EntityName: string, Mutation: string, UpgradeLevel: number, Player: Player, traits)
 	local moneyPerSecond = EconomyCalculations.calculateEarnings(Entities[EntityName].MoneyPerSecond * (Mutations[Mutation] and Mutations[Mutation].Multiplier or 1), UpgradeLevel or 0) 
-	
+
 	if Player then
 		local indexMulti = SharedFunctions.GetIndexMultipliers(Player)
 		local rebirthMultiplier = SharedFunctions.GetRebirthMultiplier(Player) - 1
@@ -64,7 +101,6 @@ function SharedFunctions.GetValueFromId(id: string, Player: Player)
 	local inventoryInfo = if RunService:IsClient() then DataService.client:get({"inventory", id}) else DataService.server:get(Player, {"inventory", id})
 	if inventoryInfo then
 		inventoryInfo = inventoryInfo.informations
-		print(inventoryInfo)
 		return SharedFunctions.GetEntityValue(inventoryInfo.name, inventoryInfo.mutation, inventoryInfo.upgradeLevel), inventoryInfo.name, inventoryInfo.mutation
 	end
 end
@@ -73,10 +109,14 @@ end
 function SharedFunctions.CreateHiddenEntity(entityName, spawnCFrame, aliveTime, player)
 	local entityInformations = Entities[entityName]
 	if entityInformations and entityInformations.Model then
-		local Clone = entityInformations.Model["Normal"]:Clone()
-		
+		local variantModel = select(1, resolveEntityVariantModel(entityInformations, "Normal"))
+		if not variantModel then
+			return nil
+		end
+		local Clone = variantModel:Clone()
+
 		local animationToPlay = Entities[entityName].Animation
-		if animationToPlay then
+		if isValidAnimationId(animationToPlay) then
 			local animationInstance = Instance.new("Animation")
 			animationInstance.AnimationId = animationToPlay
 			local humanoid = Clone:FindFirstChildWhichIsA("Humanoid") or Clone:FindFirstChildOfClass("AnimationController")
@@ -86,35 +126,41 @@ function SharedFunctions.CreateHiddenEntity(entityName, spawnCFrame, aliveTime, 
 					animator:LoadAnimation(animationInstance):Play()
 				end
 			end
-			
+
 			task.delay(aliveTime, function()
 				animationInstance:Destroy()
 			end)
 		end
-		
+
 		if spawnCFrame then
 			Clone:PivotTo(spawnCFrame * CFrame.new(0, Clone:GetExtentsSize().Y / 2, 0))
 		end
-		
+
 		local newhighlight = script.HideHighlight:Clone()
 		newhighlight.Parent = Clone
-		
+
 		Clone.Parent = workspace
-		
+
 		for _, v in pairs(Clone:GetChildren()) do
 			if v:IsA("BasePart") then
 				v.Anchored = true
 			end
 		end
-		
+
 		RemoteBank.ScaleTween:FireClient(player, Clone, Clone:GetScale() / 2, Clone:GetScale(), false, aliveTime + 0.05)
-		
+
 		task.delay(aliveTime or 0.1, function()
 			Clone:Destroy()
 		end)
-		
+
 		return Clone
 	end
+end
+
+function SharedFunctions.GetEntityVariantModel(entityName, mutation)
+	local entityInfo = Entities[entityName]
+	local variantModel, resolvedMutation = resolveEntityVariantModel(entityInfo, mutation)
+	return variantModel, resolvedMutation
 end
 
 function SharedFunctions.CreateBillboard(EntityName: string, Mutation: string, UpgradeLevel: number, Player, dontShowCash, Traits)
@@ -123,7 +169,7 @@ function SharedFunctions.CreateBillboard(EntityName: string, Mutation: string, U
 	local RarityLabel, CashLabel, NameLabel = newBillboard.RarityLabel, newBillboard.CashLabel, newBillboard.NameLabel
 	NameLabel.Text = EntityInformations.DisplayName
 	RarityLabel.Text = EntityInformations.Rarity
-	
+
 	if Mutation then
 		local infos = Mutations[Mutation]
 		if infos and infos.ShowLabel then
@@ -139,13 +185,13 @@ function SharedFunctions.CreateBillboard(EntityName: string, Mutation: string, U
 		local clonedGradient = raritiesInfo.Gradient:Clone()
 		clonedGradient.Parent = RarityLabel
 	end
-	
+
 	CashLabel.Visible = false
 	if not dontShowCash then
 		CashLabel.Text = "$" .. Format.abbreviateCash(SharedFunctions.GetEarningsPerSecond(EntityName, Mutation, UpgradeLevel, Player, Traits)) .. "/s"
 		CashLabel.Visible = true
 	end
-	
+
 	return newBillboard
 end
 
@@ -156,7 +202,7 @@ function SharedFunctions.GetRandomMutation()
 			t[i] = v.Percentage
 		end
 	end
-	
+
 	local random = WeightedRNG.get(t, _G.GlobalLuck or 1)
 	if random then
 		return random
@@ -177,7 +223,12 @@ end
 
 function SharedFunctions.CreateEntity(entityName, mutation, createBillboard, UpgradeLevel: number, Traits)
 	if not entityName then return end
-	local model: Model = Entities[entityName].Model:FindFirstChild(mutation):Clone()
+	local variantModel, resolvedMutation = SharedFunctions.GetEntityVariantModel(entityName, mutation)
+	if not variantModel then
+		return nil
+	end
+
+	local model: Model = variantModel:Clone()
 	local humanoid = model:FindFirstChildOfClass("Humanoid")
 	if humanoid then
 		humanoid.EvaluateStateMachine = false
@@ -185,9 +236,13 @@ function SharedFunctions.CreateEntity(entityName, mutation, createBillboard, Upg
 		humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 	end
 	local root = SharedFunctions.FindRoot(model)
-	
-	if mutation then
-		local informations = Mutations[mutation]
+	if not root then
+		return nil
+	end
+
+	local mutationForEffects = mutation or resolvedMutation
+	if mutationForEffects then
+		local informations = Mutations[mutationForEffects]
 		if informations then
 			local EffectContainer = informations.Effect
 			if EffectContainer then
@@ -198,12 +253,12 @@ function SharedFunctions.CreateEntity(entityName, mutation, createBillboard, Upg
 			end
 		end
 	end
-	
+
 	if createBillboard then
 		local billboard = SharedFunctions.CreateBillboard(entityName, mutation, UpgradeLevel, nil, nil, Traits)
 		billboard.Parent = root
 	end
-	
+
 	return model
 end
 

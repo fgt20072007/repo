@@ -23,11 +23,11 @@
         <R10>0</R10>
         <R11>1</R11>
         <R12>0</R12>
-        <R20>1</R20>
+        <R20>0.99998987</R20>
         <R21>0</R21>
         <R22>0</R22>
       </CoordinateFrame>
-      <bool name="CanCollide">false</bool>
+      <bool name="CanCollide">true</bool>
       <bool name="CanQuery">true</bool>
       <bool name="CanTouch">true</bool>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>

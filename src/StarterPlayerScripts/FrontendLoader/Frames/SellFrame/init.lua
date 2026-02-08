@@ -17,9 +17,10 @@ local ScrollingFrame = Container.ScrollingFrame
 local DataService = require(ReplicatedStorage.Utilities.DataService)
 local SharedFunctions = require(ReplicatedStorage.DataModules.SharedFunctions)
 local Format = require(ReplicatedStorage.Utilities.Format)
+local LuckyBoxes = require(ReplicatedStorage.DataModules.LuckyBoxes)
 
 local Rarities = require(ReplicatedStorage.DataModules.Rarities)
-local Entities = require(ReplicatedStorage.DataModules.Entities)
+local Entities = require(ReplicatedStorage.DataModules.EntityCatalog)
 local RemoteBank = require(ReplicatedStorage.RemoteBank)
 local Janitor = require(ReplicatedStorage.Utilities.Janitor)
 
@@ -30,14 +31,14 @@ local janitor = Janitor.new()
 
 function Frame.UpdateGui()
 	janitor:Cleanup()
-	
+
 	local inventoryData = DataService.client:get("inventory")
 	local TotalAmount = 0
-	
+
 	local Cache = {}
-	
+
 	for id, value in inventoryData do
-		if value and typeof(value) == "table" and value.tag == "Entity" then
+		if value and typeof(value) == "table" and value.tag == "Entity" and typeof(value.informations) == "table" and not LuckyBoxes.IsLuckyBox(value.informations.name) then
 			local entitySellValue, name, mutation = SharedFunctions.GetValueFromId(id)
 			if entitySellValue then
 				TotalAmount += entitySellValue
@@ -47,8 +48,16 @@ function Frame.UpdateGui()
 				end
 
 				local informations = Entities[name]
-				if not informations then warn("No informations for " .. name .. " could not be found.") end
-				local gradient = Rarities[informations.Rarity].Gradient:Clone()
+				if not informations then
+					continue
+				end
+
+				local rarityInfo = if typeof(informations.Rarity) == "string" then Rarities[informations.Rarity] else nil
+				if not rarityInfo then
+					continue
+				end
+
+				local gradient = rarityInfo.Gradient:Clone()
 
 				local newFrame = janitor:Add(script.Template:Clone())
 				newFrame.EntityNameLabel.Text = informations.DisplayName or name
@@ -58,7 +67,8 @@ function Frame.UpdateGui()
 				newFrame.Parent = ScrollingFrame
 				newFrame.Visible = true
 
-				ViewportHandler(informations.Model:FindFirstChild(mutation), newFrame.ViewportFrame, informations.Animation)
+				local variantModel = select(1, SharedFunctions.GetEntityVariantModel(name, mutation))
+				ViewportHandler(variantModel, newFrame.ViewportFrame, informations.Animation)
 
 				local amountOwned = 1
 				Cache[name .. mutation] = function()
@@ -72,13 +82,13 @@ function Frame.UpdateGui()
 			end
 		end
 	end
-	
+
 	janitor:Add(function()
 		for i, v in Cache do
 			Cache[i] = nil
 		end
 	end)
-	
+
 	SellLabel.Text = "$" .. Format.abbreviateCash(TotalAmount)
 end
 
@@ -87,13 +97,13 @@ function Frame:Initialize()
 	SellAllButton.Activated:Connect(function()
 		RemoteBank.SellRemote:InvokeServer("SellAll")
 	end)
-	
+
 	Frame.UpdateGui()
-	
+
 	DataService.client:getChangedSignal("inventory"):Connect(function()
 		Frame.UpdateGui()
 	end)
-	
+
 	DataService.client:getIndexChangedSignal("inventory"):Connect(function()
 		Frame.UpdateGui()
 	end)

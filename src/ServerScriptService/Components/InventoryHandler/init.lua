@@ -19,12 +19,41 @@ local Gamepasses = require(ReplicatedStorage.DataModules.Gamepasses)
 
 local GearsHandler = require("./GearsHandler")
 
-export type Tag = "Entity"
+export type Tag = "Entity" | "Luckybox" | "Luckyblock"
 
 local InventoryHandler = {}
 local ModulesRequired = {}
 
 local OneSessionTools = {}
+
+local function resolveTag(tag: any)
+	if typeof(tag) ~= "string" then
+		return nil
+	end
+
+	local lowerTag = string.lower(tag)
+	if lowerTag == "luckyblock" or lowerTag == "luckybox" then
+		return "Luckybox"
+	end
+	if lowerTag == "entity" then
+		return "Entity"
+	end
+
+	return tag
+end
+
+local function getToolFactory(tag: string)
+	local moduleFactory = ModulesRequired[tag]
+	if moduleFactory then
+		return moduleFactory
+	end
+
+	if tag == "Luckybox" then
+		return ModulesRequired.Entity
+	end
+
+	return nil
+end
 
 -- Initialization function for the script
 function InventoryHandler:Initialize()																																																																																																											
@@ -55,8 +84,19 @@ function InventoryHandler.CacheIndexObject(player, informations)
 end
 
 function InventoryHandler.CreateNewTool(Player: Player, Tag: string, guid, informations: {})
+	Tag = resolveTag(Tag)
+	if not Tag then
+		return
+	end
+
+	local factory = getToolFactory(Tag)
+	if not factory then
+		warn("The tag provided could not be found in the module scripts | " .. tostring(Tag))
+		return
+	end
+
 	local success, errormsg: Tool = pcall(function()
-		return ModulesRequired[Tag](informations, guid)
+		return factory(informations, guid)
 	end)
 
 	if not success then
@@ -70,6 +110,10 @@ function InventoryHandler.CreateNewTool(Player: Player, Tag: string, guid, infor
 end
 
 function InventoryHandler.CacheTool(player: Player, Tag: string, informations: {})
+	Tag = resolveTag(Tag)
+	if not Tag then
+		return
+	end
 	local RandomizedId = Http:GenerateGUID()
 	DataService.server:set(player, {"inventory", RandomizedId}, {tag = Tag, informations = informations})
 
@@ -100,7 +144,7 @@ function InventoryHandler.AddToolsAndClear(player: Player, doNotDestroy: boolean
 			end
 		end
 	end
-	
+
 	local ownedGears = DataService.server:get(player, "gears")
 	for _, v in ownedGears do
 		GearsHandler.CreateNewGear(player, v)

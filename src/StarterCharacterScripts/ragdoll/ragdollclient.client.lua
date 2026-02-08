@@ -76,9 +76,6 @@ end
 --	end
 --end, true, Enum.KeyCode.R)
 
-game:GetService("ContextActionService"):SetTitle("RagdollToggle", "Ragdoll")
-game:GetService("ContextActionService"):SetPosition("RagdollToggle", UDim2.new(1, -110, 0, 15))
-
 script.Parent.events.variableserver.OnClientEvent:Connect(function()
 	events_variableserver:FireServer("ragdoll",variables_ragdoll.Value)
 end)

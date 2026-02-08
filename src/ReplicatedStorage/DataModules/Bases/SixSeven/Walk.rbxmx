@@ -1,0 +1,15 @@
+<roblox version="4">
+  <Item class="Animation" referent="0">
+    <Properties>
+      <string name="Name">Walk</string>
+      <ContentId name="AnimationId">
+        <url>rbxassetid://92505401336649</url>
+      </ContentId>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

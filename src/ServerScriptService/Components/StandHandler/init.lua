@@ -18,7 +18,8 @@ local Janitor = require(ReplicatedStorage.Utilities.Janitor)
 local Format = require(ReplicatedStorage.Utilities.Format)
 local SharedUtilities = require(ReplicatedStorage.Utilities.SharedUtilities)
 local Signal = require(ReplicatedStorage.Utilities.Signal)
-local Entities = require(ReplicatedStorage.DataModules.Entities)
+local Entities = require(ReplicatedStorage.DataModules.EntityCatalog)
+local LuckyBoxes = require(ReplicatedStorage.DataModules.LuckyBoxes)
 local DevProducts = require(ReplicatedStorage.DataModules.DevProducts)
 local MarketplaceHandler = require(ServerScriptService.Components.MarketplaceHandler)
 local Mutations = require(ReplicatedStorage.DataModules.Mutations)
@@ -26,7 +27,6 @@ local Mutations = require(ReplicatedStorage.DataModules.Mutations)
 -- Dependencies
 local InventoryHandler = require("./InventoryHandler")
 local PlotHandler = require("./PlotHandler")
-local StarterPlayer = game:GetService("StarterPlayer")
 
 local FLOOR_SPAWN_NAME = "FloorSpawn"
 local EXTRA = "Floor"
@@ -56,6 +56,10 @@ local StandStateEnum = {
 	Luckyblock = "Luckyblock"
 }
 
+local function isValidAnimationId(animationId)
+	return typeof(animationId) == "string" and string.match(animationId, "^rbxassetid://%d+$") ~= nil
+end
+
 local function EmitVFX(VFX)
 	for _, v in VFX:GetDescendants() do
 		if v:IsA("ParticleEmitter") then
@@ -79,11 +83,124 @@ local function FormatCash(amount: number)
 	return "$" .. Format.abbreviateCash(amount)
 end
 
+local function isValidEntityStandData(entityData)
+	if typeof(entityData) ~= "table" then
+		return false
+	end
+
+	local entityName = entityData.name
+	local mutationName = entityData.mutation
+	if typeof(entityName) ~= "string" or not Entities[entityName] then
+		return false
+	end
+
+	if typeof(mutationName) ~= "string" or not Mutations[mutationName] then
+		return false
+	end
+
+	return true
+end
+
+local function isValidLuckyBoxStandData(luckyBoxData)
+	if not isValidEntityStandData(luckyBoxData) then
+		return false
+	end
+
+	return LuckyBoxes.IsLuckyBox(luckyBoxData.name)
+end
+
+local function normalizeStandData(player: Player, standNumber: number, standData: any)
+	if typeof(standData) ~= "table" then
+		standData = {
+			cash = 0,
+			entity = false,
+			luckybox = false,
+		}
+		DataService.server:set(player, {"stands", standNumber}, standData)
+		return standData
+	end
+
+	local didChange = false
+	local currentEntity = standData.entity
+	local currentLuckybox = standData.luckybox
+
+	if typeof(currentEntity) == "table" and (typeof(currentEntity.mutation) ~= "string" or not Mutations[currentEntity.mutation]) and Mutations.Normal then
+		currentEntity.mutation = "Normal"
+		didChange = true
+	end
+
+	if typeof(currentLuckybox) == "table" and (typeof(currentLuckybox.mutation) ~= "string" or not Mutations[currentLuckybox.mutation]) and Mutations.Normal then
+		currentLuckybox.mutation = "Normal"
+		didChange = true
+	end
+
+	if typeof(currentEntity) == "table" and LuckyBoxes.IsLuckyBox(currentEntity.name) then
+		currentLuckybox = currentEntity
+		currentEntity = false
+		didChange = true
+	end
+
+	if currentEntity and not isValidEntityStandData(currentEntity) then
+		currentEntity = false
+		didChange = true
+	end
+
+	if currentLuckybox and not isValidLuckyBoxStandData(currentLuckybox) then
+		currentLuckybox = false
+		didChange = true
+	end
+
+	if currentEntity == nil then
+		currentEntity = false
+		didChange = true
+	end
+
+	if currentLuckybox == nil then
+		currentLuckybox = false
+		didChange = true
+	end
+
+	if currentEntity and currentLuckybox then
+		currentLuckybox = false
+		didChange = true
+	end
+
+	local currentCash = standData.cash
+	if typeof(currentCash) ~= "number" then
+		currentCash = 0
+		didChange = true
+	end
+
+	if currentLuckybox and currentCash ~= 0 then
+		currentCash = 0
+		didChange = true
+	end
+
+	if currentLuckybox and standData.lastOnlineTime ~= nil then
+		standData.lastOnlineTime = nil
+		didChange = true
+	end
+
+	standData.entity = currentEntity
+	standData.luckybox = currentLuckybox
+	standData.cash = currentCash
+
+	if didChange then
+		DataService.server:set(player, {"stands", standNumber}, standData)
+	end
+
+	return standData
+end
+
 function StandController.GetStandData(self: Stand)
-	local _, informations = pcall(function()
+	local success, informations = pcall(function()
 		return DataService.server:get(self.ownership, {"stands", self.standNumber})
 	end)
-	return informations
+	if not success then
+		return nil
+	end
+
+	return normalizeStandData(self.ownership, self.standNumber, informations)
 end
 
 function StandController.CalculateOfflineForTime(self: Stand, timeAmount)
@@ -96,7 +213,7 @@ end
 
 function StandController.GetOfflineEarnings(self: Stand)
 	local Informations = self:GetStandData()
-	if Informations.lastOnlineTime and Informations.entity then
+	if Informations and Informations.lastOnlineTime and Informations.entity then
 		local TimeDifference = os.time() - Informations.lastOnlineTime
 		local Clamped = math.min(TimeDifference, GlobalConfiguration.OfflineTime)
 		return self:CalculateOfflineForTime(Clamped)
@@ -105,13 +222,13 @@ end
 
 function StandController.GetAllOfflineEarnings(player)
 	local currentEarnings = 0
-	
+
 	if StandsCache[player] then
 		for _, v in StandsCache[player] do
 			currentEarnings += v:CalculateOfflineForTime(GlobalConfiguration.OfflineTime)
 		end
 	end
-	
+
 	return currentEarnings
 end
 
@@ -122,17 +239,18 @@ end
 function StandController.StartMoneyGenerationCycle(self: Stand)
 	task.spawn(function()
 		local block = false
-		
+
 		self.signal:Once(function()
 			block = true
 		end)
-		
+
 		while task.wait() do
 			local standData = self:GetStandData() 
-			if not standData.entity or block then break end
-			
+			if not standData or not standData.entity or block then break end
+
 			DataService.server:update(self.ownership, {"stands", self.standNumber, "cash"}, function(old)
-				local target = old + SharedFunctions.GetEarningsPerSecond(standData.entity.name, standData.entity.mutation,( standData.entity.upgradeLevel or 0), self.ownership, standData.entity.traits)
+				local currentAmount = if typeof(old) == "number" then old else 0
+				local target = currentAmount + SharedFunctions.GetEarningsPerSecond(standData.entity.name, standData.entity.mutation,( standData.entity.upgradeLevel or 0), self.ownership, standData.entity.traits)
 				self.cashSpring.Target = target
 				return target
 			end)
@@ -146,19 +264,19 @@ function StandController.ClaimGeneratedMoney(self: Stand)
 	if Informations and Informations.entity then
 		local OfflineEarnings = self:GetOfflineEarnings()
 		if Informations.cash == 0 then return end
-		
+
 		self.cashSpring.Target = 0; self.cashSpring.Position = 0;
 		DataService.server:update(self.ownership, {"cash"}, function(cashold)
 			local amountToGive = Informations.cash + (OfflineEarnings or 0)
 			RemoteBank.CashNotification:FireClient(self.ownership, amountToGive)
 			return cashold + amountToGive
 		end)
-		
+
 		RemoteBank.JumpEntity:FireClient(self.ownership, self.entityModel, self.entityModel:GetPivot(), CFrame.new(0, 5, 0))
 		if self.cashVfx then
 			EmitVFX(self.cashVfx)
 		end
-		
+
 		self.cashBillboard.OfflineRewards.Visible = false
 
 		DataService.server:set(self.ownership, {"stands", self.standNumber, "lastOnlineTime"}, nil, true)
@@ -173,10 +291,10 @@ end
 function StandController.UpdateBillboard(self: Stand)
 	local OfflineEarnings = self:GetOfflineEarnings()
 	local OfflineLabel = self.cashBillboard.OfflineRewards
-	
+
 	OfflineLabel.Visible = OfflineEarnings and true or false
 	OfflineLabel.Text = "Offline: " .. FormatCash(OfflineEarnings or 0)
-	
+
 	self.janitor:Add(RunService.Heartbeat:Connect(function()
 		if not self.entityModel then return end
 		self.cashBillboard.CashLabel.Text = FormatCash(math.round(self.cashSpring.Position))
@@ -187,10 +305,19 @@ function StandController.ChangeState(self: Stand, State)
 	self.model:SetAttribute("State", State)
 end
 
+function StandController.DestroyCurrentModel(self: Stand)
+	if self.entityModel then
+		self.entityModel:Destroy()
+		self.entityModel = nil
+	end
+
+	self.entityBillboard = nil
+	self.vfx = nil
+	self.cashVfx = nil
+end
+
 function StandController.UpdateScale(self: Stand)
-	local standData = self:GetStandData()
-	if standData.entity then
-		
+	if self.entityModel then
 		local PositionCFrame = CFrame.new()
 		local StandCFrame = self.model:FindFirstChild("Stand"):GetPivot()
 		local StandYSize = self.model:FindFirstChild("Stand"):GetExtentsSize().Y
@@ -199,41 +326,51 @@ function StandController.UpdateScale(self: Stand)
 		else
 			PositionCFrame = StandCFrame * CFrame.new(0, StandYSize / 2 + GlobalConfiguration.DistanceFromStand + self.entityModel:GetExtentsSize().Y / 2, 0)
 		end
-		
+
 		self.entityModel:PivotTo(PositionCFrame * CFrame.Angles(0, math.rad(GlobalConfiguration.AnglesOfRotation), 0))
 	end
 end
 
 function StandController.SpawnEntity(self: Stand, entityInformations)
+	self:DestroyCurrentModel()
+
 	local NewEntity = SharedFunctions.CreateEntity(entityInformations.name, entityInformations.mutation, false, entityInformations.upgradeLevel, entityInformations.traits)
-	
+	if not NewEntity then
+		return false
+	end
+
+	local entityRoot = SharedFunctions.FindRoot(NewEntity)
+	if not entityRoot then
+		return false
+	end
+
 	local EntityBillboard = SharedFunctions.CreateBillboard(entityInformations.name, entityInformations.mutation, entityInformations.upgradeLevel, self.ownership, false, entityInformations.traits)
 	self.entityBillboard = EntityBillboard
-	EntityBillboard.Parent = SharedFunctions.FindRoot(NewEntity)
-	
+	EntityBillboard.Parent = entityRoot
+
 	StandController.CacheIndexObject(self.ownership, entityInformations)
-	
+
 	for _, v in pairs(NewEntity:GetChildren()) do
 		if v:IsA("BasePart") then
 			v.Anchored = true
 		end
 	end
-	
+
 	local UpgradeEffectThing = ReplicatedStorage.Assets.VFX.Upgrade:Clone()
-	UpgradeEffectThing.Parent = SharedFunctions.FindRoot(NewEntity)
+	UpgradeEffectThing.Parent = entityRoot
 	self.vfx = UpgradeEffectThing
-	
+
 	local CashEffect = ReplicatedStorage.Assets.VFX.CashClaimed:Clone()
-	CashEffect.Parent = SharedFunctions.FindRoot(NewEntity)
+	CashEffect.Parent = entityRoot
 	self.cashVfx = CashEffect
-	
+
 	NewEntity.Parent = self.model
 	self.entityModel = NewEntity
-	
+
 	RemoteBank.OfflineUpdated:FireClient(self.ownership)
-	
+
 	local animationToPlay = Entities[entityInformations.name].Animation
-	if animationToPlay then
+	if isValidAnimationId(animationToPlay) then
 		local animationInstance = Instance.new("Animation")
 		animationInstance.AnimationId = animationToPlay
 		local humanoid = NewEntity:FindFirstChildWhichIsA("Humanoid") or NewEntity:FindFirstChildOfClass("AnimationController")
@@ -244,9 +381,9 @@ function StandController.SpawnEntity(self: Stand, entityInformations)
 			end
 		end
 	end
-	
+
 	RemoteBank.ScaleTween:FireClient(self.ownership, NewEntity, 0.001, NewEntity:GetScale(), false, 0.2)
-	
+
 	-- Placing setups
 	self:UpdateBillboardVisiblity(true)
 	self:UpdateBillboard()
@@ -254,29 +391,71 @@ function StandController.SpawnEntity(self: Stand, entityInformations)
 	self:ChangeState(StandStateEnum.Occupied)
 	self:UpdateScale()
 	self:UpgradeCommunication()
+	return true
+end
+
+function StandController.SpawnLuckybox(self: Stand, luckyboxInformations)
+	self:DestroyCurrentModel()
+
+	local NewLuckybox = SharedFunctions.CreateEntity(luckyboxInformations.name, luckyboxInformations.mutation, false, luckyboxInformations.upgradeLevel, luckyboxInformations.traits)
+	if not NewLuckybox then
+		return false
+	end
+
+	local luckyboxRoot = SharedFunctions.FindRoot(NewLuckybox)
+	if not luckyboxRoot then
+		return false
+	end
+
+	local luckyboxBillboard = SharedFunctions.CreateBillboard(luckyboxInformations.name, luckyboxInformations.mutation, luckyboxInformations.upgradeLevel, self.ownership, true, luckyboxInformations.traits)
+	self.entityBillboard = luckyboxBillboard
+	luckyboxBillboard.Parent = luckyboxRoot
+
+	for _, v in pairs(NewLuckybox:GetChildren()) do
+		if v:IsA("BasePart") then
+			v.Anchored = true
+		end
+	end
+
+	NewLuckybox.Parent = self.model
+	self.entityModel = NewLuckybox
+
+	RemoteBank.ScaleTween:FireClient(self.ownership, NewLuckybox, 0.001, NewLuckybox:GetScale(), false, 0.2)
+
+	self:UpdateBillboardVisiblity(false)
+	self.cashBillboard.OfflineRewards.Visible = false
+	self:ChangeState(StandStateEnum.Luckyblock)
+	self:UpdateScale()
+	self:UpgradeCommunication()
+	return true
 end
 
 function StandController.PickupEntity(self: Stand, dontGive)
-	local currentEntityData = self:GetStandData().entity
+	local standData = self:GetStandData()
+	if not standData then
+		return
+	end
+
+	local currentEntityData = standData.entity
 	if currentEntityData then
-		
+
 		self:UpdateBillboardVisiblity(false)
 		self:ChangeState(StandStateEnum.Empty)
 		self:ClaimGeneratedMoney()
-		
+
 		if not dontGive then
 			InventoryHandler.CacheTool(self.ownership, "Entity", currentEntityData)
 		end
-		
+
 		DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, false)
-		self.entityModel:Destroy()
-		self.entityModel = nil
-		
+		DataService.server:set(self.ownership, {"stands", self.standNumber, "luckybox"}, false)
+		self:DestroyCurrentModel()
+
 		self.signal:Fire()
 		RemoteBank.OfflineUpdated:FireClient(self.ownership)
-		
+
 		self:UpgradeCommunication()
-		
+
 		if self.ownership.Character then
 			local CurrentEquipped = self.ownership.Character:FindFirstChildOfClass("Tool")
 			if CurrentEquipped then
@@ -287,31 +466,36 @@ function StandController.PickupEntity(self: Stand, dontGive)
 end
 
 function StandController.UpgradeEntity(self: Stand)
-	local currentEntityData = self:GetStandData().entity
+	local standData = self:GetStandData()
+	if not standData then
+		return
+	end
+
+	local currentEntityData = standData.entity
 	if currentEntityData then
 		local currentCash = DataService.server:get(self.ownership, "cash")
 		local UpgradePrice = SharedFunctions.GetUpgradeCost(currentEntityData.name, (currentEntityData.upgradeLevel or 0) + 1)
-		
+
 		if currentCash >= UpgradePrice then
 			DataService.server:update(self.ownership, "cash", function(old)
 				return old - UpgradePrice
 			end)
-			
+
 			DataService.server:update(self.ownership, {"stands", self.standNumber, "entity", "upgradeLevel"}, function(old)
 				return (old or 0) + 1
 			end)
-			
+
 			self:UpgradeCommunication()
 			self:UpdateScale()
-			
+
 			RemoteBank.OfflineUpdated:FireClient(self.ownership)
-			
+
 			if self.vfx then
 				EmitVFX(self.vfx)
 			end
-			
+
 			RemoteBank.SendNotification:FireClient(self.ownership, "Upgraded " .. currentEntityData.name .. " to level " .. (currentEntityData.upgradeLevel or 0) + 1, Color3.new(0.682353, 1, 0))
-			
+
 			self.entityBillboard.CashLabel.Text = Format.abbreviateCash(SharedFunctions.GetEarningsPerSecond(currentEntityData.name, currentEntityData.mutation, currentEntityData.upgradeLevel or 0, self.ownership, currentEntityData.traits)) .. "$/s"
 		end
 	end
@@ -319,43 +503,113 @@ end
 
 
 function StandController.PlaceEntity(self: Stand)
-	if self.ownership.Character and not self.entityModel then
-		local CurrentEquipped = self.ownership.Character:FindFirstChildOfClass("Tool")
-		if CurrentEquipped then
-			local Id = CurrentEquipped:GetAttribute("Id")
-			if CurrentEquipped:HasTag("Entity") and Id then
-				local EntityInformations = DataService.server:get(self.ownership, {"inventory", Id})
-				if EntityInformations then
-					DataService.server:update(self.ownership, {"inventory", Id}, function(oldInformations)
-						DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, oldInformations.informations)
-						
-						self:SpawnEntity(oldInformations.informations)
-						
-						CurrentEquipped:Destroy()
-						
-						RemoteBank.PlacedEntity:FireClient(self.ownership)
-						
-						
-						return false
-					end)
-				end
-			end
-		end
+	if not self.ownership.Character or self.entityModel then
+		return
 	end
+
+	local CurrentEquipped = self.ownership.Character:FindFirstChildOfClass("Tool")
+	if not CurrentEquipped then
+		return
+	end
+
+	local Id = CurrentEquipped:GetAttribute("Id")
+	if not Id then
+		return
+	end
+
+	if not CurrentEquipped:HasTag("Entity") and not CurrentEquipped:HasTag("Luckybox") and not CurrentEquipped:HasTag("Luckyblock") then
+		return
+	end
+
+	DataService.server:update(self.ownership, {"inventory", Id}, function(oldInformations)
+		if typeof(oldInformations) ~= "table" or typeof(oldInformations.informations) ~= "table" then
+			return oldInformations
+		end
+
+		local informations = oldInformations.informations
+		local shouldPlaceLuckyBox = oldInformations.tag == "Luckybox"
+			or oldInformations.tag == "Luckyblock"
+			or LuckyBoxes.IsLuckyBox(informations.name)
+
+		local hasSpawned = false
+		if shouldPlaceLuckyBox then
+			DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, false)
+			DataService.server:set(self.ownership, {"stands", self.standNumber, "luckybox"}, informations)
+			DataService.server:set(self.ownership, {"stands", self.standNumber, "cash"}, 0)
+			DataService.server:set(self.ownership, {"stands", self.standNumber, "lastOnlineTime"}, nil, true)
+
+			hasSpawned = self:SpawnLuckybox(informations)
+		else
+			DataService.server:set(self.ownership, {"stands", self.standNumber, "luckybox"}, false)
+			DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, informations)
+
+			hasSpawned = self:SpawnEntity(informations)
+		end
+
+		if not hasSpawned then
+			if shouldPlaceLuckyBox then
+				DataService.server:set(self.ownership, {"stands", self.standNumber, "luckybox"}, false)
+			else
+				DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, false)
+			end
+			self:ChangeState(StandStateEnum.Empty)
+			return oldInformations
+		end
+
+		CurrentEquipped:Destroy()
+		RemoteBank.PlacedEntity:FireClient(self.ownership)
+
+		return false
+	end)
+end
+
+function StandController.OpenLuckyblock(self: Stand)
+	local standData = self:GetStandData()
+	if not standData or not standData.luckybox then
+		return
+	end
+
+	local luckyboxData = standData.luckybox
+	local rolledBrainrot = LuckyBoxes.GetRandomBrainrot(luckyboxData.name)
+	if not rolledBrainrot or not Entities[rolledBrainrot] then
+		RemoteBank.SendNotification:FireClient(self.ownership, "This mystery box has no valid rewards.", Color3.new(1, 0.180392, 0.180392))
+		return
+	end
+
+	local rewardMutation = SharedFunctions.GetRandomMutation() or "Normal"
+	local rewardData = {
+		name = rolledBrainrot,
+		mutation = rewardMutation,
+		traits = {},
+	}
+
+	DataService.server:set(self.ownership, {"stands", self.standNumber, "luckybox"}, false)
+	DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, rewardData)
+	DataService.server:set(self.ownership, {"stands", self.standNumber, "cash"}, 0)
+
+	if not self:SpawnEntity(rewardData) then
+		DataService.server:set(self.ownership, {"stands", self.standNumber, "entity"}, false)
+		self:ChangeState(StandStateEnum.Empty)
+		return
+	end
+
+	local displayName = Entities[rolledBrainrot].DisplayName or rolledBrainrot
+	RemoteBank.LuckyblockOpened:FireClient(self.ownership, self.standNumber, rewardData)
+	RemoteBank.SendNotification:FireClient(self.ownership, "You opened a mystery box and got " .. displayName .. "!", Color3.new(0.682353, 1, 0))
 end
 
 function StandController.CreateNewStand(player: Player, informations: {}, AddData: boolean)
 	local StandNumber = #StandsCache[player] + 1
 	local Floor = math.floor((StandNumber - 1) / GlobalConfiguration.StandsPerFloor)
 	local FloorName = EXTRA .. Floor
-	
+
 	if Floor >= GlobalConfiguration.MaxFloors then warn("Max floors was reached, cant spawn any more stands.") return end
-	
+
 	local AdjustedNumber = StandNumber - Floor * GlobalConfiguration.StandsPerFloor
-	
+
 	local FloorFolder: Folder = informations.plot.Floors:FindFirstChild(FloorName)
 	if FloorFolder then
-		
+
 		local DecorationsModel = FloorFolder:FindFirstChildOfClass("Model")
 		if not DecorationsModel then
 			local NewDecorations = ReplicatedStorage.Assets.PlotFloors:FindFirstChild(FloorName)
@@ -368,7 +622,7 @@ function StandController.CreateNewStand(player: Player, informations: {}, AddDat
 				warn("No new decorations could be found for floor number " .. Floor)
 			end
 		end
-		
+
 		local StandsContainer = FloorFolder:FindFirstChild("Stands")
 		if not StandsContainer then
 			StandsContainer = Instance.new("Folder")
@@ -376,10 +630,10 @@ function StandController.CreateNewStand(player: Player, informations: {}, AddDat
 			informations.janitor:Add(StandsContainer)
 			StandsContainer.Parent = FloorFolder
 		end
-		
+
 		local StandsFolder = FloorFolder:FindFirstChild("StandSpawns")
 		assert(StandsFolder, "Did you forget to put a StandSpawns folder inside of the floor?")
-		
+
 		local StandSpawn = StandsFolder:FindFirstChild(AdjustedNumber)
 		if StandSpawn then
 			local Cloned = ReplicatedStorage.Assets.PlotAssets:FindFirstChild(GlobalConfiguration.StandTemplateName):Clone()
@@ -387,13 +641,15 @@ function StandController.CreateNewStand(player: Player, informations: {}, AddDat
 			informations.janitor:Add(Cloned)
 			Cloned.Name = AdjustedNumber
 			Cloned.Parent = StandsContainer
-			
-			if AddData or DataService.server:get(player, {"stands", StandNumber, "entity"}) and (not Entities[DataService.server:get(player, {"stands", StandNumber, "entity", "name"})] or not Mutations[DataService.server:get(player, {"stands", StandNumber, "entity", "mutation"})]) then
+
+			if AddData or typeof(DataService.server:get(player, {"stands", StandNumber})) ~= "table" then
 				DataService.server:set(player, {"stands", StandNumber}, {
 					cash = 0,
+					entity = false,
+					luckybox = false,
 				})
 			end
-			
+
 			local self : Stand = setmetatable({
 				model = Cloned,
 				ownership = player,
@@ -403,7 +659,7 @@ function StandController.CreateNewStand(player: Player, informations: {}, AddDat
 				janitor = informations.janitor,
 				signal = Signal.new()
 			}, StandController)
-			
+
 			local Touchpart = Cloned:FindFirstChild("TouchPart", true)
 			if Touchpart then
 				SharedUtilities.attachToTouchEvents(Touchpart, function(plr)
@@ -412,23 +668,26 @@ function StandController.CreateNewStand(player: Player, informations: {}, AddDat
 					end
 				end, 1)
 			end
-			
+
 			local NewCashBillboard = script.CashBillboard:Clone()
 			NewCashBillboard.Parent = Cloned:FindFirstChild("TouchPart", true)
-			
+
 			self.cashBillboard = NewCashBillboard
 			NewCashBillboard.Enabled = false
-			
-			local Entity = self:GetStandData().entity
-			if Entity then
-				self:SpawnEntity(Entity)
+
+			local standData = self:GetStandData()
+			if standData and standData.entity then
+				self:SpawnEntity(standData.entity)
+			elseif standData and standData.luckybox then
+				self:SpawnLuckybox(standData.luckybox)
+			else
+				self:ChangeState(StandStateEnum.Empty)
 			end
-			
-			self:ChangeState(Entity and StandStateEnum.Occupied or StandStateEnum.Empty)
+
 			RemoteBank.StandAdded:FireAllClients(player, Cloned, StandNumber)
-			
+
 			StandsCache[player][StandNumber] = self
-			
+
 			return self
 		else
 			warn("No stand spawn could be found")
@@ -442,13 +701,13 @@ function StandController.OnPlotInitialized(player: Player, informations)
 	DataService.server:waitForData(player)
 	if StandsCache[player] then return end
 	StandsCache[player] = {}
-	
+
 	informations.janitor:Add(function()
 		StandsCache[player] = nil
 	end)
-	
+
 	local LenghtOfStands = #DataService.server:get(player, "stands")
-	
+
 	for i = 1, math.max(GlobalConfiguration.StarterStands, LenghtOfStands) do
 		local hasData = DataService.server:get(player, {"stands", i})
 		StandController.CreateNewStand(player, informations, if hasData then false else true)
@@ -460,23 +719,23 @@ function StandController:Initialize()
 	for player, informations in PlotHandler.GetLoadedPlots() do
 		StandController.OnPlotInitialized(player, informations)
 	end
-	
+
 	SignalBank.PlotInitialized:Connect(StandController.OnPlotInitialized)
-	
+
 	RemoteBank.GetOfflineAmount.OnServerInvoke = function(player)
 		return StandController.GetAllOfflineEarnings(player) or 0
 	end
-	
+
 	RemoteBank.PlaceStand.OnServerInvoke = function(playerCalling, standNumber)
 		local container = StandsCache[playerCalling]
 		if not container then return end
-		
+
 		local stand = container[standNumber]
 		if stand then
 			stand:PlaceEntity()
 		end
 	end
-	
+
 	RemoteBank.PickupStand.OnServerInvoke = function(playerCalling, standNumber)
 		local container = StandsCache[playerCalling]
 		if not container then return end
@@ -486,7 +745,7 @@ function StandController:Initialize()
 			stand:PickupEntity()
 		end
 	end
-	
+
 	RemoteBank.UpgradeStand.OnServerEvent:Connect(function(playerCalling, standNumber)
 		local container = StandsCache[playerCalling]
 		if not container then return end
@@ -496,7 +755,7 @@ function StandController:Initialize()
 			stand:UpgradeEntity()
 		end
 	end)
-	
+
 	RemoteBank.OpenStand.OnServerInvoke = function(playerCalling, standNumber)
 		local container = StandsCache[playerCalling]
 		if not container then return end
@@ -506,7 +765,7 @@ function StandController:Initialize()
 			stand:OpenLuckyblock()
 		end
 	end
-	
+
 	RemoteBank.StealStand.OnServerInvoke = function(playerCalling, otherPlayer, standNumber)
 		if otherPlayer and standNumber then
 			if playerCalling == otherPlayer then return end
@@ -526,7 +785,7 @@ function StandController:Initialize()
 			end
 		end
 	end
-	
+
 	RemoteBank.GetStands.OnServerInvoke = function(playerCalling)
 		local t = {}
 		for player, stands in StandsCache do
@@ -537,7 +796,7 @@ function StandController:Initialize()
 		end
 		return t
 	end
-	
+
 	SignalBank.ClearEntityOnStand:Connect(function(otherplayer, standNumber)
 		local container = StandsCache[otherplayer]
 		if not container then return end

@@ -16,7 +16,7 @@
       <CoordinateFrame name="CFrame">
         <X>75.75</X>
         <Y>28.999996</Y>
-        <Z>251.25</Z>
+        <Z>241.24825</Z>
         <R00>0</R00>
         <R01>0</R01>
         <R02>-1</R02>
@@ -34,7 +34,7 @@
       <bool name="CastShadow">true</bool>
       <string name="CollisionGroup">Default</string>
       <int name="CollisionGroupId">0</int>
-      <Color3uint8 name="Color3uint8">8540723</Color3uint8>
+      <Color3uint8 name="Color3uint8">9730151</Color3uint8>
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>

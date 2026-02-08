@@ -8,6 +8,7 @@ local Players = game:GetService('Players')
 local DataService = require(ReplicatedStorage.Utilities.DataService)
 local Bases = require(ReplicatedStorage.DataModules.Bases)
 local SharedFunctions = require(ReplicatedStorage.DataModules.SharedFunctions)
+local LuckyBoxes = require(ReplicatedStorage.DataModules.LuckyBoxes)
 local Format = require(ReplicatedStorage.Utilities.Format)
 
 local GlobalConfiguration = require(ReplicatedStorage.DataModules.GlobalConfiguration)
@@ -31,7 +32,7 @@ local SpawnedBases = {}
 function BasesHandler._getAvailableStandNumber(baseNumber, excludeStands)
 	local baseInformations = SpawnedBases[baseNumber]
 	if not baseInformations then return nil end
-	
+
 	local occupiedStands = {}
 
 	for standNumber, _ in pairs(excludeStands) do
@@ -69,16 +70,24 @@ function BasesHandler.SpawnEntityOnStand(baseNumber, standNumber, forceRemove, e
 		end
 
 		local BaseInformations = Bases[baseNumber]
-		local NewEntityRandom = entityName or SharedFunctions.GetRandomEntity(BaseInformations.Percentages)
+		local NewEntityRandom = entityName
+			or LuckyBoxes.GetRandomLuckyBoxForBase()
+			or SharedFunctions.GetRandomEntity(BaseInformations.Percentages)
 		local BaseModel: Base = baseInformations.BaseModel
-		
-		print("spawning entity")
 
 		if NewEntityRandom then
 			local StandInBase = BaseModel.Stands:FindFirstChild(standNumber)
 			if StandInBase then
 				local SpawnPoint = StandInBase:FindFirstChild("SpawnPoint")
+				if not SpawnPoint then
+					return
+				end
+
 				local NewEntity = EntityHandler.SpawnEntity(NewEntityRandom, SpawnPoint.CFrame, baseNumber)
+				if not NewEntity then
+					return
+				end
+
 				baseInformations.Stands[standNumber] = NewEntity
 				NewEntity.destroyedSignal:Connect(function()
 					baseInformations.Stands[standNumber] = nil
@@ -106,6 +115,10 @@ function BasesHandler._spawnRobuxPurchasablesAsync(baseNumber)
 			local StandInBase = BaseModel.Stands:FindFirstChild(standNumber)
 			if StandInBase then
 				local SpawnPoint = StandInBase:FindFirstChild("SpawnPoint")
+				if not SpawnPoint then
+					continue
+				end
+
 				local NewEntity = EntityHandler.SpawnEntity(
 					purchasableData.EntityName, 
 					SpawnPoint.CFrame, 
@@ -114,7 +127,9 @@ function BasesHandler._spawnRobuxPurchasablesAsync(baseNumber)
 					purchasableData.PurchaseId
 				)
 
-				baseInformations.RobuxStands[standNumber] = NewEntity
+				if NewEntity then
+					baseInformations.RobuxStands[standNumber] = NewEntity
+				end
 			end
 		end
 	end
@@ -139,21 +154,18 @@ function BasesHandler.CreateNewBase(baseNumber: number, spawnCFrame: CFrame)
 
 		for _, v in NewBaseTemplate.Buttons:GetChildren() do
 			local TouchPart = v:FindFirstChild("TouchPart")
-			
+
 			task.delay(1, function()
-				print(v:GetAttribute("Id"))
 				TouchPart.Attachment.BillboardGui.PriceLabel.Text = SharedUtilities.getProductPrice(v:GetAttribute("Id"), Enum.InfoType.Product) .. ""
 			end)
-			
+
 			SharedUtilities.attachToTouchEvents(TouchPart, function(player, char)
 				local Signal = MarketplaceHandler.Purchase(player, false, v:GetAttribute("Id"))
 				Signal:Connect(function(purchased)
 					if purchased then
 						local newStandNumber = BasesHandler._getAvailableStandNumber(baseNumber, SpawnedBases[baseNumber].RobuxStands)
-						print(newStandNumber)
 						if newStandNumber then
 							local entity = SharedFunctions.GetRandomEntity({[v:GetAttribute("Rarity")] = 100})
-							print(entity)
 							BasesHandler.SpawnEntityOnStand(baseNumber, newStandNumber, true, entity)
 						end
 					end

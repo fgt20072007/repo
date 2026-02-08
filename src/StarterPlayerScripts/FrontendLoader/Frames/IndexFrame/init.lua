@@ -19,7 +19,7 @@ local bottom = IndexFrame.Container.Bottom
 
 local Mutations = require(ReplicatedStorage.DataModules.Mutations)
 local Rarities = require(ReplicatedStorage.DataModules.Rarities)
-local Entities = require(ReplicatedStorage.DataModules.Entities)
+local Entities = require(ReplicatedStorage.DataModules.EntityCatalog)
 local SharedFunctions = require(ReplicatedStorage.DataModules.SharedFunctions)
 
 local GlobalConfiguration = require(ReplicatedStorage.DataModules.GlobalConfiguration)
@@ -36,8 +36,15 @@ local CurrentMutation = "Normal"
 
 local ViewportCaches = {}
 
+local function isValidAnimationId(animationId)
+	return typeof(animationId) == "string" and string.match(animationId, "^rbxassetid://%d+$") ~= nil
+end
+
 local function HandlerViewport(Model, ViewportFrame, Animation)
 	ViewportFrame:ClearAllChildren()
+	if not Model or not Model:IsA("Model") then
+		return ViewportFrame
+	end
 
 	local WolrdModel = Instance.new("WorldModel")
 	WolrdModel.Parent = ViewportFrame
@@ -45,13 +52,13 @@ local function HandlerViewport(Model, ViewportFrame, Animation)
 	local ModelClone = Model:Clone()
 	ModelClone:PivotTo(CFrame.new(0,0,0))
 	ModelClone.Parent = WolrdModel
-	
+
 	local Camera = Instance.new("Camera")
 	Camera:PivotTo(CFrame.lookAt(CameraUtils:GetCameraPositionForModel(ModelClone, 70), Vector3.zero))
 	Camera.Parent = ViewportFrame
 	ViewportFrame.CurrentCamera = Camera
-	
-	if Animation then
+
+	if isValidAnimationId(Animation) then
 		local animationInstance = Instance.new("Animation")
 		animationInstance.AnimationId = Animation
 		local Humanoid = ModelClone:FindFirstChildWhichIsA("Humanoid") or ModelClone:FindFirstChildWhichIsA("AnimationController")
@@ -73,7 +80,6 @@ function Frame.FillScrollingFrame(scrollingFrame, Mutation)
 	local indexInformations = DataService.client:get({"index", Mutation})
 
 	DataService.client:getArrayInsertedSignal({"index", Mutation}):Connect(function(index, value)
-		print(value, index)
 		local func = ViewportCaches[Mutation][value]
 		if func then func() end
 		Frame.UpdateBar()
@@ -83,13 +89,22 @@ function Frame.FillScrollingFrame(scrollingFrame, Mutation)
 	ViewportCaches[Mutation] = {}
 
 	for entityName, entityInfo in Entities do
+		if typeof(entityInfo) ~= "table" then
+			continue
+		end
+
+		local rarityName = entityInfo.Rarity
+		local rarityInfo = if typeof(rarityName) == "string" then Rarities[rarityName] else nil
+		if not rarityInfo then
+			continue
+		end
 
 		local new = EntityTemplate:Clone()
 
 		new.Name = entityName
-		new.LayoutOrder = Rarities[entityInfo.Rarity].Weight
-		new.RarityLabel.Text = entityInfo.Rarity
-		local RarityGradient = Rarities[entityInfo.Rarity].Gradient:Clone()
+		new.LayoutOrder = rarityInfo.Weight
+		new.RarityLabel.Text = rarityName
+		local RarityGradient = rarityInfo.Gradient:Clone()
 		RarityGradient.Parent = new.RarityLabel
 		new.NameLabel.Text = entityInfo.DisplayName
 		new.Visible = true
@@ -98,9 +113,10 @@ function Frame.FillScrollingFrame(scrollingFrame, Mutation)
 		if indexInformations and table.find(indexInformations, entityName) then
 			owns = true
 		end
-		
-		local Viewport = HandlerViewport(entityInfo.Model:FindFirstChild(Mutation), new.ViewportFrame, entityInfo.Animation)
-		
+
+		local variantModel = select(1, SharedFunctions.GetEntityVariantModel(entityName, Mutation))
+		local Viewport = HandlerViewport(variantModel, new.ViewportFrame, entityInfo.Animation)
+
 		if owns then
 			Viewport.ImageColor3 = Color3.fromRGB(255, 255, 255)
 		else
@@ -172,7 +188,7 @@ function Frame:Initialize()
 			end
 
 			new.Parent = ChoichesButtons
-			
+
 			ArrowsCache[mutationName] = new.Arrow
 			if mutationName == CurrentMutation then
 				new.Arrow.Visible = true
@@ -185,12 +201,12 @@ function Frame:Initialize()
 				for i, v in ScrollingFrameCache do
 					v.Visible = i == mutationName
 				end
-				
+
 				for _, v in ArrowsCache do
 					v.Visible = false
 				end
 				new.Arrow.Visible = true
-				
+
 				Frame.UpdateBar()
 				Frame.UpdateTop()
 			end)

@@ -16,7 +16,8 @@ RaycastingParams.FilterDescendantsInstances = {workspace.Map}
 
 local Rarities = require(ReplicatedStorage.DataModules.Rarities)
 local Format = require(ReplicatedStorage.Utilities.Format)
-local Entities = require(ReplicatedStorage.DataModules.Entities)
+local Entities = require(ReplicatedStorage.DataModules.EntityCatalog)
+local LuckyBoxes = require(ReplicatedStorage.DataModules.LuckyBoxes)
 local Signal = require(ReplicatedStorage.Utilities.Signal)
 
 local EntityComponent = {}
@@ -54,11 +55,14 @@ local SharedFunctions = require(ReplicatedStorage.DataModules.SharedFunctions)
 local InventoryHandler = require("./InventoryHandler")
 local MarketplaceHandler = require("./MarketplaceHandler")
 
-local INFRONT_OFFSET = 2.3
+local INFRONT_OFFSET = 4.3
 local DISTANCE_BETWEEN = 5.5
 local HEIGH_DISTANCE = 6
 
-script.GrabAnimation.AnimationId = "rbxassetid://" .. GlobalConfiguration.GrabAnimationId
+local grabAnimationId = tonumber(GlobalConfiguration.GrabAnimationId)
+if grabAnimationId then
+	script.GrabAnimation.AnimationId = "rbxassetid://" .. tostring(grabAnimationId)
+end
 
 local Modifiers = {
 	[1] = 0,
@@ -69,6 +73,13 @@ local Lenght = #Modifiers
 
 local GrabbedListPerPlayer = {}
 
+local function getInventoryTagFromEntityName(entityName: string)
+	if LuckyBoxes.IsLuckyBox(entityName) then
+		return "Luckybox"
+	end
+	return "Entity"
+end
+
 function EntityComponent.IsCarrying(Player)
 	local list = GrabbedListPerPlayer[Player]
 	return list ~= nil and #list > 0
@@ -76,13 +87,11 @@ end
 
 function EntityComponent.DropAll(Player, bool, HumanoidCFrame, force)
 	if GrabbedListPerPlayer[Player] then
-		print(Player, bool, HumanoidCFrame, force)
-		
 		RemoteBank.SendNotification:FireClient(Player, "You lost an entity 😡")
 
 		GrabbedListPerPlayer[Player]:Drop(Player)
 	end
-	
+
 	if bool then
 
 		local char = Player.Character
@@ -155,7 +164,7 @@ function EntityComponent._handlePurchaseAsync(self: Entity, player: Player)
 	local signal = MarketplaceHandler.Purchase(player, false, self.productId)
 	signal:Connect(function(purchased)
 		if purchased then
-			InventoryHandler.CacheTool(player, "Entity", {name = self.name, mutation = self.mutation, traits = self.traits}, true)
+			InventoryHandler.CacheTool(player, getInventoryTagFromEntityName(self.name), {name = self.name, mutation = self.mutation, traits = self.traits}, true)
 		end
 	end)
 end
@@ -166,9 +175,11 @@ end
 
 function EntityComponent.InitializeBillboardSetup(self: Entity)
 	self.billboard.Parent = self.root
-	
-	self.billboard.CashLabel.Visible = true
-	self.billboard.CashLabel.Text = SharedFunctions.GetEarningsPerSecond(self.name, self.mutation) .. "$/s"
+
+	self.billboard.CashLabel.Visible = not self.isLuckyBox
+	if not self.isLuckyBox then
+		self.billboard.CashLabel.Text = SharedFunctions.GetEarningsPerSecond(self.name, self.mutation) .. "$/s"
+	end
 
 	if not self.isPurchasable then
 		self.timeConnection = task.spawn(function()
@@ -274,7 +285,7 @@ function EntityComponent.Claim(self: Entity, Player: Player)
 	RemoteBank.SendNotification:FireClient(Player, "You stole " .. self.name .. "! 😈")
 	Player:SetAttribute("Carrying", false)
 	self:RemoveFromPlayer(Player)
-	InventoryHandler.CacheTool(Player, "Entity", {name = self.name, mutation = self.mutation, traits = self.traits}, true)
+	InventoryHandler.CacheTool(Player, getInventoryTagFromEntityName(self.name), {name = self.name, mutation = self.mutation, traits = self.traits}, true)
 	EntityComponent.StopAllAnimations(Player)
 	self:Destroy()
 end
@@ -320,6 +331,16 @@ function EntityComponent.SpawnEntity(EntityName, SpawnCFrame: CFrame, BaseNumber
 	local randomMutation = SharedFunctions.GetRandomMutation()
 	local RandomTraits = {}
 	local EntityInformations = Entities[EntityName]
+	if not EntityInformations then
+		return nil
+	end
+
+	local createdModel = SharedFunctions.CreateEntity(EntityName, randomMutation, nil, false, nil, RandomTraits)
+	if not createdModel then
+		return nil
+	end
+
+	local createdBillboard = SharedFunctions.CreateBillboard(EntityName, randomMutation, nil, nil, true, RandomTraits)
 
 	if not isPurchasable then
 		if EntityInformations.Rarity == "Mythical" then
@@ -339,13 +360,14 @@ function EntityComponent.SpawnEntity(EntityName, SpawnCFrame: CFrame, BaseNumber
 		name = EntityName,
 		informations = EntityInformations,
 		mutation = randomMutation,
-		model = SharedFunctions.CreateEntity(EntityName, randomMutation, nil, false, nil, RandomTraits),
-		billboard = SharedFunctions.CreateBillboard(EntityName, randomMutation, nil, nil, true, RandomTraits),
+		model = createdModel,
+		billboard = createdBillboard,
 		currentTime = if isPurchasable then 0 else math.random(60, 150),
 		traits = RandomTraits,
 		destroyedSignal = Signal.new(),
 		SpawnCFrame = SpawnCFrame,
 		isPurchasable = isPurchasable or false,
+		isLuckyBox = LuckyBoxes.IsLuckyBox(EntityName),
 		productId = productId
 	}, EntityComponent)
 
@@ -373,7 +395,7 @@ function EntityComponent.OnCharAdded(player, char)
 	local humanoid = char:WaitForChild("Humanoid")
 	humanoid.Died:Connect(function()
 		if GrabbedListPerPlayer[player] then
-			GrabbedListPerPlayer:Drop()
+			GrabbedListPerPlayer[player]:Drop(player)
 		end
 	end)
 end

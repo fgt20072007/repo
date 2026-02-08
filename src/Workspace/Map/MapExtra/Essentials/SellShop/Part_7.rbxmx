@@ -14,18 +14,18 @@
       <token name="BottomSurface">3</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>113.767426</X>
-        <Y>12.124997</Y>
-        <Z>38.882545</Z>
-        <R00>0.98480564</R00>
-        <R01>-0.17364758</R01>
+        <X>114.16514</X>
+        <Y>12.852649</Y>
+        <Z>39.393932</Z>
+        <R00>0.9848077</R00>
+        <R01>-0.17364845</R01>
         <R02>0</R02>
-        <R10>0.17364787</R10>
-        <R11>0.98480725</R11>
+        <R10>0.17364843</R10>
+        <R11>0.9848078</R11>
         <R12>0</R12>
         <R20>0</R20>
         <R21>0</R21>
-        <R22>0.9999973</R22>
+        <R22>1</R22>
       </CoordinateFrame>
       <bool name="CanCollide">true</bool>
       <bool name="CanQuery">true</bool>
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>5.75</X>
-        <Y>0.75</Y>
-        <Z>0.24998474</Z>
+        <X>6.3372293</X>
+        <Y>0.8265951</Y>
+        <Z>0.2755149</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

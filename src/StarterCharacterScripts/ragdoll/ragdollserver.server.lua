@@ -12,11 +12,11 @@ local Players = game:GetService("Players")
 
 
 --[[SETTINGS---------------------------------------------------]]
-	local flag_clonecharacter = false
-		local flag_autocleanup = true
-			local flag_cleanuptime = 60*1
-			
-	local BreakJointsOnDeath = true
+local flag_clonecharacter = false
+local flag_autocleanup = true
+local flag_cleanuptime = 60*1
+
+local BreakJointsOnDeath = true
 --[[-----------------------------------------------------------]]
 
 local player = Players:GetPlayerFromCharacter(script.Parent.Parent)
@@ -43,59 +43,58 @@ if not constraintfolder then constraintfolder = Instance.new("Folder",character)
 local collisionfolder = character:FindFirstChild("CollisionConstraints")
 if not collisionfolder then collisionfolder = Instance.new("Folder",character); collisionfolder.Name = "CollisionConstraints" end
 
-local noclipgrouptest = pcall(function() PhysicsService:GetCollisionGroupId("noclip") end)
-if not noclipgrouptest then
-	PhysicsService:CreateCollisionGroup("noclip")
-	PhysicsService:CollisionGroupSetCollidable("Default","noclip",false)
+if not PhysicsService:IsCollisionGroupRegistered("noclip") then
+	PhysicsService:RegisterCollisionGroup("noclip")
 end
+PhysicsService:CollisionGroupSetCollidable("Default","noclip",false)
 
 local bodyparts = {
 	HumanoidRootPart = character:WaitForChild("HumanoidRootPart");
-	
+
 	LowerTorso = character:WaitForChild("LowerTorso");
-	
+
 	LeftUpperLeg = character:WaitForChild("LeftUpperLeg");
 	LeftLowerLeg = character:WaitForChild("LeftLowerLeg");
 	LeftFoot = character:WaitForChild("LeftFoot");
-	
+
 	RightUpperLeg = character:WaitForChild("RightUpperLeg");
 	RightLowerLeg = character:WaitForChild("RightLowerLeg");
 	RightFoot = character:WaitForChild("RightFoot");
-	
+
 	UpperTorso = character:WaitForChild("UpperTorso");
-	
+
 	LeftUpperArm = character:WaitForChild("LeftUpperArm");
 	LeftLowerArm = character:WaitForChild("LeftLowerArm");
 	LeftHand = character:WaitForChild("LeftHand");
-	
+
 	RightUpperArm = character:WaitForChild("RightUpperArm");
 	RightLowerArm = character:WaitForChild("RightLowerArm");
 	RightHand = character:WaitForChild("RightHand");
-	
+
 	Head = character:WaitForChild("Head");
 }
 
 local motors = {
 	Root = bodyparts.LowerTorso:WaitForChild("Root");
-	
+
 	LeftHip = bodyparts.LeftUpperLeg:WaitForChild("LeftHip");
 	LeftKnee = bodyparts.LeftLowerLeg:WaitForChild("LeftKnee");
 	LeftAnkle = bodyparts.LeftFoot:WaitForChild("LeftAnkle");
-	
+
 	RightHip = bodyparts.RightUpperLeg:WaitForChild("RightHip");
 	RightKnee = bodyparts.RightLowerLeg:WaitForChild("RightKnee");
 	RightAnkle = bodyparts.RightFoot:WaitForChild("RightAnkle");
-	
+
 	Waist = bodyparts.UpperTorso:WaitForChild("Waist");
-	
+
 	LeftShoulder = bodyparts.LeftUpperArm:WaitForChild("LeftShoulder");
 	LeftElbow = bodyparts.LeftLowerArm:WaitForChild("LeftElbow");
 	LeftWrist = bodyparts.LeftHand:WaitForChild("LeftWrist");
-	
+
 	RightShoulder = bodyparts.RightUpperArm:WaitForChild("RightShoulder");
 	RightElbow = bodyparts.RightLowerArm:WaitForChild("RightElbow");
 	RightWrist = bodyparts.RightHand:WaitForChild("RightWrist");
-	
+
 	Neck = bodyparts.Head:WaitForChild("Neck");
 }
 
@@ -183,7 +182,7 @@ function ragdollJoint(part0, part1, attachmentName)
 	constraint.Attachment0 = part0[attachmentName]
 	constraint.Attachment1 = part1[attachmentName]
 	constraint.Name = "Ragdoll_"..part1.Name
-	
+
 	constraint.Parent = constraintfolder
 end
 
@@ -281,7 +280,7 @@ HeadCollisionConstraint.Parent = constraintfolder
 local collisionfiltertbl = {
 	{
 		HeadCollision;
-		
+
 		bodyparts.LeftUpperArm;
 		bodyparts.LeftUpperLeg;
 		bodyparts.LowerTorso;
@@ -291,7 +290,7 @@ local collisionfiltertbl = {
 	};
 	{
 		bodyparts.LeftFoot;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.UpperTorso;
 	};
@@ -303,19 +302,19 @@ local collisionfiltertbl = {
 	};]]
 	{
 		bodyparts.LeftLowerArm;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.UpperTorso;
 	};
 	{
 		bodyparts.LeftLowerLeg;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.UpperTorso;
 	};
 	{
 		bodyparts.LeftUpperArm;
-		
+
 		bodyparts.LeftUpperLeg;
 		bodyparts.LowerTorso;
 		bodyparts.RightUpperArm;
@@ -324,38 +323,38 @@ local collisionfiltertbl = {
 	};
 	{
 		bodyparts.LeftUpperLeg;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.RightUpperLeg;
 		bodyparts.UpperTorso;
 	};
 	{
 		bodyparts.RightFoot;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.UpperTorso;
 	};
 	{
 		bodyparts.RightHand;
-		
+
 		--bodyparts.LowerTorso;
 		bodyparts.UpperTorso;
 	};
 	{
 		bodyparts.RightLowerArm;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.UpperTorso;
 	};
 	{
 		bodyparts.RightLowerLeg;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.UpperTorso;
 	};
 	{
 		bodyparts.RightUpperArm;
-		
+
 		bodyparts.LeftUpperLeg;
 		bodyparts.LowerTorso;
 		bodyparts.LeftUpperArm;
@@ -364,7 +363,7 @@ local collisionfiltertbl = {
 	};
 	{
 		bodyparts.RightUpperLeg;
-		
+
 		bodyparts.LowerTorso;
 		bodyparts.LeftUpperLeg;
 		bodyparts.UpperTorso;

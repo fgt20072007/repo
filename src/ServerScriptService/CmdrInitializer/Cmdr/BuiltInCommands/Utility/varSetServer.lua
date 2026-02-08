@@ -1,13 +1,27 @@
 local DataStoreService = game:GetService("DataStoreService")
+local RunService = game:GetService("RunService")
 
 local queue = {}
 local DataStoresActive, DataStore
 task.spawn(function()
-	DataStoresActive, DataStore = pcall(function()
-		local DataStore = DataStoreService:GetDataStore("_package/eryn.io/Cmdr")
-		DataStore:GetAsync("test_key")
-		return DataStore
-	end)
+	local shouldProbeStore = true
+	if RunService:IsStudio() then
+		local success, allowed = pcall(function()
+			return game:GetService("StudioService").ApiAccessAllowed
+		end)
+		if not success or not allowed then
+			DataStoresActive = false
+			shouldProbeStore = false
+		end
+	end
+
+	if shouldProbeStore then
+		DataStoresActive, DataStore = pcall(function()
+			local DataStore = DataStoreService:GetDataStore("_package/eryn.io/Cmdr")
+			DataStore:GetAsync("test_key")
+			return DataStore
+		end)
+	end
 
 	while #queue > 0 do
 		coroutine.resume(table.remove(queue, 1))

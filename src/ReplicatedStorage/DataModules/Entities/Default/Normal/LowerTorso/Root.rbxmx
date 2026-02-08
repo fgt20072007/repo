@@ -4,8 +4,8 @@
       <string name="Name">Root</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="C0">
-        <X>0</X>
-        <Y>-1</Y>
+        <X>-1.2478142</X>
+        <Y>-2.5843515</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>

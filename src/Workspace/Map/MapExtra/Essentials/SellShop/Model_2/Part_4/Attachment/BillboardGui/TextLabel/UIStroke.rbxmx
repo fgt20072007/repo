@@ -11,8 +11,8 @@
       <token name="BorderStrokePosition">0</token>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
       <Color3 name="Color">
-        <R>0.0627451</R>
-        <G>0.20392159</G>
+        <R>0</R>
+        <G>0</G>
         <B>0</B>
       </Color3>
       <bool name="Enabled">true</bool>

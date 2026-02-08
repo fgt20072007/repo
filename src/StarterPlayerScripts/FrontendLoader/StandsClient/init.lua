@@ -22,7 +22,7 @@ local previousTweens = {} :: {Tween}
 function StandsClient.MakeEntityJump(Entity, StartingPosition, Offset)
 	local EndPostion = StartingPosition * Offset
 	local TweenInformations = TweenInfo.new(0.2, Enum.EasingStyle.Sine, Enum.EasingDirection.Out, 0, false, 0)
-	
+
 	ModelTween.ModelTween(Entity, TweenInformations, EndPostion)
 	task.delay(TweenInformations.Time, function()
 		ModelTween.ModelTween(Entity, TweenInformations, StartingPosition)
@@ -36,23 +36,23 @@ local function GetTextLabel(owns: boolean, currentState: string)
 		elseif currentState == "Occupied" then
 			return "Pickup / Swap"
 		elseif currentState == "Luckyblock" then
-			return "Open"
+			return "Open Mystery Box"
 		end
 	else
 		if currentState == "Occupied" then
 			return "Steal"
 		end
 	end
-	
+
 	return nil
 end
 
 function StandsClient.HandleUpgradeGui(standNumber: number, stand: Model)
 	local Newgui = script.UpgradeButtonTemplate:Clone()
 	Newgui.Parent = stand:FindFirstChild("UpgradeButton")
-	
+
 	guiHandler.AddButton(Newgui.ImageButton)
-	
+
 	local function Update()
 		local currentData = DataService.client:get({"stands", standNumber})
 		if currentData then
@@ -70,7 +70,7 @@ function StandsClient.HandleUpgradeGui(standNumber: number, stand: Model)
 	end
 	UpgradeGuisCaches[standNumber] = Update
 	Update()
-	
+
 	Newgui.ImageButton.Activated:Connect(function()
 		local s, r = pcall(function()
 			RemoteBank.UpgradeStand:FireServer(standNumber)
@@ -82,12 +82,12 @@ function StandsClient.HandleStand(owns: boolean, stand: Model, standNumber, play
 	if stand then
 		local attachment = stand:FindFirstChild("ProximityAttachment", true)
 		assert(attachment, "ProximityAttachment not found")
-		
+
 		if attachment:FindFirstChildOfClass("ProximityPrompt") then return end
-		
+
 		local NewPrompt = script.ProximityPrompt:Clone()
 		NewPrompt.Parent = attachment
-		
+
 		local function UpdatePrompt()
 			local state = GetTextLabel(owns, stand:GetAttribute("State"))
 			if not state then
@@ -97,10 +97,10 @@ function StandsClient.HandleStand(owns: boolean, stand: Model, standNumber, play
 				NewPrompt.ActionText = state
 			end
 		end
-		
+
 		UpdatePrompt()
 		stand:GetAttributeChangedSignal("State"):Connect(UpdatePrompt)
-		
+
 		NewPrompt.Triggered:Connect(function()
 			if owns then
 				if stand:GetAttribute("State") == "Empty" then
@@ -116,7 +116,7 @@ function StandsClient.HandleStand(owns: boolean, stand: Model, standNumber, play
 				end
 			end
 		end)
-		
+
 		if owns then
 			StandsClient.HandleUpgradeGui(standNumber, stand)
 		end
@@ -127,7 +127,7 @@ end
 function StandsClient:Initialize()
 	task.spawn(function()
 		task.wait(2)
-		
+
 		local CurrentlyLoadedStands = RemoteBank.GetStands:InvokeServer()
 		for player, container in CurrentlyLoadedStands do
 			for standMumber, model in container do
