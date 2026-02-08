@@ -20,6 +20,7 @@ local ServerUtilities = require(ServerStorage.ServerUtilities)
 local Bases = require(ReplicatedStorage.DataModules.Bases)
 local Gears = require(ReplicatedStorage.DataModules.Gears)
 local InventoryHandler = require("./InventoryHandler")
+local GamepassHandler = require("./GamepassHandler")
 
 local Zones = require(ReplicatedStorage.DataModules.Zones)
 
@@ -159,6 +160,8 @@ function MarketplaceHandler.Initialize()
 	end
 
 	MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(a0: Player, a1: number, a2: boolean)
+		GamepassHandler.HandleGamepassPurchaseFinished(a0, a1, a2)
+
 		local signal = InProcessing[a0]
 		if signal then
 			signal:Fire(a2)

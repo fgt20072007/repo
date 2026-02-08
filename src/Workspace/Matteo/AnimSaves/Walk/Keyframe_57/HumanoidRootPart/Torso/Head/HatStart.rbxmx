@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">HatStart</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0</X>
+        <Y>-0.00000035762787</Y>
+        <Z>-0.000000011560344</Z>
+        <R00>0.99998254</R00>
+        <R01>0.0040340335</R01>
+        <R02>0.000000063684666</R02>
+        <R10>-0.004033996</R10>
+        <R11>0.99999183</R11>
+        <R12>0.00000000035197356</R12>
+        <R20>-0.000000063074324</R20>
+        <R21>-0.0000000006421033</R21>
+        <R22>0.9999951</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

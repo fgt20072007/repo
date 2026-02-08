@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">LeftLowerArm</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.00000047683716</X>
+        <Y>0.00000015377778</Y>
+        <Z>0.00000040978193</Z>
+        <R00>0.99541086</R00>
+        <R01>-0.000000044703484</R01>
+        <R02>0.095693596</R02>
+        <R10>0.000000014901161</R10>
+        <R11>1</R11>
+        <R12>-0.00000000745058</R12>
+        <R20>-0.09569366</R20>
+        <R21>0.000000022351742</R21>
+        <R22>0.99541086</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

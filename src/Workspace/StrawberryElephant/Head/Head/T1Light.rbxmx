@@ -1,0 +1,45 @@
+<roblox version="4">
+  <Item class="Motor6D" referent="0">
+    <Properties>
+      <string name="Name">T1Light</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="C0">
+        <X>1.3833809</X>
+        <Y>-0.44017506</Y>
+        <Z>-0.00019836426</Z>
+        <R00>-0.7660216</R00>
+        <R01>-0.6428149</R01>
+        <R02>0.000010133335</R02>
+        <R10>-0.6428148</R10>
+        <R11>0.76602167</R11>
+        <R12>0.0000000000016484569</R12>
+        <R20>-0.000007762355</R20>
+        <R21>-0.000006513858</R21>
+        <R22>-1</R22>
+      </CoordinateFrame>
+      <CoordinateFrame name="C1">
+        <X>-0.008056523</X>
+        <Y>0.88092107</Y>
+        <Z>-0.0000051744337</Z>
+        <R00>1.0000004</R00>
+        <R01>0.000029683259</R01>
+        <R02>-0.0000006852405</R02>
+        <R10>-0.000029593572</R10>
+        <R11>1.0000002</R11>
+        <R12>-0.00000057499085</R12>
+        <R20>0.0000006852259</R20>
+        <R21>0.0000005750117</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <float name="DesiredAngle">0</float>
+      <bool name="Enabled">true</bool>
+      <float name="MaxVelocity">0</float>
+      <Ref name="Part0">null</Ref>
+      <Ref name="Part1">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

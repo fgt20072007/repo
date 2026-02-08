@@ -4,7 +4,7 @@
       <string name="Name">UIGradient</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-      <ColorSequence name="Color">0 0 0.41960785 0.92941177 0 1 0 0.7764706 0.9529412 0 </ColorSequence>
+      <ColorSequence name="Color">0 1 0.13333334 0.3647059 0 1 1 0.52156866 0.5294118 0 </ColorSequence>
       <bool name="Enabled">true</bool>
       <Vector2 name="Offset">
         <X>0</X>

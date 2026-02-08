@@ -4,7 +4,7 @@
       <string name="Name">1</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <CoordinateFrame name="CFrame">
-        <X>173.459</X>
+        <X>215.49411</X>
         <Y>22</Y>
         <Z>4.125</Z>
         <R00>-1</R00>

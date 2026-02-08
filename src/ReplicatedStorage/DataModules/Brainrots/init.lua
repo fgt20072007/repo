@@ -15,28 +15,9 @@ Godly
 
 ]]
 
-local function resolveModel(modelName: string, fallbackName: string?)
-	local model = script:FindFirstChild(modelName)
-	if model then
-		return model
-	end
-
-	if fallbackName then
-		model = script:FindFirstChild(fallbackName)
-		if model then
-			return model
-		end
-	end
-
-	if EntitiesFolder then
-		model = EntitiesFolder:FindFirstChild(modelName)
-		if model then
-			return model
-		end
-
-		if fallbackName then
-			return EntitiesFolder:FindFirstChild(fallbackName)
-		end
+local function resolveModel(modelName: string)
+	if ModelsFolder:WaitForChild(modelName) then
+		return ModelsFolder:WaitForChild(modelName)
 	end
 
 	return nil
@@ -45,17 +26,25 @@ end
 return {
 	["Trulimero Trulicina"] = {
 		Rarity = "Common",
-		MoneyPerSecond = 250,
+		MoneyPerSecond = 20,
 		Animation = "rbxassetid://73603575720334",
 		DisplayName = "Trulimero Trulicina",
-		Model = resolveModel("Models", "Trulimero Trulicina"),
+		Model = resolveModel("Trulimero Trulicina"),
 	},
 
 	["FluriFlura"] = {
 		Rarity = "Common",
-		MoneyPerSecond = 250,
+		MoneyPerSecond = 30,
 		Animation = "rbxassetid://137210644909122",
 		DisplayName = "FluriFlura",
-		Model = resolveModel("Models", "FluriFlura"),
+		Model = resolveModel("FluriFlura"),
+	},
+
+	["Brr Brr Patapim"] = {
+		Rarity = "Rare",
+		MoneyPerSecond = 70,
+		Animation = "rbxassetid://130955114090339",
+		DisplayName = "Brr Brr Patapim",
+		Model = resolveModel("BrrBrrPatapim"),
 	},
 }

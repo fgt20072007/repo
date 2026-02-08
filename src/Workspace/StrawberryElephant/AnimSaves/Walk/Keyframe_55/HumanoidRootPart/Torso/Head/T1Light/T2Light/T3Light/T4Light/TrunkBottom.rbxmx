@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">TrunkBottom</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.00000062584877</X>
+        <Y>0.000000029802322</Y>
+        <Z>0.0000000035171537</Z>
+        <R00>0.9996299</R00>
+        <R01>-0.027204512</R01>
+        <R02>0.00000000050228094</R02>
+        <R10>0.027204514</R10>
+        <R11>0.9996299</R11>
+        <R12>-0.00000000013783663</R12>
+        <R20>0.0000000000021149749</R20>
+        <R21>0.00000000009777384</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

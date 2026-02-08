@@ -21,54 +21,54 @@ return {
 			Cash = 50_000,
 			PermanentGear = "Bat",
 		},
-		Id = 3528614789,
+		Id = 0,
 	},
 	ProPack = {
 		Rewards = {
 			["Default"] = "Entity",
 			[250000] = "Cash"
 		},
-		Id = 3531448529,
+		Id = 0,
 	},
 	SecretPack = {
 		Rewards = {
 			["Default"] = "Entity",
 		},
-		Id = 3531448571,
+		Id = 0,
 	},
 	InsanePack = {
 		Rewards = {
 			[1_000_000] = "Cash"
 		},
-		Id = 3531448969,
+		Id = 0,
 	},
 	MythicalUnit = {
 		EntityName = "Test",
-		Id = 3531448669,
+		Id = 0,
 	},
 	CosmicUnit = {
 		EntityName = "Test",
-		Id = 3531448752,
+		Id = 0,
 	},
 	SecretUnit = {
 		EntityName = "Test",
-		Id = 3531448859,
+		Id = 0,
 	},
 
 	Cash1 = {
-		Id = 3531449088,
+		Id = 0,
 		Amount = 100_000
 	},
 	Cash2 = {
-		Id = 3531449131,
+		Id = 0,
 		Amount = 1_000_000
 	},
 	Cash3 = {
-		Id = 3531449169,
+		Id = 0,
 		Amount = 100_000_000
 	},
 	Cash4 = {
-		Id = 3531449024,
+		Id = 0,
 		Amount = 1_000_000_000
 	},
 
@@ -83,6 +83,6 @@ return {
 		Godly = 3531448071
 	},
 
-	SpawnMythical = 3531449310,
-	SpawnSecret = 3531449213
+	SpawnMythical = 0,
+	SpawnSecret = 0
 }

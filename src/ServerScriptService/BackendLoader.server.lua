@@ -21,6 +21,7 @@ DataService.server:init({
 		stands = {},
 		inventory = {},
 		gears = {},
+		VipFirstJoinRewardClaimed = false,
 	},
 	profileStoreIndex = "DatastoreVersion#" .. currentStoreIndex
 })

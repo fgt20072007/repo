@@ -65,6 +65,23 @@ local function resolveEntityVariantModel(entityInfo, preferredMutation)
 	table.insert(candidates, "Gold")
 	table.insert(candidates, "Diamond")
 
+	-- Brainrots can store the model directly instead of using mutation variants.
+	-- If this model also contains variant models, prefer variant logic below.
+	if modelContainer:IsA("Model") then
+		local containsVariants = false
+		for _, mutationName in candidates do
+			local possibleVariant = modelContainer:FindFirstChild(mutationName)
+			if possibleVariant and possibleVariant:IsA("Model") then
+				containsVariants = true
+				break
+			end
+		end
+
+		if not containsVariants then
+			return modelContainer, preferredMutation or "Normal"
+		end
+	end
+
 	for _, mutationName in candidates do
 		local variantModel = modelContainer:FindFirstChild(mutationName)
 		if variantModel and variantModel:IsA("Model") then
@@ -83,6 +100,19 @@ end
 
 function SharedFunctions.FindRoot(Model)
 	return Model.PrimaryPart or Model:FindFirstChild("HumanoidRootPart")
+end
+
+function SharedFunctions.GetEntityBillboardPart(model: Model)
+	if not model then
+		return nil
+	end
+
+	local head = model:FindFirstChild("Head")
+	if head and head:IsA("BasePart") then
+		return head
+	end
+
+	return SharedFunctions.FindRoot(model)
 end
 
 function SharedFunctions.GetEntitiesOfRarity(RarityName: string)
@@ -117,6 +147,11 @@ function SharedFunctions.GetEarningsPerSecond(EntityName: string, Mutation: stri
 		local indexMulti = SharedFunctions.GetIndexMultipliers(Player)
 		local rebirthMultiplier = SharedFunctions.GetRebirthMultiplier(Player) - 1
 		moneyPerSecond *= rebirthMultiplier + indexMulti + 1
+
+		local gamepassMultiplier = Player:GetAttribute("MoneyPerSecondMultiplier")
+		if typeof(gamepassMultiplier) == "number" and gamepassMultiplier > 0 then
+			moneyPerSecond *= gamepassMultiplier
+		end
 	end
 	return moneyPerSecond
 end
@@ -297,7 +332,8 @@ function SharedFunctions.CreateEntity(entityName, mutation, createBillboard, Upg
 
 	if createBillboard then
 		local billboard = SharedFunctions.CreateBillboard(entityName, mutation, UpgradeLevel, nil, nil, Traits)
-		billboard.Parent = root
+		local billboardParent = SharedFunctions.GetEntityBillboardPart(model) or root
+		billboard.Parent = billboardParent
 	end
 
 	return model

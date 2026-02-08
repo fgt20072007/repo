@@ -123,7 +123,7 @@ local function debugLog(...)
 	if not DEBUG_LEADERBOARD then
 		return
 	end
-	print("[LeaderboardDebug]", ...)
+	--print("[LeaderboardDebug]", ...)
 end
 
 local function fetchPlayerName(userId: number): string?

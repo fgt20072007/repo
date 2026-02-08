@@ -9,13 +9,13 @@ local LuckyBoxes = {
 	Boxes = {
 		["Common"] = {
 			Brainrots = {
-				["FluriFlura"] = 100,
+				["Trulimero Trulicina"] = 50,
+				["FluriFlura"] = 50,
 			},
 		},
 		["Rare"] = {
 			Brainrots = {
-				["Trulimero Trulicina"] = 80,
-				["FluriFlura"] = 20,
+				["Brr Brr Patapim"] = 100,
 			},
 		},
 		["Epic"] = {
@@ -29,6 +29,14 @@ local LuckyBoxes = {
 				["FluriFlura"] = 20,
 			},
 		},
+
+		["Legendary"] = {
+			Brainrots = {
+				["Trulimero Trulicina"] = 80,
+				["FluriFlura"] = 20,
+			},
+		},
+
 		["Secret"] = {
 			Brainrots = {
 				["Trulimero Trulicina"] = 80,

@@ -9,7 +9,7 @@
       <token name="HorizontalFlex">0</token>
       <token name="ItemLineAlignment">0</token>
       <UDim name="Padding">
-        <S>0.2</S>
+        <S>0.6</S>
         <O>0</O>
       </UDim>
       <bool name="DefinesCapabilities">false</bool>

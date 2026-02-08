@@ -219,7 +219,8 @@ function EntityComponent._tickLifetimeTimer(self: Entity)
 end
 
 function EntityComponent.InitializeBillboardSetup(self: Entity)
-	self.billboard.Parent = self.root
+	local billboardParent = SharedFunctions.GetEntityBillboardPart(self.model) or self.root
+	self.billboard.Parent = billboardParent
 
 	self.billboard.CashLabel.Visible = not self.isLuckyBox
 	if not self.isLuckyBox then

@@ -70,7 +70,7 @@ local LUCKYBLOCK_HATCH_FINAL_POP_MULTIPLIER = 1.42
 local LUCKYBLOCK_HATCH_FINAL_POP_TIME = 0.2
 local LUCKYBLOCK_HATCH_FINAL_JUMP_HEIGHT = 2.6
 local APPEAR_LUCKYBLOCK_VFX_NAME = "AppearLuckyBlock"
-local APPEAR_LUCKYBLOCK_VFX_CLEANUP_TIME = 4
+local APPEAR_LUCKYBLOCK_VFX_CLEANUP_TIME = 0.8
 local APPEAR_LUCKYBLOCK_HATCH_BURSTS = 1
 local APPEAR_LUCKYBLOCK_REVEAL_BURSTS = 3
 local APPEAR_LUCKYBLOCK_BURST_DELAY = 0.07
@@ -589,7 +589,7 @@ function StandController.SpawnEntity(self: Stand, entityInformations)
 
 	local EntityBillboard = SharedFunctions.CreateBillboard(entityInformations.name, entityInformations.mutation, entityInformations.upgradeLevel, self.ownership, false, entityInformations.traits)
 	self.entityBillboard = EntityBillboard
-	EntityBillboard.Parent = entityRoot
+	EntityBillboard.Parent = SharedFunctions.GetEntityBillboardPart(NewEntity) or entityRoot
 
 	StandController.CacheIndexObject(self.ownership, entityInformations)
 
@@ -652,7 +652,7 @@ function StandController.SpawnLuckybox(self: Stand, luckyboxInformations)
 
 	local luckyboxBillboard = SharedFunctions.CreateBillboard(luckyboxInformations.name, luckyboxInformations.mutation, luckyboxInformations.upgradeLevel, self.ownership, true, luckyboxInformations.traits)
 	self.entityBillboard = luckyboxBillboard
-	luckyboxBillboard.Parent = luckyboxRoot
+	luckyboxBillboard.Parent = SharedFunctions.GetEntityBillboardPart(NewLuckybox) or luckyboxRoot
 
 	for _, v in pairs(NewLuckybox:GetChildren()) do
 		if v:IsA("BasePart") then

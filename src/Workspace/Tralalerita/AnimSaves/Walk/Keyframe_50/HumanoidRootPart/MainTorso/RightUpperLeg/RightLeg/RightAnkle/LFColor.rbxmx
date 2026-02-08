@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">LFColor</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.0000004656613</X>
+        <Y>0.000000834465</Y>
+        <Z>-0.000005841255</Z>
+        <R00>0.99724334</R00>
+        <R01>0.030048741</R01>
+        <R02>-0.06786842</R02>
+        <R10>-0.019210408</R10>
+        <R11>0.98771286</R11>
+        <R12>0.15504512</R12>
+        <R20>0.07169471</R20>
+        <R21>-0.15331428</R21>
+        <R22>0.9855638</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

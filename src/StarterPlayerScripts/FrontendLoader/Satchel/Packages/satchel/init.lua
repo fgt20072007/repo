@@ -375,6 +375,7 @@ local function MakeSlot(parent: Instance, initIndex: number?): GuiObject
 	local ToolIcon: ImageLabel = nil
 	local ToolName: TextLabel = nil
 	local ToolChangeConn: any = nil
+	local ToolAttributeConn: any = nil
 	local HighlightFrame: any = nil -- UIStroke
 	local SelectionObj: ImageLabel = nil
 
@@ -411,7 +412,8 @@ local function MakeSlot(parent: Instance, initIndex: number?): GuiObject
 
 		-- Update the slot with tool data
 		local function assignToolData(): ()
-			local icon: string = tool.TextureId
+			local iconOverride = tool:GetAttribute("SatchelTextureId")
+			local icon: string = if typeof(iconOverride) == "string" and iconOverride ~= "" then iconOverride else tool.TextureId
 			ToolIcon.Image = icon
 
 			if icon ~= "" then
@@ -437,6 +439,10 @@ local function MakeSlot(parent: Instance, initIndex: number?): GuiObject
 			ToolChangeConn:Disconnect()
 			ToolChangeConn = nil
 		end
+		if ToolAttributeConn then
+			ToolAttributeConn:Disconnect()
+			ToolAttributeConn = nil
+		end
 
 		-- Update the slot with new tool data if the tool's properties changes
 		ToolChangeConn = tool.Changed:Connect(function(property: string): ()
@@ -444,6 +450,7 @@ local function MakeSlot(parent: Instance, initIndex: number?): GuiObject
 				assignToolData()
 			end
 		end)
+		ToolAttributeConn = tool:GetAttributeChangedSignal("SatchelTextureId"):Connect(assignToolData)
 
 		local hotbarSlot: boolean = (self.Index <= NumberOfHotbarSlots)
 		local inventoryOpen: boolean = InventoryFrame.Visible
@@ -484,6 +491,10 @@ local function MakeSlot(parent: Instance, initIndex: number?): GuiObject
 		if ToolChangeConn then
 			ToolChangeConn:Disconnect()
 			ToolChangeConn = nil
+		end
+		if ToolAttributeConn then
+			ToolAttributeConn:Disconnect()
+			ToolAttributeConn = nil
 		end
 
 		ToolIcon.Image = ""
@@ -1228,12 +1239,12 @@ changeToolFunc = function(actionName: string, inputState: Enum.UserInputState, i
 		if
 			(
 				lastChangeToolInputObject.KeyCode == Enum.KeyCode.ButtonR1
-				and inputObject.KeyCode == Enum.KeyCode.ButtonL1
+					and inputObject.KeyCode == Enum.KeyCode.ButtonL1
 			)
-			or (
-				lastChangeToolInputObject.KeyCode == Enum.KeyCode.ButtonL1
-				and inputObject.KeyCode == Enum.KeyCode.ButtonR1
-			)
+				or (
+					lastChangeToolInputObject.KeyCode == Enum.KeyCode.ButtonL1
+					and inputObject.KeyCode == Enum.KeyCode.ButtonR1
+				)
 		then
 			if (os.clock() - lastChangeToolInputTime) <= maxEquipDeltaTime then
 				UnequipAllTools()
@@ -1791,14 +1802,14 @@ local function resizeGamepadHintsFrame(): ()
 	for i: number = 1, #filteredGamepadHints do
 		filteredGamepadHints[i].Position = (
 			i == 1 and UDim2.new(0, 0, 0, 0)
-			or UDim2.new(
-				0,
-				filteredGamepadHints[i - 1].Position.X.Offset
+				or UDim2.new(
+					0,
+					filteredGamepadHints[i - 1].Position.X.Offset
 					+ filteredGamepadHints[i - 1].Size.X.Offset
 					+ spaceBetweenElements,
-				0,
-				0
-			)
+					0,
+					0
+				)
 		)
 		filteredGamepadHints[i].Size = UDim2.new(
 			0,

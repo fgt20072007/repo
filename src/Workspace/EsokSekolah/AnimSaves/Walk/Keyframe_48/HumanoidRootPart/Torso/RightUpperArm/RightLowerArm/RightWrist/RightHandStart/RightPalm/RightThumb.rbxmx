@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">RightThumb</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0</X>
+        <Y>0.00000023514033</Y>
+        <Z>-0.0000006333274</Z>
+        <R00>1</R00>
+        <R01>0.000000029802322</R01>
+        <R02>0.000000023283064</R02>
+        <R10>-0.000000014901161</R10>
+        <R11>1</R11>
+        <R12>-0.000000003259629</R12>
+        <R20>0.00000001071021</R20>
+        <R21>-0.000000054948032</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

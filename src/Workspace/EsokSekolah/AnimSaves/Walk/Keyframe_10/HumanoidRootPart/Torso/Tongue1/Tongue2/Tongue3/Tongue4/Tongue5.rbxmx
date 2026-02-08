@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">Tongue5</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.000000000000018846036</X>
+        <Y>-0.00000048056245</Y>
+        <Z>-0.000000044703484</Z>
+        <R00>1</R00>
+        <R01>0.000000017432123</R01>
+        <R02>-0.00000000175561</R02>
+        <R10>-0.00000001743211</R10>
+        <R11>0.9799181</R11>
+        <R12>-0.19940019</R12>
+        <R20>-0.0000000017556161</R20>
+        <R21>0.19940019</R21>
+        <R22>0.9799181</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">LeftToe1</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.0000000000000000945789</X>
+        <Y>-0.00000006146729</Y>
+        <Z>0.00000014901161</Z>
+        <R00>1</R00>
+        <R01>0.000000000000002220446</R01>
+        <R02>0</R02>
+        <R10>0.0000000000000048849813</R10>
+        <R11>0.99711764</R11>
+        <R12>-0.075870976</R12>
+        <R20>0.00000000000000005551115</R20>
+        <R21>0.075870976</R21>
+        <R22>0.99711764</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

@@ -59,7 +59,7 @@ return {
 	},
 
 	["Strawberry"] = {
-		["Rarity"] = "Secret",
+		["Rarity"] = "Godly",
 		["MoneyPerSecond"] = 250,
 		["Animation"] = "rbxassetid://",
 		["DisplayName"] = "Strawberry",

@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">MeshPart</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.00000011904544</X>
+        <Y>0</Y>
+        <Z>-0.0000000051744777</Z>
+        <R00>0.99717027</R00>
+        <R01>-0.00000000273576</R01>
+        <R02>0.07517625</R02>
+        <R10>-0.000000083469786</R10>
+        <R11>1</R11>
+        <R12>-0.000000038184226</R12>
+        <R20>-0.07517625</R20>
+        <R21>0.000000027939677</R21>
+        <R22>0.99717027</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

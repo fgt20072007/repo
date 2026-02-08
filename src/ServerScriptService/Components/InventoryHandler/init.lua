@@ -15,7 +15,7 @@ local SignalBank = require(ServerStorage.SignalBank)
 local SharedUtilities = require(ReplicatedStorage.Utilities.SharedUtilities)
 local RemoteBank = require(ReplicatedStorage.RemoteBank)
 
-local Gamepasses = require(ReplicatedStorage.DataModules.Gamepasses)
+local GamepassHandler = require(ServerScriptService.Components.GamepassHandler)
 
 local GearsHandler = require("./GearsHandler")
 
@@ -164,6 +164,8 @@ function InventoryHandler.AddToolsAndClear(player: Player, doNotDestroy: boolean
 			end
 		end
 	end
+
+	GamepassHandler.AddVipTools(player)
 end
 
 function InventoryHandler.CharacterAdded(player: Player, char: Model)

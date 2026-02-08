@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">MouthBottom</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.000000018364517</X>
+        <Y>-0.000000011175871</Y>
+        <Z>-0.00000047683716</Z>
+        <R00>0.99999994</R00>
+        <R01>0.00028542153</R01>
+        <R02>0.00017560343</R02>
+        <R10>-0.0002817638</R10>
+        <R11>0.9997895</R11>
+        <R12>-0.020520538</R12>
+        <R20>-0.00018136285</R20>
+        <R21>0.02052063</R21>
+        <R22>0.9997894</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>

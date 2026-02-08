@@ -1,0 +1,29 @@
+<roblox version="4">
+  <Item class="Pose" referent="0">
+    <Properties>
+      <string name="Name">RightLos3ShoeColor</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>-0.000000000000007146809</X>
+        <Y>0.75053823</Y>
+        <Z>0.06661722</Z>
+        <R00>1</R00>
+        <R01>-0.0000000000000004440892</R01>
+        <R02>-0.000000000000010658141</R02>
+        <R10>0.00000000000000049960036</R10>
+        <R11>0.9983089</R11>
+        <R12>-0.0581358</R12>
+        <R20>0.0000000000000035527137</R20>
+        <R21>0.0581358</R21>
+        <R22>0.9983089</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <token name="EasingDirection">0</token>
+      <token name="EasingStyle">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <float name="Weight">1</float>
+    </Properties>
+  </Item>
+</roblox>
