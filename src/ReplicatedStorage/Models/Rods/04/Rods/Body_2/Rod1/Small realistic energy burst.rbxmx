@@ -1,0 +1,56 @@
+<roblox version="4">
+  <Item class="ParticleEmitter" referent="0">
+    <Properties>
+      <string name="Name">Small realistic energy burst</string>
+      <Vector3 name="Acceleration">
+        <X>0</X>
+        <Y>0</Y>
+        <Z>0</Z>
+      </Vector3>
+      <BinaryString name="AttributesSerialize">AwAAAAoAAABTaXplX0N1cnZlAjAAAAAAAAAAAACAPwAAAAAAAIA/hvNUP6kL0TsAAIA/AAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAU2l6ZV9FbmQGAAAAAAAA8D8KAAAAU2l6ZV9TdGFydAYAAAAAAADgPw==</BinaryString>
+      <float name="Brightness">3</float>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <ColorSequence name="Color">0 0.29803923 1 0.52156866 0 1 0.29803923 1 0.52156866 0 </ColorSequence>
+      <float name="Drag">0</float>
+      <token name="EmissionDirection">1</token>
+      <bool name="Enabled">true</bool>
+      <NumberRange name="FlipbookFramerate">1 1 </NumberRange>
+      <string name="FlipbookIncompatible">Particle texture must be 1024 by 1024 to use flipbooks.</string>
+      <token name="FlipbookLayout">2</token>
+      <token name="FlipbookMode">1</token>
+      <int name="FlipbookSizeX">1</int>
+      <int name="FlipbookSizeY">1</int>
+      <bool name="FlipbookStartRandom">false</bool>
+      <NumberRange name="Lifetime">0.3 0.3 </NumberRange>
+      <float name="LightEmission">0</float>
+      <float name="LightInfluence">0</float>
+      <bool name="LockedToPart">true</bool>
+      <token name="Orientation">0</token>
+      <float name="Rate">25</float>
+      <NumberRange name="RotSpeed">0 0 </NumberRange>
+      <NumberRange name="Rotation">-360 360 </NumberRange>
+      <bool name="DefinesCapabilities">false</bool>
+      <token name="Shape">0</token>
+      <token name="ShapeInOut">0</token>
+      <float name="ShapePartial">1</float>
+      <token name="ShapeStyle">0</token>
+      <NumberSequence name="Size">0 0.314874 0 0.2009926 0.38947767 0 0.35325035 0.4443764 0 0.50733685 0.4979584 0 0.6641621 0.5494712 0 0.77115303 0.58183986 0 0.82581234 0.5970023 0 0.8816552 0.61101866 0 0.9393171 0.6229896 0 1 0.629748 0 </NumberSequence>
+      <int64 name="SourceAssetId">-1</int64>
+      <NumberRange name="Speed">0.000629748 0.000629748 </NumberRange>
+      <Vector2 name="SpreadAngle">
+        <X>0</X>
+        <Y>0</Y>
+      </Vector2>
+      <NumberSequence name="Squash">0 0 0 1 0 0 </NumberSequence>
+      <BinaryString name="Tags"></BinaryString>
+      <ContentId name="Texture">
+        <url>rbxassetid://16509892607</url>
+      </ContentId>
+      <float name="TimeScale">0.2</float>
+      <NumberSequence name="Transparency">0 0 0 0.5998943 0 0 1 1 0 </NumberSequence>
+      <float name="VelocityInheritance">0</float>
+      <bool name="WindAffectsDrag">false</bool>
+      <float name="ZOffset">0</float>
+    </Properties>
+  </Item>
+</roblox>

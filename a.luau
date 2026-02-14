@@ -3,6 +3,7 @@
 
 local fs = require("@lune/fs")
 local roblox = require("@lune/roblox")
+local process = require("@lune/process")
 
 local INPUT_PATH = "build.rbxl"
 local OUTPUT_DIR = "src"
@@ -59,6 +60,27 @@ end
 function Exporter:writeFile(path, contents)
 	self:log("[WRITE] " .. path)
 	fs.writeFile(path, contents)
+end
+
+function Exporter:fileExists(path)
+	local ok, isFile = pcall(fs.isFile, path)
+	return ok and isFile
+end
+
+function Exporter:resolveInputPath()
+	if self:fileExists(self.inputPath) then
+		return self.inputPath
+	end
+
+	local fallbackNames = { "build.rbxlx", "place.rbxl", "place.rbxlx" }
+	for _, candidate in fallbackNames do
+		if self:fileExists(candidate) then
+			self:log("[INPUT] Using fallback place file: " .. candidate)
+			return candidate
+		end
+	end
+
+	error("Input place file not found. Expected '" .. self.inputPath .. "' or one of: build.rbxlx, place.rbxl, place.rbxlx", 0)
 end
 
 function Exporter:exportInstance(instance, parentPath, usedNames)
@@ -129,11 +151,23 @@ function Exporter:cleanOutput()
 end
 
 function Exporter:run()
-	self:cleanOutput()
-	local fileContents = fs.readFile(self.inputPath)
-	local game = roblox.deserializePlace(fileContents)
+	local inputPath = self:resolveInputPath()
+	local fileContents = fs.readFile(inputPath)
+	local okDeserialize, game = pcall(roblox.deserializePlace, fileContents)
+	if not okDeserialize or not game then
+		error("Failed to deserialize place file: " .. inputPath, 0)
+	end
 
-	local services = { "Lighting", "ReplicatedFirst", "ReplicatedStorage", "ServerScriptService", "ServerStorage", "StarterGui", "StarterPack", "Workspace" }
+	local okGetService = pcall(function()
+		return game:GetService("Workspace")
+	end)
+	if not okGetService then
+		error("Invalid DataModel from deserializePlace for file: " .. inputPath, 0)
+	end
+
+	self:cleanOutput()
+
+	local services = { "Lighting", "ReplicatedFirst", "ReplicatedStorage", "ServerScriptService", "ServerStorage", "StarterGui", "StarterPack", "Workspace", "SoundService" }
 
 	for _, name in services do
 		local success, service = pcall(function() return game:GetService(name) end)
@@ -155,7 +189,7 @@ function Exporter:run()
 end
 
 local exporter = Exporter.new({
-	inputPath = INPUT_PATH,
+	inputPath = process.args[1] or INPUT_PATH,
 	outputDir = OUTPUT_DIR,
 	debug = DEBUG,
 })

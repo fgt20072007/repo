@@ -1,0 +1,33 @@
+<roblox version="4">
+  <Item class="Beam" referent="0">
+    <Properties>
+      <string name="Name">Beam83</string>
+      <Ref name="Attachment0">null</Ref>
+      <Ref name="Attachment1">null</Ref>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <float name="Brightness">15</float>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <ColorSequence name="Color">0 1 0.92941177 0.13333334 0 0.25778547 0.9732536 0.9319062 0.13305618 0 0.33737025 0.25492227 0.9989009 0.12561233 0 1 0.24313726 1 0.1254902 0 </ColorSequence>
+      <float name="CurveSize0">0</float>
+      <float name="CurveSize1">0</float>
+      <bool name="Enabled">true</bool>
+      <bool name="FaceCamera">true</bool>
+      <float name="LightEmission">0</float>
+      <float name="LightInfluence">0</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <int name="Segments">10</int>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <ContentId name="Texture">
+        <url>rbxassetid://86583175913235</url>
+      </ContentId>
+      <float name="TextureLength">1.375</float>
+      <token name="TextureMode">0</token>
+      <float name="TextureSpeed">0.6</float>
+      <NumberSequence name="Transparency">0 1 0 0.3 0 0 0.701 0 0 1 1 0 </NumberSequence>
+      <float name="Width0">2.518992</float>
+      <float name="Width1">0.629748</float>
+      <float name="ZOffset">-0.3</float>
+    </Properties>
+  </Item>
+</roblox>

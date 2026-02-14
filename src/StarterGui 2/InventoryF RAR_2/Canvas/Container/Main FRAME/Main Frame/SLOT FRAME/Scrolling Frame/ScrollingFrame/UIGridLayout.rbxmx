@@ -1,0 +1,30 @@
+<roblox version="4">
+  <Item class="UIGridLayout" referent="0">
+    <Properties>
+      <string name="Name">UIGridLayout</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <UDim2 name="CellPadding">
+        <XS>0.009160306</XS>
+        <XO>0</XO>
+        <YS>0.023245342</YS>
+        <YO>0</YO>
+      </UDim2>
+      <UDim2 name="CellSize">
+        <XS>0.18625955</XS>
+        <XO>0</XO>
+        <YS>0.28359318</YS>
+        <YO>0</YO>
+      </UDim2>
+      <token name="FillDirection">0</token>
+      <int name="FillDirectionMaxCells">5</int>
+      <token name="HorizontalAlignment">0</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <token name="SortOrder">2</token>
+      <int64 name="SourceAssetId">-1</int64>
+      <token name="StartCorner">0</token>
+      <BinaryString name="Tags"></BinaryString>
+      <token name="VerticalAlignment">1</token>
+    </Properties>
+  </Item>
+</roblox>

@@ -2,172 +2,175 @@
 
 ---
 
-## General Principles
-- **Understand first, code second**: siempre analizar y comprender completamente el sistema y su flujo antes de modificar o escribir código.
-- **Roblox-first mindset**: este repositorio es una representación de Roblox Studio mediante **Rojo**. Programar pensando en la **jerarquía real de Instances**, no en paths tipo VS Code (`A/B`).
-- Priorizar **claridad, mantenibilidad y seguridad** antes que complejidad innecesaria.
-- Usar técnicas avanzadas **solo cuando aporten valor medible** (seguridad, performance, escalabilidad o mantenibilidad). Evitar overengineering.
+## Core Architectural Principle
+This project implements a **server-authoritative, modular internal framework** built on Rojo, with strict ownership boundaries, lifecycle governance, and dependency control.
+
+The system is not just modular — it operates on top of a controlled internal service framework.
 
 ---
 
-## Architecture (OOP + Modular)
-- Usar **OOP** para componentes con estado, ciclo de vida o responsabilidades claras (Services, Managers, Controllers).
-- Usar módulos funcionales solo para **utilidades puras** (sin estado).
-- Arquitectura **modular, autocontenida y escalable**:
-  - Cada módulo principal debe encapsular sus scripts como **children**.
-  - Exponer únicamente funcionalidad compartida a través de un folder **Public / Shared** dedicado.
-  - Los scripts internos **NO** deben ser requeridos desde fuera del módulo.
-  - Evitar acoplamientos entre módulos; comunicar mediante interfaces públicas.
+# Architecture Model
+
+## Modular Service-Oriented OOP with Hierarchical Composition
+
+Each domain is implemented as an encapsulated Service:
+
+InventoryService
+  ├── Public
+  ├── _Internal
+  └── InventoryService.lua
+
+Services are owners of their state and expose minimal public APIs.
 
 ---
 
-## Module Lifecycle
-- Cada módulo debe tener un **único punto de entrada** (`init.server.lua` / `init.client.lua`).
-- Los módulos deben inicializarse **una sola vez**.
-- No ejecutar lógica pesada durante `require`.
-- La inicialización debe ser **explícita, ordenada e idempotente**.
-- Un módulo debe ser seguro ante múltiples llamadas de inicialización.
+# Encapsulation & Ownership
+
+## Public Surface (Strict Contract)
+A Service may only expose:
+- Init() → idempotent
+- Start() → idempotent
+- Minimal, stable public API
+
+Rules:
+- Never expose internal state.
+- Never return mutable internal references.
+- All mutations must occur inside the owner.
+- Public API is small, stable, and explicit.
 
 ---
 
-## Project Structure & File Generation Rules
+## Private Implementation (_Internal)
 
-### Rojo Mapping
-- La estructura del repositorio representa directamente Roblox Studio mediante **Rojo**.
-- Cada folder del repositorio corresponde a un **Instance real** en Roblox Studio.
-- Nunca pensar en rutas tipo filesystem; siempre pensar en el árbol real de Instances.
+All internal logic must live inside `_Internal/*`.
 
-### Base Structure (Reference)
-	src/
-	├─ ServerScriptService/
-	│  └─ Services/
-	│     └─ /
-	│        ├─ init.server.lua
-	│        ├─ Public/
-	│        └─ _Internal/
-	│
-	├─ ReplicatedStorage/
-	│  └─ Shared/
-	│
-	├─ StarterPlayer/
-	│  └─ StarterPlayerScripts/
-	│     └─ Controllers/
-	│        └─ /
-	│           ├─ init.client.lua
-	│           └─ _Internal/
-	│
-	└─ StarterGui/
-	└─ UI/
-	└─ /
-	├─ init.client.lua
-	└─ Components/
+Includes:
+- State
+- Validation
+- Registries / indexes
+- Reducers / mutators
+- Networking handlers
+
+Rules:
+- `_Internal` is never required externally.
+- State may only be mutated by its owner.
+- No cross-module state access.
 
 ---
 
-## File Generation Rules
-- Nunca colocar lógica directamente en folders genéricos.
-- Todo archivo debe pertenecer a un módulo claro.
-- No crear archivos huérfanos.
-- Un archivo debe tener **una sola responsabilidad clara**.
-- Evitar archivos “god”.
-- Convención de nombres:
-  - `PascalCase` para módulos y clases.
-  - `camelCase` para variables y métodos.
+## State Ownership Model
+Owner = module that creates, validates, and mutates the state.
+
+Rules:
+- Single owner per state domain.
+- No state duplication.
+- No bidirectional coupling.
+- Services interact only via public contracts.
 
 ---
 
-## Networking & Security (Anti-Exploit)
-- **Server-authoritative siempre**.
-- El servidor valida, decide y ejecuta.
-- El cliente solo solicita y renderiza (UI / efectos).
-- **Prohibido usar `RemoteEvent` o `RemoteFunction` directamente**.
-- Usar exclusivamente el **módulo de networking del repositorio** (`Packets`, `Red`, etc.) siguiendo su formato.
-- Validar **todas** las entradas del cliente:
-  - tipos
-  - rangos
-  - ownership
-  - estado actual
-  - cooldowns
-  - rate limits
-- Diseñar handlers de red **idempotentes**, resistentes a spam y reintentos.
+# Internal Service Framework
 
-### Attributes
-- Usar **Attributes** solo cuando sea **seguro y necesario**.
-- El servidor es la única fuente de verdad.
-- Nunca confiar en Attributes modificables por el cliente para decisiones autoritativas.
+The project uses a centralized service framework.
+
+## BaseService (Abstract Layer)
+All Services must implement BaseService contract.
+
+Responsibilities:
+- Init guard (idempotent)
+- Start guard (idempotent)
+- Automatic Maid/Janitor lifecycle management
+- Lifecycle validation
+- Registration into ServiceRegistry
+
+No Service may bypass lifecycle control.
 
 ---
 
-## Data Ownership Rules
-- Cada pieza de estado debe tener **un solo owner claro**.
-- El servidor es el único dueño del estado de juego.
-- El cliente **nunca** muta estado autoritativo.
-- No duplicar estado entre módulos.
-- El acceso al estado debe hacerse únicamente mediante APIs públicas.
+## ServiceRegistry (Centralized Lifecycle Control)
+
+The Registry is responsible for:
+- Registering Services
+- Resolving declared dependencies
+- Detecting circular dependencies
+- Executing Init() in topological order
+- Executing Start() only after full initialization
+- Preventing duplicate instances
+
+Rules:
+- Services may only access other Services via the Registry.
+- Dependencies must be declared explicitly.
+- No direct cross-service requires.
 
 ---
 
-## Concurrency & Safety
-- Asumir que el código puede ejecutarse concurrentemente.
-- Evitar race conditions.
-- No depender del orden de ejecución de eventos.
-- No usar `task.wait()` como mecanismo de sincronización.
-- El código debe ser **reentrancy-safe** y resistente a múltiples llamadas simultáneas.
+# Dependency Governance
+
+- Dependencies must be unidirectional.
+- Circular dependencies are prohibited.
+- Services may consume only Public contracts of other modules.
 
 ---
 
-## Performance & Complexity
-- Evitar trabajo innecesario por frame.
-- Evitar loops innecesarios.
-- Preferir **O(1)** sobre O(n) cuando sea posible.
-- Optimizar considerando:
-  - Allocations
-  - Garbage Collection
-  - Replicación
-  - Eventos y waits
-- Cachear referencias y lookups costosos.
-- Evitar `WaitForChild` dentro de loops o hot paths.
-- Evitar usar XFunction(tabNode, { "txt", "text", "Title" }) para buscar elementos (Hazlo de forma mas eficiente cuando ya conoces el path.)
+# Networking & Security
+
+- Server-authoritative always.
+- No direct RemoteEvent/RemoteFunction usage.
+- Only use approved networking wrapper (Red / Zap / Packets).
+- All client input must be validated (type, ownership, state, rate limits).
+- Handlers must be idempotent and spam-resistant.
 
 ---
 
-## Code Style & Practices
-- Usar early returns cuando mejore la legibilidad:
-  ```lua
-  if condition then return end
-    •   No usar print, warn, assert ni ningún tipo de logging a menos que se solicite 	    explícitamente.
-	•	No agregar notas ni comentarios innecesarios.
-	•	Evitar malas prácticas conocidas.
-	•	El código debe verse humano, limpio y mantenible, evitando patrones repetitivos tipo “AI-smell”.
+# Concurrency & Synchronization
 
-Typing
-	•	Usar type annotations solo cuando aporten valor real:
-	•	Interfaces públicas
-	•	Estructuras complejas
-	•	Evitar tipar todo el código por defecto.
+- Assume concurrent execution.
+- All lifecycle methods must be reentrancy-safe.
+- Use event-driven architecture (Signals).
+- Mandatory Maid/Janitor cleanup.
+- Promises only for real async boundaries (IO, DataStore, heavy yield).
 
-⸻
+---
 
-Bug Finding & Fix Policy (IMPORTANTE)
-	1.	Analizar todo el sistema relacionado.
-	2.	Entender completamente el flujo y la intención original.
-	3.	Identificar root causes, no solo síntomas.
-	4.	Arreglar todos los bugs relacionados en una sola solución coherente.
-	5.	Optimizar el código.
-	6.	Reforzar seguridad y validaciones server-side.
-	7.	Asegurarse de no romper comportamiento existente ni introducir nuevos bugs.
+# Performance Discipline
 
-⸻
+- No per-frame unnecessary work.
+- Prefer O(1) structures over O(n).
+- Cache expensive lookups.
+- No WaitForChild in hot paths.
+- Avoid polling; prefer event-driven systems.
 
-Tooling & Files
-	•	Ignorar completamente los archivos .meta.json.
-	•	No analizarlos.
-	•	No crearlos.
-	•	Asumir siempre sincronización con Roblox Studio vía Rojo.
+---
 
-⸻
+# Advanced Patterns (When Justified)
 
-Quality Bar
-	•	Preferir soluciones simples, robustas y seguras.
-	•	Usar técnicas avanzadas solo si aportan valor real y medible.
-	•	Objetivo: software engineering de nivel senior, sin complejidad artificial.
+Allowed when measurable benefit exists:
+- ECS (Jecs) for high-entity systems
+- FSM for complex behavior
+- Command / Transaction pattern for validated actions
+- Centralized rate limiting (token/leaky bucket)
+- Caching & indexing strategies
+- Replication layer only for render-facing state
+- Interface contracts with types for public APIs
+
+If used, architectural benefit must be explicit.
+
+---
+
+# Initialization Flow
+
+1. Register all Services
+2. Resolve dependency graph
+3. Execute Init() in topological order
+4. Execute Start() after full initialization
+
+Partial initialization is not allowed.
+
+---
+
+# Architectural Standard
+
+This codebase follows a controlled internal service framework with strict encapsulation, lifecycle governance, dependency direction, and ownership boundaries.
+
+The application layer lives on top of this framework.
+Services do not self-manage outside centralized lifecycle control.
