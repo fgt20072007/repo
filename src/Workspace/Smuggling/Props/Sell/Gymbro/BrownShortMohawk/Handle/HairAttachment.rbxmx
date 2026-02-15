@@ -1,0 +1,27 @@
+<roblox version="4">
+  <Item class="Attachment" referent="0">
+    <Properties>
+      <string name="Name">HairAttachment</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0</X>
+        <Y>0.32999992</Y>
+        <Z>-0.13000488</Z>
+        <R00>1</R00>
+        <R01>0.0000000078713756</R01>
+        <R02>0.0000000000000030299813</R02>
+        <R10>-0.0000000078713756</R10>
+        <R11>1</R11>
+        <R12>-0.00000000000000041444258</R12>
+        <R20>-0.0000000000000030299813</R20>
+        <R21>0.00000000000000041444255</R21>
+        <R22>1</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <bool name="Visible">false</bool>
+    </Properties>
+  </Item>
+</roblox>

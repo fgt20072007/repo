@@ -1,0 +1,5 @@
+return {
+	"Wail",
+	"Yelp",
+	"Priority"
+}

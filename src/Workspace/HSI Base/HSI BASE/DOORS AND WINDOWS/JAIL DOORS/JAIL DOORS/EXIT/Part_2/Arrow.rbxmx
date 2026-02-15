@@ -1,0 +1,48 @@
+<roblox version="4">
+  <Item class="Decal" referent="0">
+    <Properties>
+      <string name="Name">Arrow</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="Color3">
+        <R>1</R>
+        <G>1</G>
+        <B>1</B>
+      </Color3>
+      <token name="Face">5</token>
+      <Content name="MetalnessMapContent">
+        <null>
+        </null>
+      </Content>
+      <Content name="NormalMapContent">
+        <null>
+        </null>
+      </Content>
+      <Content name="RoughnessMapContent">
+        <null>
+        </null>
+      </Content>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">13587454841</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <Content name="TextureContent">
+        <uri>http://www.roblox.com/asset/?id=13587454787</uri>
+      </Content>
+      <ContentId name="TexturePack">
+        <null>
+        </null>
+      </ContentId>
+      <string name="TexturePackMetadata"></string>
+      <float name="Transparency">0</float>
+      <Vector2 name="UVOffset">
+        <X>0</X>
+        <Y>0</Y>
+      </Vector2>
+      <Vector2 name="UVScale">
+        <X>1</X>
+        <Y>1</Y>
+      </Vector2>
+      <int name="ZIndex">1</int>
+    </Properties>
+  </Item>
+</roblox>

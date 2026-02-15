@@ -1,0 +1,20 @@
+<roblox version="4">
+  <Item class="Pants" referent="0">
+    <Properties>
+      <string name="Name">Clothing</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="Color3">
+        <R>0.5176471</R>
+        <G>0.5176471</G>
+        <B>0.5176471</B>
+      </Color3>
+      <ContentId name="PantsTemplate">
+        <url>rbxassetid://15964401887</url>
+      </ContentId>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

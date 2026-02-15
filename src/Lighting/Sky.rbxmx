@@ -4,23 +4,23 @@
       <string name="Name">Sky</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-      <bool name="CelestialBodiesShown">true</bool>
-      <float name="MoonAngularSize">11</float>
+      <bool name="CelestialBodiesShown">false</bool>
+      <float name="MoonAngularSize">0</float>
       <ContentId name="MoonTextureId">
-        <url>rbxassetid://6444320592</url>
+        <url>rbxasset://sky/moon.jpg</url>
       </ContentId>
       <bool name="DefinesCapabilities">false</bool>
       <ContentId name="SkyboxBk">
-        <url>rbxassetid://6444884337</url>
+        <url>http://www.roblox.com/asset/?id=144933338</url>
       </ContentId>
       <ContentId name="SkyboxDn">
-        <url>rbxassetid://6444884785</url>
+        <url>http://www.roblox.com/asset/?id=144931530</url>
       </ContentId>
       <ContentId name="SkyboxFt">
-        <url>rbxassetid://6444884337</url>
+        <url>http://www.roblox.com/asset/?id=144933262</url>
       </ContentId>
       <ContentId name="SkyboxLf">
-        <url>rbxassetid://6444884337</url>
+        <url>http://www.roblox.com/asset/?id=144933244</url>
       </ContentId>
       <Vector3 name="SkyboxOrientation">
         <X>0</X>
@@ -28,16 +28,16 @@
         <Z>0</Z>
       </Vector3>
       <ContentId name="SkyboxRt">
-        <url>rbxassetid://6444884337</url>
+        <url>http://www.roblox.com/asset/?id=144933299</url>
       </ContentId>
       <ContentId name="SkyboxUp">
-        <url>rbxassetid://6412503613</url>
+        <url>http://www.roblox.com/asset/?id=144931564</url>
       </ContentId>
-      <int64 name="SourceAssetId">332039975</int64>
-      <int name="StarCount">3000</int>
-      <float name="SunAngularSize">11</float>
+      <int64 name="SourceAssetId">10256505900</int64>
+      <int name="StarCount">100</int>
+      <float name="SunAngularSize">0</float>
       <ContentId name="SunTextureId">
-        <url>rbxassetid://6196665106</url>
+        <url>rbxasset://sky/sun.jpg</url>
       </ContentId>
       <BinaryString name="Tags"></BinaryString>
     </Properties>
