@@ -48,14 +48,14 @@ event CombatRequestParry = {
 	data: ()
 }
 
+funct GetServerTime = {
+	call: Async,
+	rets: f64,
+}
+
 event CombatRequestParryEnd = {
 	from: Client,
 	type: Reliable,
 	call: ManyAsync,
 	data: ()
-}
-
-funct GetServerTime = {
-	call: Async,
-	rets: f64,
 }

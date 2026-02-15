@@ -1,0 +1,43 @@
+<roblox version="4">
+  <Item class="SurfaceAppearance" referent="0">
+    <Properties>
+      <string name="Name">Frame</string>
+      <token name="AlphaMode">0</token>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="Color">
+        <R>0.8862745</R>
+        <G>0.6784314</G>
+        <B>0.19215687</B>
+      </Color3>
+      <Content name="ColorMapContent">
+        <uri>rbxassetid://11603438520</uri>
+      </Content>
+      <Content name="EmissiveMaskContent">
+        <null>
+        </null>
+      </Content>
+      <float name="EmissiveStrength">1</float>
+      <Color3 name="EmissiveTint">
+        <R>1</R>
+        <G>1</G>
+        <B>1</B>
+      </Color3>
+      <Content name="MetalnessMapContent">
+        <uri>rbxassetid://12104495343</uri>
+      </Content>
+      <Content name="NormalMapContent">
+        <uri>rbxassetid://11603450168</uri>
+      </Content>
+      <Content name="RoughnessMapContent">
+        <uri>rbxassetid://12104492210</uri>
+      </Content>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <ContentId name="TexturePack">
+        <url>rbxassetid://117948907976648</url>
+      </ContentId>
+    </Properties>
+  </Item>
+</roblox>

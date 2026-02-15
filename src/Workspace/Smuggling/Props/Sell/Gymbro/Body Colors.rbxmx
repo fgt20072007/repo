@@ -1,0 +1,42 @@
+<roblox version="4">
+  <Item class="BodyColors" referent="0">
+    <Properties>
+      <string name="Name">Body Colors</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="HeadColor3">
+        <R>0.91764706</R>
+        <G>0.72156864</G>
+        <B>0.57254905</B>
+      </Color3>
+      <Color3 name="LeftArmColor3">
+        <R>0.91764706</R>
+        <G>0.72156864</G>
+        <B>0.57254905</B>
+      </Color3>
+      <Color3 name="LeftLegColor3">
+        <R>0.91764706</R>
+        <G>0.72156864</G>
+        <B>0.57254905</B>
+      </Color3>
+      <Color3 name="RightArmColor3">
+        <R>0.91764706</R>
+        <G>0.72156864</G>
+        <B>0.57254905</B>
+      </Color3>
+      <Color3 name="RightLegColor3">
+        <R>0.91764706</R>
+        <G>0.72156864</G>
+        <B>0.57254905</B>
+      </Color3>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <Color3 name="TorsoColor3">
+        <R>0.91764706</R>
+        <G>0.72156864</G>
+        <B>0.57254905</B>
+      </Color3>
+    </Properties>
+  </Item>
+</roblox>

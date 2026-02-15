@@ -1,0 +1,23 @@
+<roblox version="4">
+  <Item class="SpotLight" referent="0">
+    <Properties>
+      <string name="Name">FlashFX</string>
+      <float name="Angle">180</float>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <float name="Brightness">6.8</float>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <Color3 name="Color">
+        <R>0.6784314</R>
+        <G>0.33333334</G>
+        <B>0.08627451</B>
+      </Color3>
+      <bool name="Enabled">false</bool>
+      <token name="Face">5</token>
+      <float name="Range">9</float>
+      <bool name="DefinesCapabilities">false</bool>
+      <bool name="Shadows">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

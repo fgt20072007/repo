@@ -1,0 +1,17 @@
+<roblox version="4">
+  <Item class="EqualizerSoundEffect" referent="0">
+    <Properties>
+      <string name="Name">Muffle</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="Enabled">true</bool>
+      <float name="HighGain">-11</float>
+      <float name="LowGain">7</float>
+      <float name="MidGain">5</float>
+      <int name="Priority">5</int>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

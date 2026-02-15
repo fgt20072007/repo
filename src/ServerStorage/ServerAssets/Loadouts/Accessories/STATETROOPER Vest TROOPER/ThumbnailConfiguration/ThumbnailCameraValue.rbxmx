@@ -1,0 +1,26 @@
+<roblox version="4">
+  <Item class="CFrameValue" referent="0">
+    <Properties>
+      <string name="Name">ThumbnailCameraValue</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <CoordinateFrame name="Value">
+        <X>-0.5135422</X>
+        <Y>0.32164145</Y>
+        <Z>-2.2647018</Z>
+        <R00>-0.9798422</R00>
+        <R01>0.022971006</R01>
+        <R02>-0.19844823</R02>
+        <R10>0</R10>
+        <R11>0.9933673</R11>
+        <R12>0.11498538</R12>
+        <R20>0.19977328</R20>
+        <R21>0.11266752</R21>
+        <R22>-0.97334313</R22>
+      </CoordinateFrame>
+    </Properties>
+  </Item>
+</roblox>
