@@ -1,0 +1,27 @@
+<roblox version="4">
+  <Item class="Attachment" referent="0">
+    <Properties>
+      <string name="Name">0</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="CFrame">
+        <X>0.015733851</X>
+        <Y>-2.5729828</Y>
+        <Z>-1.6288157</Z>
+        <R00>1</R00>
+        <R01>0</R01>
+        <R02>0</R02>
+        <R10>0</R10>
+        <R11>0.8829479</R11>
+        <R12>-0.46947092</R12>
+        <R20>0</R20>
+        <R21>0.46947092</R21>
+        <R22>0.8829479</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <bool name="Visible">false</bool>
+    </Properties>
+  </Item>
+</roblox>

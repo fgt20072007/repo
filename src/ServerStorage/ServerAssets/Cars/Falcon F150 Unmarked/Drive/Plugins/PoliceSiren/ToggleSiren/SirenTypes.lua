@@ -1,5 +1,0 @@
-return {
-	"Wail",
-	"Yelp",
-	"Priority"
-}
