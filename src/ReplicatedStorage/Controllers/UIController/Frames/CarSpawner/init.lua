@@ -86,6 +86,7 @@ function CarSpawner.new(controller: any)
 	self._uiController = controller
 	self._Trove = Trove.new()
 	self._UI = frame
+	self._openPrompt = nil
 	self.LoadedCards = {}
 	self.SelectedCardData = nil
 
@@ -351,7 +352,13 @@ function CarSpawner:_setupConnections()
 
 		if CurrentRequest then return end
 		if not VehicleId then return end
-		local result, err = InteractRemoteEvent:InvokeServer(VehicleId, SelectedCardData.Name, CurrentColor)
+		CurrentRequest = true
+		local result, err = InteractRemoteEvent:InvokeServer(
+			VehicleId,
+			SelectedCardData.Name,
+			CurrentColor,
+			self._openPrompt
+		)
 		CurrentRequest = nil
 
 		if result then
@@ -368,7 +375,9 @@ end
 
 local SearchFilters = nil
 
-function CarSpawner:OnOpen()
+function CarSpawner:OnOpen(openContext)
+	self._openPrompt = openContext and openContext.Prompt or nil
+
 	if self._Trove then
 		self._Trove:Clean()
 	end
@@ -411,6 +420,7 @@ end)
 
 function CarSpawner:OnClose()
 	SelectedCardData = nil
+	self._openPrompt = nil
 	CarSpawner:_ClearSortFilters()
 	CarSpawner:ClearCards()
 

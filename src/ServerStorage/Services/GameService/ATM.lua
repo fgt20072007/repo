@@ -14,7 +14,8 @@ local DataService = require(Services.DataService)
 local NotifyEvent = Net:RemoteEvent("Notification")
 local TransferRemote = Net:RemoteFunction("ATMTransfer")
 
-local MAX_TRANSFER_AMOUNT = 25_000
+local MAX_TRANSFER_AMOUNT = 5_000
+local MIN_ACCOUNT_AGE_DAYS = 7
 local TRANSFER_COOLDOWN_SECONDS = 5 * 60
 local TRANSFER_TAX_RATE = 0.30
 
@@ -114,6 +115,15 @@ local function ReleaseReservedCooldown(userId: number, expectedUntil: number?)
 end
 
 local function ProcessTransfer(player: Player, targetArg: any, amountArg: any): boolean
+	local accountAge = tonumber(player.AccountAge) or 0
+	if accountAge < MIN_ACCOUNT_AGE_DAYS then
+		Notify(player, "ATM/AccountTooYoung", {
+			minDays = MIN_ACCOUNT_AGE_DAYS,
+			remaining = math.max(1, MIN_ACCOUNT_AGE_DAYS - accountAge),
+		})
+		return false
+	end
+
 	if not RequestRateLimit:CheckRate(player) then
 		Notify(player, "ATM/RateLimited")
 		return false

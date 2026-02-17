@@ -193,6 +193,12 @@ return TableUtil.Lock({
 				`Please wait a moment before trying again.`,
 			},
 		},
+		AccountTooYoung = {
+			Type = "Warning",
+			Messages = {
+				"Your account must be at least {minDays} days old to use ATM transfers. Try again in {remaining} day(s).",
+			},
+		},
 		Unavailable = {
 			Type = "Error",
 			Messages = {

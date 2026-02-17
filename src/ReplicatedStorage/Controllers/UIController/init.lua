@@ -140,7 +140,9 @@ function UIController.Init()
 			end
 
 			print("Oksss")
-			UIController:Open(Interface)	
+			UIController:Open(Interface, {
+				Prompt = ProximityPrompt,
+			})
 		end)
 	end, {workspace})
 end
@@ -177,7 +179,7 @@ function UIController:_registerFrame(frame, object)
 	return true
 end
 
-function UIController:Open(frameName: string)
+function UIController:Open(frameName: string, openContext: any?)
 	if not frameName then return false end
 
 
@@ -189,7 +191,7 @@ function UIController:Open(frameName: string)
 	self._currentOpen = entry
 	entry.Frame.Visible = true
 
-	entry.Object:OnOpen()	
+	entry.Object:OnOpen(openContext)	
 	return true
 end
 

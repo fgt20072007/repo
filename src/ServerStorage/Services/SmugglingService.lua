@@ -30,6 +30,10 @@ local SmuggleShopService = {
 	PurchaseRateLimit = RateLimit.New(2),
 }
 
+local EL_PATRON_PASS = "El Patron"
+local EL_PATRON_SELLABLE_BONUS = 3
+local EL_PATRON_SELL_MULTIPLIER = 2
+
 type EquippedPerClass = { Sellable: {Tool}, NonSellable: {Tool} }
 
 local function GetCopiesOf(equipped: EquippedPerClass, id: string): number
@@ -43,6 +47,10 @@ local function GetCopiesOf(equipped: EquippedPerClass, id: string): number
 	end
 	
 	return count
+end
+
+local function HasElPatron(player: Player): boolean
+	return MarketService.OwnsPass(player, EL_PATRON_PASS) == true
 end
 
 function SmuggleShopService.GetEquippedPerClass(player: Player): EquippedPerClass
@@ -94,8 +102,12 @@ function SmuggleShopService.OnPurchaseAttempt(player: Player, itemId: string): (
 	
 	local perClass = SmuggleShopService.GetEquippedPerClass(player)
 	local index = data.SellPrice and 'Sellable' or 'NonSellable'
+	local carryLimit = (GeneralData :: any)[`CarryMax{index}`]
+	if index == "Sellable" and HasElPatron(player) then
+		carryLimit += EL_PATRON_SELLABLE_BONUS
+	end
 
-	if (GeneralData :: any)[`CarryMax{index}`] <= #(perClass :: any)[index] then
+	if carryLimit <= #(perClass :: any)[index] then
 		return false, 'ItemPurchase/MaxxedClass'
 	end
 	
@@ -131,12 +143,12 @@ function SmuggleShopService.OnSellAttempt(player: Player): (boolean, string?)
 	if #perClass.Sellable <= 0 then return false, 'Smuggling/NoSellable' end
 	
 	local totalCash = 0
+	local sellMultiplier = HasElPatron(player) and EL_PATRON_SELL_MULTIPLIER or 1
 	for _, item in perClass.Sellable do
 		local data = ToolsData[item.Name]
 		if not (data and data.SellPrice) then continue end
 		
-		local ElPatronPassMultiplier = MarketService.OwnsPass(player, "El Patron") and 1.5 or 1
-		totalCash = math.floor(totalCash + data.SellPrice * ElPatronPassMultiplier)
+		totalCash = math.floor(totalCash + data.SellPrice * sellMultiplier)
 		item:Destroy()
 	end
 	

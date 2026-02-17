@@ -27,6 +27,7 @@ local ID_TO_PASS: {[number]: string} = {}
 local GIFT_PRODUCT_TO_PASS: {[number]: string} = {}
 local PROD_TO_XP: {[number]: number} = {}
 local PROD_TO_CASH:{[number]:number} = {}
+local NORMALIZED_PASS_TO_NAME: {[string]: string} = {}
 
 local PURCHASE_HANDLERS = {}
 
@@ -46,8 +47,30 @@ local MarketService = {
 	HistoryDataStore = DataStoreService:GetDataStore("PurchaseHistory"),
 	PendingGiftStore = DataStoreService:GetDataStore("PendingGifts"),
 	GiftInboxStore = DataStoreService:GetDataStore("GiftInbox"),
-	PurchasedPass = Signal.new() :: Signal.Signal<Player, string>,
+	PurchasedPass = Signal.new() :: Signal.Signal<Player, string, string?>,
 }
+
+local function NormalizePassName(value: string): string
+	return string.lower((string.gsub(value, "[^%w]+", "")))
+end
+
+local function ResolvePassNameFromMarketplaceId(passId: number): string?
+	local ok, info = pcall(MarketplaceService.GetProductInfo, MarketplaceService, passId, Enum.InfoType.GamePass)
+	if not ok or type(info) ~= "table" then
+		return nil
+	end
+
+	local marketName = info.Name
+	if type(marketName) ~= "string" or marketName == "" then
+		return nil
+	end
+
+	if Passes[marketName] then
+		return marketName
+	end
+
+	return NORMALIZED_PASS_TO_NAME[NormalizePassName(marketName)]
+end
 
 local function AppendPendingGift(userId: number, giftData: {TargetId: number, PassName: string, ProductId: number}): boolean
 	local success = pcall(
@@ -246,13 +269,22 @@ end
 
 function MarketService._ForceOwnership(player: Player, id: number)
 	local fixedId: string = ID_TO_PASS[id]
-	if not fixedId then  return end
+	if not fixedId then
+		local resolved = ResolvePassNameFromMarketplaceId(id)
+		if resolved then
+			fixedId = resolved
+			ID_TO_PASS[id] = resolved
+		else
+			warn(`[MarketService] Unknown gamepass id for ownership grant: {id}`)
+			return
+		end
+	end
 
 	local replica = MarketService._GetReplicaFor(player)
 	if not replica then return end
 
 	replica:Set({fixedId}, true)
-	MarketService.PurchasedPass:Fire(player, fixedId)
+	MarketService.PurchasedPass:Fire(player, fixedId, "purchase")
 	return DataService.InsertPass(player, fixedId)-- and MarketService.OwnsPass(player, fixedId)
 end
 
@@ -331,16 +363,19 @@ function MarketService.OwnsPass(player: Player, passName: string): boolean?
 			owns = MarketService._FetchOwnershipFor(player, passId)
 		end
 
-		if owns ~= nil then
-			local current = MarketService._GetReplicaFor(player)
-			if not current or current ~= replica then return owns end
-			if not player.Parent then return owns end
-			current:Set({passName}, owns)
-			if owns and not hasGiftedPass then
-				DataService.InsertPass(player, passName)
+			if owns ~= nil then
+				local current = MarketService._GetReplicaFor(player)
+				if not current or current ~= replica then return owns end
+				if not player.Parent then return owns end
+				current:Set({passName}, owns)
+				if owns and not hasGiftedPass then
+					local inserted = DataService.InsertPass(player, passName)
+					if inserted then
+						MarketService.PurchasedPass:Fire(player, passName, "sync")
+					end
+				end
+				return owns
 			end
-			return owns
-		end
 	end
 
 	return replica.Data[passName] == true
@@ -361,6 +396,9 @@ function MarketService.Init()
 
 	for id, passId in Passes do
 		ID_TO_PASS[passId] = id
+		if string.sub(id, 1, 5) ~= "Gift " then
+			NORMALIZED_PASS_TO_NAME[NormalizePassName(id)] = id
+		end
 		if string.sub(id, 1, 5) == "Gift " then
 			local baseName = string.sub(id, 6)
 			GIFT_PRODUCT_TO_PASS[passId] = baseName

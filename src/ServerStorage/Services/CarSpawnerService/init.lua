@@ -32,7 +32,7 @@ local ActivePromptContexts = {}
 local CARSPAWNER_INTERFACE = "CarSpawner"
 local CARSPAWN_TAG = "InterfacePrompt"
 local PROMPT_CONTEXT_TTL = 180
-local PROMPT_DISTANCE_BUFFER = 8
+local PROMPT_DISTANCE_BUFFER = 12
 
 local TEAM_ALIASES = table.freeze({
 	ICE = "HSI",
@@ -275,59 +275,121 @@ local function IsPlayerNearPrompt(player: Player, prompt: ProximityPrompt): bool
 	return (root.Position - promptPosition).Magnitude <= maxDistance
 end
 
-local function RememberPromptContext(player: Player, prompt: ProximityPrompt)
+local function BuildPromptContext(player: Player, prompt: ProximityPrompt)
+	if prompt:GetAttribute("Interface") ~= CARSPAWNER_INTERFACE then
+		return nil, "NotAuthorized"
+	end
+	if not CollectionService:HasTag(prompt, CARSPAWN_TAG) then
+		return nil, "NotAuthorized"
+	end
+
 	local defaultPlotName = ConfigurePromptDefaults(prompt)
 	local spawnPlotName = ResolvePromptSpawnPlotName(player, prompt) or defaultPlotName
 	if not spawnPlotName then
-		ActivePromptContexts[player] = nil
-		return
+		return nil, "SpawnerUnavailable"
 	end
-
 	if not PromptAllowsPlayer(player, prompt, spawnPlotName) then
-		ActivePromptContexts[player] = nil
-		return
+		return nil, "NotAuthorized"
+	end
+	if not IsPlayerNearPrompt(player, prompt) then
+		return nil, "NotAuthorized"
 	end
 
-	ActivePromptContexts[player] = {
+	return {
 		Prompt = prompt,
 		SpawnPlotName = spawnPlotName,
 		ExpiresAt = os.clock() + PROMPT_CONTEXT_TTL,
 	}
 end
 
-local function ValidatePromptContext(player: Player): (boolean, string)
-	local context = ActivePromptContexts[player]
+local function RememberPromptContext(player: Player, prompt: ProximityPrompt)
+	local context = BuildPromptContext(player, prompt)
 	if not context then
-		return false, "NotAuthorized"
-	end
-
-	local prompt = context.Prompt
-	if not (prompt and prompt.Parent and prompt:IsA("ProximityPrompt")) then
 		ActivePromptContexts[player] = nil
-		return false, "SpawnerUnavailable"
+		return
 	end
 
-	if (context.ExpiresAt or 0) < os.clock() then
+	ActivePromptContexts[player] = context
+end
+
+local function ResolveContextFromNearbyPrompt(player: Player)
+	local character = player.Character
+	local root = character and character:FindFirstChild("HumanoidRootPart")
+	if not root then
+		return nil
+	end
+
+	local bestPrompt = nil
+	local bestContext = nil
+	local bestDistance = math.huge
+
+	for prompt in PromptConnections do
+		if not (prompt and prompt.Parent and prompt:IsA("ProximityPrompt")) then continue end
+		local context = BuildPromptContext(player, prompt)
+		if not context then continue end
+
+		local promptPosition = GetPromptWorldPosition(prompt)
+		if not promptPosition then continue end
+
+		local distance = (root.Position - promptPosition).Magnitude
+		if distance >= bestDistance then continue end
+
+		bestDistance = distance
+		bestPrompt = prompt
+		bestContext = context
+	end
+
+	if not (bestPrompt and bestContext) then
+		return nil
+	end
+
+	ActivePromptContexts[player] = bestContext
+	return bestContext
+end
+
+local function ValidatePromptContext(player: Player, requestedPrompt): (boolean, string)
+	local directContext = nil
+	local directErr = nil
+
+	if requestedPrompt then
+		local ok, isPrompt = pcall(function()
+			return requestedPrompt:IsA("ProximityPrompt")
+		end)
+
+		if ok and isPrompt and requestedPrompt.Parent then
+			directContext, directErr = BuildPromptContext(player, requestedPrompt)
+			if directContext then
+				ActivePromptContexts[player] = directContext
+				return true, directContext.SpawnPlotName
+			end
+		else
+			directErr = "NotAuthorized"
+		end
+	end
+
+	local context = ActivePromptContexts[player]
+	if context and (context.ExpiresAt or 0) < os.clock() then
 		ActivePromptContexts[player] = nil
-		return false, "NotAuthorized"
+		context = nil
 	end
 
-	local spawnPlotName = ResolvePromptSpawnPlotName(player, prompt) or context.SpawnPlotName
-	if not spawnPlotName then
-		return false, "SpawnerUnavailable"
-	end
-
-	if not PromptAllowsPlayer(player, prompt, spawnPlotName) then
+	local lastErr = directErr
+	if context and context.Prompt and context.Prompt.Parent then
+		local refreshedContext, refreshErr = BuildPromptContext(player, context.Prompt)
+		if refreshedContext then
+			ActivePromptContexts[player] = refreshedContext
+			return true, refreshedContext.SpawnPlotName
+		end
 		ActivePromptContexts[player] = nil
-		return false, "NotAuthorized"
+		lastErr = refreshErr or lastErr
 	end
 
-	if not IsPlayerNearPrompt(player, prompt) then
-		return false, "NotAuthorized"
+	local nearbyContext = ResolveContextFromNearbyPrompt(player)
+	if nearbyContext then
+		return true, nearbyContext.SpawnPlotName
 	end
 
-	context.SpawnPlotName = spawnPlotName
-	return true, spawnPlotName
+	return false, lastErr or "NotAuthorized"
 end
 
 local function ChangeColor(Vehicle:Model, ColorName:string)
@@ -506,7 +568,7 @@ function module.Init()
 	local spawnPlotsFolder = Workspace:FindFirstChild("CarSpawnPlot")
 	CarSpawnLocation_OverlapParams.FilterDescendantsInstances = spawnPlotsFolder and {spawnPlotsFolder} or {}
 
-	InteractEvent.OnServerInvoke = function(player:Player, VehicleListIndex:number, VehicleName:string, VehicleColor:string)
+	InteractEvent.OnServerInvoke = function(player:Player, VehicleListIndex:number, VehicleName:string, VehicleColor:string, requestedPrompt)
 		local DataManager = DataService.GetManager('PlayerData')
 		local ThisVehicleData = VehicleData[VehicleListIndex]
 		local PlayerVehicleData = DataManager:Get(player, {'Vehicles'})
@@ -517,17 +579,17 @@ function module.Init()
 			and table.find(PlayerVehicleData, VehicleName)
 			)
 				or 
-				(
-					ThisVehicleData.GamepassOnly and table.find(PlayerVehicleData, VehicleName)
-				)
+			(
+				ThisVehicleData.GamepassOnly and table.find(PlayerVehicleData, VehicleName)
+			)
 				or 
-				(
-					ThisVehicleData.GamepassOnly
-					and ThisVehicleData.GamepassProvidesVehicle
-					and MarketService.OwnsPass(player, ThisVehicleData.GamepassOnly)
-				) 
+			(
+				ThisVehicleData.GamepassOnly
+				and ThisVehicleData.GamepassProvidesVehicle
+				and MarketService.OwnsPass(player, ThisVehicleData.GamepassOnly)
+			) 
 		then
-			local maySpawn, spawnPlotOrErr = ValidatePromptContext(player)
+			local maySpawn, spawnPlotOrErr = ValidatePromptContext(player, requestedPrompt)
 			if not maySpawn then
 				return false, spawnPlotOrErr
 			end

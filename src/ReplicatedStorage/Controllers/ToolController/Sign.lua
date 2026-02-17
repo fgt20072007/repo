@@ -69,6 +69,10 @@ local function CloseFrame()
 	Frame.Visible = false
 end
 
+local function HasVisibleText(text: string): boolean
+	return text:match("%S") ~= nil
+end
+
 local function SetChangeButtonText(text: string)
 	local textLabel = ChangeSignButton:FindFirstChild("TextLabel")
 	if textLabel and textLabel:IsA("TextLabel") then
@@ -139,7 +143,7 @@ local function SubmitText()
 	if GetRemainingCooldown() > 0 then return end
 
 	local text = TextBox.Text
-	if text == "" then return end
+	if not HasVisibleText(text) then return end
 	if #text > MAX_CHARACTERS then text = string.sub(text, 1, MAX_CHARACTERS) end
 
 	SignRemote:FireServer(tool, text)
@@ -153,10 +157,22 @@ function Manager.OnEquipped(tool)
 	UpdateCooldownState()
 
 	table.insert(UIConnections, ChangeSignButton.MouseButton1Click:Connect(OpenFrame))
-	table.insert(UIConnections, CloseButton.MouseButton1Click:Connect(CloseFrame))
+	table.insert(UIConnections, CloseButton.MouseButton1Click:Connect(function()
+		if HasVisibleText(TextBox.Text) then
+			SubmitText()
+			return
+		end
+		CloseFrame()
+	end))
 
 	table.insert(UIConnections, TextBox.FocusLost:Connect(function(enterPressed)
-		if enterPressed then SubmitText() end
+		if HasVisibleText(TextBox.Text) then
+			SubmitText()
+			return
+		end
+		if enterPressed then
+			CloseFrame()
+		end
 	end))
 
 	table.insert(UIConnections, TextBox:GetPropertyChangedSignal("Text"):Connect(function()

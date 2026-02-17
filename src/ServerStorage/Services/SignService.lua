@@ -49,14 +49,6 @@ local function NormalizeInput(text): string?
 	return TruncateUtf8(text, MAX_CHARACTERS)
 end
 
-local function CanPlayerUsePublicText(player: Player): boolean
-	local success, canChat = pcall(function()
-		return TextChatService:CanUserChatAsync(player.UserId)
-	end)
-
-	return success and canChat == true
-end
-
 local function FilterText(player: Player, rawText): string?
 	local text = NormalizeInput(rawText)
 	if text == nil then return nil end
@@ -68,11 +60,22 @@ local function FilterText(player: Player, rawText): string?
 	end)
 
 	if not success then
-		local textLength = utf8.len(text) or #text
-		return string.rep('#', math.max(1, textLength))
+		return nil
 	end
 
 	return filteredResult
+end
+
+local function CanPlayerUsePublicText(player: Player): boolean
+	local success, canChat = pcall(function()
+		return TextChatService:CanUserChatAsync(player.UserId)
+	end)
+
+	if not success then
+		return false
+	end
+
+	return canChat == true
 end
 
 local function IsPlayersTool(player: Player, tool: Tool): boolean
@@ -92,10 +95,10 @@ local function GetSignTextLabel(tool: Tool): TextLabel?
 	local cardboard = tool:FindFirstChild('Cardboard')
 	if not cardboard then return nil end
 
-	local surfaceGui = cardboard:FindFirstChild('SurfaceGui')
+	local surfaceGui = cardboard:FindFirstChild('SurfaceGui') or cardboard:FindFirstChildWhichIsA('SurfaceGui', true)
 	if not (surfaceGui and surfaceGui:IsA('SurfaceGui')) then return nil end
 
-	local textLabel = surfaceGui:FindFirstChild('TextLabel')
+	local textLabel = surfaceGui:FindFirstChild('TextLabel') or surfaceGui:FindFirstChildWhichIsA('TextLabel', true)
 	if not (textLabel and textLabel:IsA('TextLabel')) then return nil end
 
 	return textLabel
