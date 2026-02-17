@@ -14,7 +14,7 @@
       <token name="KeyboardKeyCode">101</token>
       <float name="MaxActivationDistance">10</float>
       <float name="MaxIndicatorDistance">0</float>
-      <string name="ObjectText">$2500</string>
+      <string name="ObjectText">$1500</string>
       <bool name="RequiresLineOfSight">false</bool>
       <Ref name="RootLocalizationTable">null</Ref>
       <bool name="DefinesCapabilities">false</bool>

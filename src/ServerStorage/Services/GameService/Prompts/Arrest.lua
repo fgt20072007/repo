@@ -47,7 +47,8 @@ Init = function()
 			local ArrestPrompt = DetainPrompt:Clone()	
 			ArrestPrompt.Name = "ArrestPrompt"
 			ArrestPrompt.UIOffset = Vector2.zero
-			ArrestPrompt.ActionText = "Arrest"
+				ArrestPrompt.ActionText = "Arrest"
+			ArrestPrompt.GamepadKeyCode = Enum.KeyCode.ButtonA
 			ArrestPrompt.KeyboardKeyCode = Enum.KeyCode.F
 			ArrestPrompt:RemoveTag("DetainPrompt")
 			ArrestPrompt:RemoveTag("Highlight")

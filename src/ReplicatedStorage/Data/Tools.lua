@@ -251,13 +251,25 @@ local List: {[string]: Data} = {
 		CarryMax = 1,
 		Price = 1_250,
 	},
+	
+	['Taco'] = {
+		Teams = {'Civilian'},
+
+		Illegal = true,
+		DetectionRate = 5,
+
+		SellPrice = 160,
+		CarryMax = 8,
+		Price = 35,
+	},
+	
 	['Bloxy Cola'] = {
 		Teams = {'Civilian'},
 
 		Illegal = true,
 		DetectionRate = 20,
 
-		SellPrice = 220,
+		SellPrice = 240,
 		CarryMax = 6,
 		Price = 100,
 	},
@@ -271,36 +283,30 @@ local List: {[string]: Data} = {
 		CarryMax = 5,
 		Price = 140,
 	},
-	['Fake Watch'] = {
-		Teams = {'Civilian'},
-
-		Illegal = true,
-		DetectionRate = 75,
-
-		SellPrice = 1_700,
-		CarryMax = 3,
-		Price = 750,
-	},
+	
 	['Fake Designer Bag'] = {
 		Teams = {'Civilian'},
 
 		Illegal = true,
 		DetectionRate = 65,
 
-		SellPrice = 1_150,
+		SellPrice = 1_000,
 		CarryMax = 3,
 		Price = 480,
 	},
-	['Taco'] = {
+	
+	['Fake Watch'] = {
 		Teams = {'Civilian'},
 
 		Illegal = true,
-		DetectionRate = 5,
+		DetectionRate = 75,
 
-		SellPrice = 130,
-		CarryMax = 8,
-		Price = 35,
+		SellPrice = 1_100,
+		CarryMax = 3,
+		Price = 750,
 	},
+	
+	
 	['Briefcase'] = {
 		Teams = {'Civilian'},
 	}

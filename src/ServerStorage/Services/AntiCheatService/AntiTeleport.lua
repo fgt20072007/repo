@@ -15,6 +15,10 @@ local tune = {
 
 local AntiTeleport = {}
 
+local MIN_WHITELIST_SECONDS = 0.15
+local MAX_WHITELIST_SECONDS = 8
+local DEFAULT_WHITELIST_SECONDS = 2.5
+
 local running = false
 local elapsed = 0
 local players = {}
@@ -55,17 +59,13 @@ local function updateExemptStatus(player, tracker, now)
 		return
 	end
 
-	if (tracker.nextExemptCheck or 0) > now then
-		return
-	end
+	if (tracker.nextExemptCheck or 0) > now then return end
 
 	tracker.nextExemptCheck = now + 30
 	local ok, rank = pcall(function()
 		return player:GetRankInGroup(GAME_GROUP_ID)
 	end)
-	if not ok then
-		return
-	end
+	if not ok then return end
 
 	tracker.exempt = (tonumber(rank) or 0) >= STAFF_RANK_MIN
 	tracker.exemptChecked = true
@@ -349,6 +349,21 @@ local function samplePlayer(player, tracker, now)
 	tracker.root = root
 	tracker.foot.pos = currentPos
 	tracker.foot.at = now
+end
+
+function AntiTeleport.WhitelistPlayer(player, seconds)
+	if not player or not player:IsA("Player") then
+		return false
+	end
+
+	local tracker = getTracker(player)
+	local duration = tonumber(seconds) or DEFAULT_WHITELIST_SECONDS
+	duration = math.clamp(duration, MIN_WHITELIST_SECONDS, MAX_WHITELIST_SECONDS)
+
+	tracker.foot.hits = 0
+	tracker.car.hits = 0
+	giveGrace(tracker, os.clock(), duration)
+	return true
 end
 
 function AntiTeleport.Init()

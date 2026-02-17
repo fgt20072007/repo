@@ -71,7 +71,7 @@
       <token name="SizeConstraint">0</token>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>
-      <string name="Text">⚠️Each transfer is limited to a maximum amount of $25,000.</string>
+      <string name="Text">⚠️Each transfer is limited to a maximum amount of $5,000.</string>
       <Color3 name="TextColor3">
         <R>1</R>
         <G>0.20000002</G>

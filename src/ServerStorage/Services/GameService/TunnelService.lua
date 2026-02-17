@@ -11,6 +11,7 @@ local GeneralData = require(Data.General)
 
 local Services = ServerStorage.Services
 local DataService = require(Services.DataService)
+local AntiTeleport = require(Services.AntiCheatService.AntiTeleport)
 
 local NotifyEvent = Net:RemoteEvent("Notification")
 
@@ -75,6 +76,7 @@ local function TeleportPlayer(player: Player, target: CFrame): boolean
 	local humanoid = character:FindFirstChildOfClass("Humanoid")
 	if not humanoid or humanoid.Health <= 0 then return false end
 
+	AntiTeleport.WhitelistPlayer(player, 3.0)
 	character:PivotTo(target)
 	return true
 end

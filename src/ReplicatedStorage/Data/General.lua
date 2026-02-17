@@ -16,8 +16,8 @@ return TableUtil.Lock {
 	OnboardingReward = 5_000,
 	JanitorReward = 55,
 	BoxDeliveryReward = 75,
-	TunnelEnterCost = 2050,
-	TunnelEnterUSACost = 1_950,
+	TunnelEnterCost = 1_500,
+	TunnelEnterUSACost = 1250,
 	AmmoBoxPrice = 500,
 
 	DynamicWaypointsEnabled = false,

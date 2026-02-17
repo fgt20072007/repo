@@ -363,19 +363,19 @@ function MarketService.OwnsPass(player: Player, passName: string): boolean?
 			owns = MarketService._FetchOwnershipFor(player, passId)
 		end
 
-			if owns ~= nil then
-				local current = MarketService._GetReplicaFor(player)
-				if not current or current ~= replica then return owns end
-				if not player.Parent then return owns end
-				current:Set({passName}, owns)
-				if owns and not hasGiftedPass then
-					local inserted = DataService.InsertPass(player, passName)
-					if inserted then
-						MarketService.PurchasedPass:Fire(player, passName, "sync")
-					end
+		if owns ~= nil then
+			local current = MarketService._GetReplicaFor(player)
+			if not current or current ~= replica then return owns end
+			if not player.Parent then return owns end
+			current:Set({passName}, owns)
+			if owns and not hasGiftedPass then
+				local inserted = DataService.InsertPass(player, passName)
+				if inserted then
+					MarketService.PurchasedPass:Fire(player, passName, "sync")
 				end
-				return owns
 			end
+			return owns
+		end
 	end
 
 	return replica.Data[passName] == true

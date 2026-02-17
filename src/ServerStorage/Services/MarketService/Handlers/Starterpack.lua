@@ -24,7 +24,6 @@ end
 local function GiveTool(player: Player, toolName: string): Instance?
 	local found = ToolPath:FindFirstChild(toolName)
 	if not found then
-		warn(`[Starterpack] Missing tool asset: {toolName}`)
 		return nil
 	end
 

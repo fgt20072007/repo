@@ -28,7 +28,6 @@ end
 local function GiveTool(player: Player, toolName: string): Instance?
 	local template = ToolPath:FindFirstChild(toolName)
 	if not template then
-		warn(`[ElPatron] Missing tool asset: {toolName}`)
 		return nil
 	end
 

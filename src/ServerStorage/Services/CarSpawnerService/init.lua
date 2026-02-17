@@ -16,6 +16,7 @@ local Net = require(Packages.Net)
 local GenerateLicensePlate = require(script.GenerateLicensePlate)
 
 local MarketService = require(script.Parent.MarketService)
+local AntiTeleport = require(script.Parent.AntiCheatService.AntiTeleport)
 
 --> Data 
 local VehicleData = require(ReplicatedStorage.Data.Vehicles)
@@ -529,6 +530,7 @@ function module:SpawnVehicle(Player:Player, VehicleName:number, VehicleColor:str
 
 		local VehicleSeat = CarClone:FindFirstChildOfClass("VehicleSeat")
 		if VehicleSeat and Character and Character.Parent and Character:FindFirstChildOfClass("Humanoid") then
+			AntiTeleport.WhitelistPlayer(Player, 2.5)
 			Character:PivotTo(VehicleSeat:GetPivot() + Vector3.new(0, 3.5, 0))
 			VehicleSeat:Sit(Character.Humanoid)
 		end
@@ -579,15 +581,15 @@ function module.Init()
 			and table.find(PlayerVehicleData, VehicleName)
 			)
 				or 
-			(
-				ThisVehicleData.GamepassOnly and table.find(PlayerVehicleData, VehicleName)
-			)
+				(
+					ThisVehicleData.GamepassOnly and table.find(PlayerVehicleData, VehicleName)
+				)
 				or 
-			(
-				ThisVehicleData.GamepassOnly
-				and ThisVehicleData.GamepassProvidesVehicle
-				and MarketService.OwnsPass(player, ThisVehicleData.GamepassOnly)
-			) 
+				(
+					ThisVehicleData.GamepassOnly
+					and ThisVehicleData.GamepassProvidesVehicle
+					and MarketService.OwnsPass(player, ThisVehicleData.GamepassOnly)
+				) 
 		then
 			local maySpawn, spawnPlotOrErr = ValidatePromptContext(player, requestedPrompt)
 			if not maySpawn then

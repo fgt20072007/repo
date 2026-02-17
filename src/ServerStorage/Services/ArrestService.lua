@@ -14,6 +14,7 @@ local Notification = Net:RemoteEvent("Notification")
 
 local GeneralData = require(ReplicatedStorage.Data.General)
 local RankingService = require(ServerStorage.Services.RankingService) 
+local AntiTeleport = require(ServerStorage.Services.AntiCheatService.AntiTeleport)
 
 local ArrestService = {}
 
@@ -369,6 +370,7 @@ function ArrestService:ArrestPlayer(Target:Player, Executor:Player)
 	task.spawn(function()
 		task.wait(0.1)
 		if Character and Character.Parent then
+			AntiTeleport.WhitelistPlayer(Target, 4.5)
 			Character:PivotTo(CurrentCellAttachment.WorldCFrame + Vector3.new(0, 3.5, 0))
 		end
 	end)
