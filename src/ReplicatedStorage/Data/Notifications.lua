@@ -138,6 +138,87 @@ return TableUtil.Lock({
 		},
 	},
 
+	ATM = {
+		NeedSelectPlayer = {
+			Type = "Warning",
+			Messages = {
+				`Select a player before transferring.`,
+			},
+		},
+		NoPlayers = {
+			Type = "Warning",
+			Messages = {
+				`No players available in this server.`,
+			},
+		},
+		InvalidAmount = {
+			Type = "Warning",
+			Messages = {
+				`Enter a valid amount to transfer.`,
+			},
+		},
+		AmountTooHigh = {
+			Type = "Error",
+			Messages = {
+				`Maximum transfer amount is $25,000.`,
+			},
+		},
+		TargetNotFound = {
+			Type = "Error",
+			Messages = {
+				`Target player is no longer in this server.`,
+			},
+		},
+		SelfTransfer = {
+			Type = "Warning",
+			Messages = {
+				`You can't transfer money to yourself.`,
+			},
+		},
+		InsufficientFunds = {
+			Type = "Error",
+			Messages = {
+				"You need ${needed} more to complete this transfer.",
+			},
+		},
+		CooldownActive = {
+			Type = "Warning",
+			Messages = {
+				"Wait {time} before making another transfer.",
+			},
+		},
+		RateLimited = {
+			Type = "Warning",
+			Messages = {
+				`Please wait a moment before trying again.`,
+			},
+		},
+		Unavailable = {
+			Type = "Error",
+			Messages = {
+				`Transfer service is temporarily unavailable.`,
+			},
+		},
+		TransferFailed = {
+			Type = "Error",
+			Messages = {
+				`Transfer failed. Your balance was restored.`,
+			},
+		},
+		TransferSuccess = {
+			Type = "Success",
+			Messages = {
+				"Transfer completed. Sent ${sent}, tax ${tax}, delivered ${received} to {target}.",
+			},
+		},
+		TransferReceived = {
+			Type = "Info",
+			Messages = {
+				"You received ${amount} from {sender}.",
+			},
+		},
+	},
+
 	Vehicle = {
 		DoorLocked = {
 			Type = 'Error',
@@ -153,6 +234,18 @@ return TableUtil.Lock({
 		NotEnoughCash = {
 			Type = 'Warning',
 			Messages = {`You don't have enough cash to purchase this vehicle.`}
+		},
+		NotAuthorized = {
+			Type = 'Warning',
+			Messages = {`You are not authorized to use this vehicle spawner.`}
+		},
+		NotAuthorizedForTeams = {
+			Type = 'Warning',
+			Messages = {"You can't use this vehicle spawner. Allowed teams: {teams}."}
+		},
+		SpawnerUnavailable = {
+			Type = 'Error',
+			Messages = {`This vehicle spawner is unavailable right now.`}
 		},
 
 		RateLimited = {
@@ -199,6 +292,10 @@ return TableUtil.Lock({
 	},
 
 	BoxDelivery = {
+		FedBlocked = {
+			Type = 'Error',
+			Messages = {'You are a fed!, you cant do this job man!!.'},
+		},
 		PickedUp = {
 			Type = 'Info',
 			Messages = {`Take the box to the warehouse to complete the delivery.`},
@@ -221,6 +318,10 @@ return TableUtil.Lock({
 		Entered = {
 			Type = 'Success',
 			Messages = {'You entered the tunnel.'},
+		},
+		FedBlocked = {
+			Type = 'Error',
+			Messages = {'You are a fed!, you cant use this tunnel.'},
 		},
 		NotEnoughCash = {
 			Type = 'Warning',

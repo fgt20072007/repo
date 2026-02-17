@@ -15,18 +15,18 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>-2325.8567</X>
+        <X>-2330.905</X>
         <Y>1.3968735</Y>
-        <Z>-68.92984</Z>
-        <R00>-1.0000008</R00>
+        <Z>-60.65013</Z>
+        <R00>-1</R00>
         <R01>0</R01>
-        <R02>0.0015690774</R02>
+        <R02>0</R02>
         <R10>0</R10>
-        <R11>1</R11>
+        <R11>0.9999995</R11>
         <R12>0</R12>
-        <R20>-0.0015689731</R20>
+        <R20>0</R20>
         <R21>0</R21>
-        <R22>-0.99999815</R22>
+        <R22>-0.9999995</R22>
       </CoordinateFrame>
       <bool name="CanCollide">true</bool>
       <bool name="CanQuery">true</bool>
@@ -35,7 +35,7 @@
       <bool name="CastShadow">true</bool>
       <string name="CollisionGroup">Default</string>
       <int name="CollisionGroupId">0</int>
-      <Color3uint8 name="Color3uint8">10921638</Color3uint8>
+      <Color3uint8 name="Color3uint8">12931881</Color3uint8>
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>

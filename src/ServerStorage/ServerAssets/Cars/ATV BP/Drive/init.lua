@@ -16,8 +16,8 @@ Tune.AutoFlip		= true		-- Set to false if using manual flip plugin
 --[[Wheel Alignment]]
 --[Don't physically apply alignment to wheels]
 --[Values are in degrees]
-Tune.FCamber		= 7
-Tune.RCamber		= 7
+Tune.FCamber		= 5
+Tune.RCamber		= 5
 Tune.FToe			= 0
 Tune.RToe			= 0
 
@@ -109,7 +109,7 @@ Tune.SteerP			= 90000	-- Steering Aggressiveness
 
 --[[Engine]]
 --Torque Curve
-Tune.Horsepower		= 300		--	[TORQUE CURVE VISUAL]
+Tune.Horsepower		= 250		--	[TORQUE CURVE VISUAL]
 Tune.IdleRPM		= 800		--		https://www.desmos.com/calculator/2uo3hqwdhf
 Tune.PeakRPM		= 3000 	--		Use sliders to manipulate values
 Tune.Redline		= 4000		--		Copy and paste slider values into the respective tune values
@@ -203,7 +203,6 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Data = ReplicatedStorage:WaitForChild("Data")
 
 Tune.Controls = require(Data:WaitForChild("CarControls"))
-
 
 
 

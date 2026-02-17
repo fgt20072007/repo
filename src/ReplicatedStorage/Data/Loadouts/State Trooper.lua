@@ -15,7 +15,7 @@ return table.freeze({
 
 		Weapons = {
 			{Name = "Glock", ThumbnailImage = `rbxassetid://97334953853940`, DefaultEquipped = false},
-			{Name = "Cone", ThumbnailImage = `rbxassetid://81371698763110`, DefaultEquipped = false},
+		
 			{Name = "Cuffs", ThumbnailImage = `rbxassetid://91558331692519`, DefaultEquipped = false},
 			{Name = "Taser", ThumbnailImage = `rbxassetid://77153174999061`, DefaultEquipped = false},
 		},
@@ -30,6 +30,7 @@ return table.freeze({
 
 		Weapons = {
 			{Name = "M1911", ThumbnailImage = `rbxassetid://80804918258681`, DefaultEquipped = false},
+			{Name = "Cone", ThumbnailImage = `rbxassetid://81371698763110`, DefaultEquipped = false},
 		},
 	},
 

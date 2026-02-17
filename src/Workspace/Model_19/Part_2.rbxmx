@@ -14,18 +14,18 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>3946.8262</X>
-        <Y>-0.9351755</Y>
-        <Z>161.29982</Z>
-        <R00>0</R00>
+        <X>640.97424</X>
+        <Y>-50.6493</Y>
+        <Z>534.5584</Z>
+        <R00>-1</R00>
         <R01>0</R01>
-        <R02>1</R02>
+        <R02>0</R02>
         <R10>0</R10>
         <R11>1</R11>
         <R12>0</R12>
-        <R20>-1</R20>
+        <R20>0</R20>
         <R21>0</R21>
-        <R22>0</R22>
+        <R22>-1</R22>
       </CoordinateFrame>
       <bool name="CanCollide">true</bool>
       <bool name="CanQuery">true</bool>
@@ -34,11 +34,11 @@
       <bool name="CastShadow">true</bool>
       <string name="CollisionGroup">Default</string>
       <int name="CollisionGroupId">0</int>
-      <Color3uint8 name="Color3uint8">12829639</Color3uint8>
+      <Color3uint8 name="Color3uint8">0</Color3uint8>
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
-      <bool name="EnableFluidForces">false</bool>
+      <bool name="EnableFluidForces">true</bool>
       <token name="formFactorRaw">1</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
@@ -50,8 +50,8 @@
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
       <bool name="Massless">false</bool>
-      <token name="Material">1376</token>
-      <string name="MaterialVariantSerialized">Asphalt_Race_Desert</string>
+      <token name="Material">256</token>
+      <string name="MaterialVariantSerialized"></string>
       <CoordinateFrame name="PivotOffset">
         <X>0</X>
         <Y>0</Y>
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>134.45009</X>
-        <Y>1.1</Y>
-        <Z>1</Z>
+        <X>8.15</X>
+        <Y>1</Y>
+        <Z>8</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

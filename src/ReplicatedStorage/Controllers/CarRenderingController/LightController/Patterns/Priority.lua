@@ -12,6 +12,10 @@ return {
 			["RightVisor"] = {1, 2, 3, 4},
 			["BackRightVisor"] = {1, 2, 3, 4},
 			["BackLeftVisor"] = {1, 2, 3, 4},
+			["ExtraVisorLeft"] = {1, 2, 3, 4},
+			["ExtraVisorRight"] = {1, 2, 3, 4},
+			["Sides"] = {1, 2, 3, 4},
+			["Quad"] = {1, 2, 3, 4},
 
 		}
 	},
@@ -27,6 +31,10 @@ return {
 			["RightVisor"] = {1,4},
 			["BackRightVisor"] = {1,4},
 			["BackLeftVisor"] = {1,4},
+			["ExtraVisorLeft"] = {1,4},
+			["ExtraVisorRight"] = {1,4},
+			["Sides"] = {1, 4},
+			["Quad"] = {1, 4},
 		}
 	},
 
@@ -41,6 +49,10 @@ return {
 			["RightVisor"] = {2,3},
 			["BackRightVisor"] = {2, 3},
 			["BackLeftVisor"] = {2, 3},
+			["ExtraVisorLeft"] = {2,3},
+			["ExtraVisorRight"] = {2,3},
+			["Sides"] = {2, 3},
+			["Quad"] = {2, 3},
 
 		}
 	},
@@ -55,7 +67,11 @@ return {
 			["LeftVisor"] = {1,4},
 			["RightVisor"] = {1,4},
 			["BackRightVisor"] = {1,4},
-			["BackLeftVisor"] = {1,4}
+			["BackLeftVisor"] = {1,4},
+			["ExtraVisorLeft"] = {1,4},
+			["ExtraVisorRight"] = {1,4},
+			["Sides"] = {1, 4},
+			["Quad"] = {1, 4},
 
 		}
 	},
@@ -71,6 +87,10 @@ return {
 			["RightVisor"] = {2,3},
 			["BackRightVisor"] = {2, 3},
 			["BackLeftVisor"] = {2, 3},
+			["ExtraVisorLeft"] = {2,3},
+			["ExtraVisorRight"] = {2,3},
+			["Sides"] = {2, 3},
+			["Quad"] = {2, 3},
 		}
 	},
 
@@ -85,6 +105,10 @@ return {
 			["RightVisor"] = {},
 			["BackRightVisor"] = {},
 			["BackLeftVisor"] = {},
+			["ExtraVisorLeft"] = {},
+			["ExtraVisorRight"] = {},
+			["Sides"] = {},
+			["Quad"] = {},
 
 		}
 	},
@@ -99,7 +123,11 @@ return {
 			["LeftVisor"] = {1,4},
 			["RightVisor"] = {1,4},
 			["BackRightVisor"] = {1,4},
-			["BackLeftVisor"] = {1,4}
+			["BackLeftVisor"] = {1,4},
+			["ExtraVisorLeft"] = {1,4},
+			["ExtraVisorRight"] = {1,4},
+			["Sides"] = {1, 4},
+			["Quad"] = {1, 4},
 
 		}
 	},
@@ -115,6 +143,10 @@ return {
 			["RightVisor"] = {2,3},
 			["BackRightVisor"] = {2, 3},
 			["BackLeftVisor"] = {2, 3},
+			["ExtraVisorLeft"] = {2,3},
+			["ExtraVisorRight"] = {2,3},
+			["Sides"] = {2, 3},
+			["Quad"] = {2, 3},
 
 		}
 	},
@@ -130,6 +162,10 @@ return {
 			["RightVisor"] = {},
 			["BackRightVisor"] = {},
 			["BackLeftVisor"] = {},
+			["ExtraVisorLeft"] = {},
+			["ExtraVisorRight"] = {},
+			["Sides"] = {},
+			["Quad"] = {},
 
 		}
 	},

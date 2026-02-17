@@ -15,9 +15,9 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>-115.02626</X>
-        <Y>1.705228</Y>
-        <Z>69.43313</Z>
+        <X>-145.75824</X>
+        <Y>72.12418</Y>
+        <Z>240.74356</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0</R02>
@@ -136,7 +136,7 @@
         <Y>0</Y>
         <Z>0</Z>
       </Vector3>
-      <int name="VertexCount">0</int>
+      <int name="VertexCount">1656</int>
     </Properties>
   </Item>
   <SharedStrings>

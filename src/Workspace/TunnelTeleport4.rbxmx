@@ -14,18 +14,18 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>-373.70004</X>
-        <Y>0.25</Y>
-        <Z>583.1</Z>
-        <R00>1</R00>
+        <X>-367.32303</X>
+        <Y>2.9536016</Y>
+        <Z>582.96185</Z>
+        <R00>0.86602753</R00>
         <R01>0</R01>
-        <R02>0</R02>
+        <R02>0.49999636</R02>
         <R10>0</R10>
         <R11>1</R11>
         <R12>0</R12>
-        <R20>0</R20>
+        <R20>-0.49999636</R20>
         <R21>0</R21>
-        <R22>1</R22>
+        <R22>0.86602753</R22>
       </CoordinateFrame>
       <bool name="CanCollide">false</bool>
       <bool name="CanQuery">false</bool>
@@ -90,7 +90,7 @@
       <float name="TopParamB">0.5</float>
       <token name="TopSurface">0</token>
       <token name="TopSurfaceInput">0</token>
-      <float name="Transparency">0</float>
+      <float name="Transparency">1</float>
       <Vector3 name="Velocity">
         <X>0</X>
         <Y>0</Y>

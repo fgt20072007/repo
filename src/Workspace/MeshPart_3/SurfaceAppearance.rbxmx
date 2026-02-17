@@ -6,9 +6,9 @@
       <BinaryString name="AttributesSerialize"></BinaryString>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
       <Color3 name="Color">
-        <R>0.8117648</R>
+        <R>1</R>
         <G>0.85098046</G>
-        <B>0.6431373</B>
+        <B>0.6156863</B>
       </Color3>
       <Content name="ColorMapContent">
         <uri>rbxassetid://91785515245786</uri>

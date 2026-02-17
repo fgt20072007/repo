@@ -3,7 +3,7 @@
     <Properties>
       <string name="Name">CarShopInterface</string>
       <string name="ActionText">Vehicle Spawner</string>
-      <BinaryString name="AttributesSerialize">AQAAAAkAAABJbnRlcmZhY2UCCgAAAENhclNwYXduZXI=</BinaryString>
+      <BinaryString name="AttributesSerialize">AwAAAAwAAABBbGxvd2VkVGVhbXMCGAAAAEJvcmRlciBQYXRyb2wsSFNJLEJPUlRBQwwAAABDYXJTcGF3blBsb3QCDQAAAEJvcmRlciBQYXRyb2wJAAAASW50ZXJmYWNlAgoAAABDYXJTcGF3bmVy</BinaryString>
       <bool name="AutoLocalize">true</bool>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
       <bool name="ClickablePrompt">true</bool>

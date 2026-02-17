@@ -15,18 +15,18 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>-117.030235</X>
-        <Y>3.7505012</Y>
-        <Z>76.286766</Z>
+        <X>-147.76227</X>
+        <Y>74.56054</Y>
+        <Z>247.59732</Z>
         <R00>-1</R00>
-        <R01>-0.00000000003180385</R01>
-        <R02>-0.000000087430045</R02>
-        <R10>0.000000000031803893</R10>
-        <R11>1.0000001</R11>
-        <R12>-0.0000000004656613</R12>
-        <R20>0.0000000874155</R20>
-        <R21>0.0000000004656613</R21>
-        <R22>-0.99999994</R22>
+        <R01>0</R01>
+        <R02>0</R02>
+        <R10>0</R10>
+        <R11>1</R11>
+        <R12>0</R12>
+        <R20>0</R20>
+        <R21>0</R21>
+        <R22>-1</R22>
       </CoordinateFrame>
       <bool name="CanCollide">false</bool>
       <bool name="CanQuery">false</bool>
@@ -136,7 +136,7 @@
         <Y>0</Y>
         <Z>0</Z>
       </Vector3>
-      <int name="VertexCount">0</int>
+      <int name="VertexCount">218</int>
     </Properties>
   </Item>
   <SharedStrings>

@@ -15,8 +15,8 @@
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
         <X>3667.8389</X>
-        <Y>6.737446</Y>
-        <Z>-362.20575</Z>
+        <Y>8.362446</Y>
+        <Z>-382.35577</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0</R02>
@@ -82,7 +82,7 @@
       <Vector3 name="size">
         <X>0.14999567</X>
         <Y>3.4</Y>
-        <Z>5.5999985</Z>
+        <Z>2.3499985</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

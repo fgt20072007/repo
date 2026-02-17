@@ -22,9 +22,7 @@ return table.freeze({
 				ThumbnailImage = `rbxassetid://97334953853940`,
 				DefaultEquipped = true},
 			
-			{Name = "Cone",
-				ThumbnailImage = `rbxassetid://81371698763110`,
-				DefaultEquipped = false},
+		
 			{Name = "Cuffs",
 				ThumbnailImage = `rbxassetid://91558331692519`,
 				DefaultEquipped = true},
@@ -38,6 +36,10 @@ return table.freeze({
 		Weapons = {
 			{Name = "M1911",
 				ThumbnailImage = `rbxassetid://80804918258681`,
+				DefaultEquipped = false},
+			
+			{Name = "Cone",
+				ThumbnailImage = `rbxassetid://81371698763110`,
 				DefaultEquipped = false},
 		},
 	},

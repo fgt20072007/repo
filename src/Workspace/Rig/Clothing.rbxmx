@@ -1,5 +1,5 @@
 <roblox version="4">
-  <Item class="Shirt" referent="0">
+  <Item class="Pants" referent="0">
     <Properties>
       <string name="Name">Clothing</string>
       <BinaryString name="AttributesSerialize"></BinaryString>
@@ -9,10 +9,10 @@
         <G>1</G>
         <B>1</B>
       </Color3>
-      <bool name="DefinesCapabilities">false</bool>
-      <ContentId name="ShirtTemplate">
-        <url>rbxassetid://14956735671</url>
+      <ContentId name="PantsTemplate">
+        <url>rbxassetid://3767402973</url>
       </ContentId>
+      <bool name="DefinesCapabilities">false</bool>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>
     </Properties>

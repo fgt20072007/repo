@@ -14,9 +14,9 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>-161.03998</X>
+        <X>-565.8172</X>
         <Y>23.851809</Y>
-        <Z>-901.8468</Z>
+        <Z>-604.3176</Z>
         <R00>1</R00>
         <R01>0</R01>
         <R02>0</R02>
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>1089.3959</X>
+        <X>1898.95</X>
         <Y>48.501328</Y>
-        <Z>305.0415</Z>
+        <Z>900.1</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags">QUNTX0lHTk9SRQ==</BinaryString>

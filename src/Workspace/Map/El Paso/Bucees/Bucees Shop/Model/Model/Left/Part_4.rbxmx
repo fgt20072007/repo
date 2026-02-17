@@ -27,9 +27,9 @@
         <R21>0</R21>
         <R22>-1</R22>
       </CoordinateFrame>
-      <bool name="CanCollide">true</bool>
-      <bool name="CanQuery">true</bool>
-      <bool name="CanTouch">true</bool>
+      <bool name="CanCollide">false</bool>
+      <bool name="CanQuery">false</bool>
+      <bool name="CanTouch">false</bool>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
       <bool name="CastShadow">true</bool>
       <string name="CollisionGroup">Default</string>

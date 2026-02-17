@@ -25,6 +25,11 @@ local DepositRateLimit = RateLimit.New(3)
 
 local Manager = {}
 
+local function IsFederal(player: Player): boolean
+	local team = player.Team
+	return team and team:HasTag("Federal") or false
+end
+
 local function GetBoxTemplate(): Tool?
 	local found = ToolsPath:FindFirstChild(BOX_NAME)
 	if found and found:IsA("Tool") then
@@ -95,6 +100,12 @@ end
 function Manager._OnGetTriggered(player: Player)
 	if not GetRateLimit:CheckRate(player) then return end
 
+	if IsFederal(player) then
+		Manager._DestroyAllBoxes(player)
+		NotifyEvent:FireClient(player, "BoxDelivery/FedBlocked")
+		return
+	end
+
 	local backpack = player:FindFirstChildOfClass("Backpack")
 	if not backpack then return end
 
@@ -114,6 +125,12 @@ end
 
 function Manager._OnDepositTriggered(player: Player)
 	if not DepositRateLimit:CheckRate(player) then return end
+
+	if IsFederal(player) then
+		Manager._DestroyAllBoxes(player)
+		NotifyEvent:FireClient(player, "BoxDelivery/FedBlocked")
+		return
+	end
 
 	local equipped = Manager._GetEquippedBox(player)
 	if not equipped then

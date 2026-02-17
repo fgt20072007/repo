@@ -144,9 +144,27 @@ end
 function Exporter:cleanOutput()
 	local ok, isDir = pcall(fs.isDir, self.outputDir)
 	if ok and isDir then
-		self:log("[CLEAN] " .. self.outputDir)
-		fs.removeDir(self.outputDir)
+		-- `fs.removeDir` can be very slow on large trees. Instead, move the folder aside
+		-- and delete it via the OS (`rm -rf`) so the export can start immediately.
+		local trashDir = self.outputDir .. "_old_" .. tostring(os.time())
+
+		self:log("[CLEAN] Moving " .. self.outputDir .. " -> " .. trashDir)
+		local movedOk = pcall(function()
+			fs.move(self.outputDir, trashDir, { overwrite = true })
+		end)
+
+		if movedOk then
+			self:log("[CLEAN] Deleting " .. trashDir .. " via rm -rf")
+			pcall(function()
+				process.exec("rm", { "-rf", trashDir })
+			end)
+		else
+			-- Fallback: try the built-in recursive delete.
+			self:log("[CLEAN] Move failed; falling back to fs.removeDir")
+			pcall(fs.removeDir, self.outputDir)
+		end
 	end
+
 	self:ensureDir(self.outputDir)
 end
 

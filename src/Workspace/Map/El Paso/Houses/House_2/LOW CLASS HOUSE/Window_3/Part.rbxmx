@@ -14,17 +14,17 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>3578.6074</X>
-        <Y>6.737446</Y>
-        <Z>-228.79262</Z>
+        <X>3578.6824</X>
+        <Y>8.362446</Y>
+        <Z>-212.59267</Z>
         <R00>0</R00>
         <R01>0</R01>
-        <R02>-1</R02>
+        <R02>1</R02>
         <R10>-1</R10>
         <R11>0</R11>
         <R12>0</R12>
         <R20>0</R20>
-        <R21>1</R21>
+        <R21>-1</R21>
         <R22>0</R22>
       </CoordinateFrame>
       <bool name="CanCollide">true</bool>
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>6.399999</X>
+        <X>3.1499991</X>
         <Y>0.3999999</Y>
-        <Z>0.75</Z>
+        <Z>0.8</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>

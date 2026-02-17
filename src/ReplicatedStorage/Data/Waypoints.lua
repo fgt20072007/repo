@@ -75,6 +75,14 @@ local List: {[string]: Waypoint} = {
 		MaxDistance = 500,
 	},
 	
+	Goods = {
+		DisplayName = 'Sell Goods',
+		Color = Color3.fromRGB(33, 220, 45),
+		Icon = 'rbxassetid://96224882658372',
+
+		MaxDistance = 600,
+	},
+	
 	Box = {
 		DisplayName = 'Box',
 		Color = Color3.fromRGB(85, 66, 52),

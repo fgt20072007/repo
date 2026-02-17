@@ -11,9 +11,9 @@ local SignRemote = Net:RemoteEvent('Sign_SetText')
 local SignService = {}
 
 local MAX_CHARACTERS = 50
-local TEXT_INPUTS_PER_MINUTE = 1
+local UPDATE_COOLDOWN_SECONDS = 5
 
-local UpdateRateLimit = RateLimit.New(TEXT_INPUTS_PER_MINUTE / 60, true)
+local UpdateRateLimit = RateLimit.New(1 / UPDATE_COOLDOWN_SECONDS, true)
 
 local function TrimWhitespace(text: string): string
 	return text:match('^%s*(.-)%s*$') or ''

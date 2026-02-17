@@ -2,6 +2,9 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
+local Players = game:GetService("Players")
+local Teams = game:GetService("Teams")
+local Workspace = game:GetService("Workspace")
 
 local VehiclePath = ServerStorage.ServerAssets.Cars
 
@@ -23,9 +26,310 @@ local SpawnEvent = Net:RemoteEvent("SpawnCar")
 local InteractEvent = Net:RemoteFunction("VehicleShopInteract")
 
 local SpawnedCars = {}
+local PromptConnections = {}
+local ActivePromptContexts = {}
+
+local CARSPAWNER_INTERFACE = "CarSpawner"
+local CARSPAWN_TAG = "InterfacePrompt"
+local PROMPT_CONTEXT_TTL = 180
+local PROMPT_DISTANCE_BUFFER = 8
+
+local TEAM_ALIASES = table.freeze({
+	ICE = "HSI",
+	HSI = "ICE",
+})
 
 
 --> Priv Methods
+local function Trim(text: string): string
+	return string.match(text, "^%s*(.-)%s*$") or text
+end
+
+local function PlayerTeamMatches(playerTeamName: string, allowedTeamName: string): boolean
+	if playerTeamName == allowedTeamName then
+		return true
+	end
+
+	local playerAlias = TEAM_ALIASES[playerTeamName]
+	if playerAlias and playerAlias == allowedTeamName then
+		return true
+	end
+
+	local allowedAlias = TEAM_ALIASES[allowedTeamName]
+	if allowedAlias and allowedAlias == playerTeamName then
+		return true
+	end
+
+	return false
+end
+
+local function PromptTokenMatchesPlayer(player: Player, token: string): boolean
+	local team = player.Team
+	if not team then return false end
+
+	local normalizedToken = string.lower(Trim(token))
+	if normalizedToken == "" then return false end
+	if normalizedToken == "all" then return true end
+	if normalizedToken == "federal" then
+		return team:HasTag("Federal")
+	end
+
+	local playerTeamName = team.Name
+	if string.lower(playerTeamName) == normalizedToken then
+		return true
+	end
+
+	local canonicalToken = nil
+	for teamName in TEAM_ALIASES do
+		if string.lower(teamName) == normalizedToken then
+			canonicalToken = teamName
+			break
+		end
+	end
+
+	if canonicalToken then
+		return PlayerTeamMatches(playerTeamName, canonicalToken)
+	end
+
+	for _, teamInstance in Teams:GetChildren() do
+		if not teamInstance:IsA("Team") then continue end
+		if string.lower(teamInstance.Name) ~= normalizedToken then continue end
+		return PlayerTeamMatches(playerTeamName, teamInstance.Name)
+	end
+
+	return false
+end
+
+local function ParsePromptAllowedTeams(prompt: ProximityPrompt): {string}?
+	local raw = prompt:GetAttribute("AllowedTeams")
+	if type(raw) ~= "string" or raw == "" then
+		raw = prompt:GetAttribute("TeamWhitelist")
+	end
+	if type(raw) ~= "string" or raw == "" then
+		return nil
+	end
+
+	local parsed = {}
+	for token in string.gmatch(raw, "[^,;]+") do
+		token = Trim(token)
+		if token ~= "" then
+			table.insert(parsed, token)
+		end
+	end
+
+	return #parsed > 0 and parsed or nil
+end
+
+local function GetPromptWorldPosition(prompt: ProximityPrompt): Vector3?
+	local parent = prompt.Parent
+	if not parent then return nil end
+
+	if parent:IsA("Attachment") then
+		return parent.WorldPosition
+	end
+
+	if parent:IsA("BasePart") then
+		return parent.Position
+	end
+
+	local base = parent:FindFirstAncestorWhichIsA("BasePart")
+	if base then
+		return base.Position
+	end
+
+	local model = parent:FindFirstAncestorWhichIsA("Model")
+	if model then
+		return model:GetPivot().Position
+	end
+
+	return nil
+end
+
+local function ResolveNearestSpawnPlotName(prompt: ProximityPrompt): string?
+	local spawnPlotsFolder = Workspace:FindFirstChild("CarSpawnPlot")
+	if not spawnPlotsFolder then return nil end
+
+	local promptPosition = GetPromptWorldPosition(prompt)
+	if not promptPosition then return nil end
+
+	local nearestPlotName = nil
+	local nearestDistance = math.huge
+
+	for _, spawnPlot in spawnPlotsFolder:GetChildren() do
+		local plotDistance = math.huge
+		local hasAnchorPoint = false
+
+		for _, descendant in spawnPlot:GetDescendants() do
+			if descendant:IsA("Attachment") then
+				hasAnchorPoint = true
+				local distance = (descendant.WorldPosition - promptPosition).Magnitude
+				if distance < plotDistance then
+					plotDistance = distance
+				end
+			end
+		end
+
+		if not hasAnchorPoint then
+			local base = spawnPlot:IsA("BasePart") and spawnPlot or spawnPlot:FindFirstChildWhichIsA("BasePart", true)
+			if base then
+				plotDistance = (base.Position - promptPosition).Magnitude
+			end
+		end
+
+		if plotDistance < nearestDistance then
+			nearestDistance = plotDistance
+			nearestPlotName = spawnPlot.Name
+		end
+	end
+
+	return nearestPlotName
+end
+
+local function ResolvePromptSpawnPlotName(player: Player, prompt: ProximityPrompt): string?
+	local spawnPlotsFolder = Workspace:FindFirstChild("CarSpawnPlot")
+	if not spawnPlotsFolder then return nil end
+
+	local attrPlot = prompt:GetAttribute("CarSpawnPlot")
+	if type(attrPlot) ~= "string" or attrPlot == "" then
+		attrPlot = prompt:GetAttribute("SpawnPlot")
+	end
+
+	if type(attrPlot) == "string" and attrPlot ~= "" then
+		local plot = spawnPlotsFolder:FindFirstChild(attrPlot)
+		if plot then return plot.Name end
+	end
+
+	local nearestPlot = ResolveNearestSpawnPlotName(prompt)
+	if nearestPlot then return nearestPlot end
+
+	local team = player.Team
+	if not team then return nil end
+
+	local teamPlot = spawnPlotsFolder:FindFirstChild(team.Name)
+	return teamPlot and teamPlot.Name or nil
+end
+
+local function ConfigurePromptDefaults(prompt: ProximityPrompt): string?
+	local spawnPlotsFolder = Workspace:FindFirstChild("CarSpawnPlot")
+	if not spawnPlotsFolder then return nil end
+
+	local configuredPlot = prompt:GetAttribute("CarSpawnPlot")
+	if type(configuredPlot) ~= "string" or configuredPlot == "" then
+		configuredPlot = prompt:GetAttribute("SpawnPlot")
+	end
+
+	local spawnPlotName = nil
+	if type(configuredPlot) == "string" and configuredPlot ~= "" and spawnPlotsFolder:FindFirstChild(configuredPlot) then
+		spawnPlotName = configuredPlot
+	else
+		spawnPlotName = ResolveNearestSpawnPlotName(prompt)
+	end
+
+	local currentPromptPlot = prompt:GetAttribute("CarSpawnPlot")
+	if spawnPlotName and (type(currentPromptPlot) ~= "string" or currentPromptPlot == "") then
+		pcall(prompt.SetAttribute, prompt, "CarSpawnPlot", spawnPlotName)
+	end
+
+	local configuredWhitelist = ParsePromptAllowedTeams(prompt)
+	if not configuredWhitelist and spawnPlotName and Teams:FindFirstChild(spawnPlotName) then
+		pcall(prompt.SetAttribute, prompt, "AllowedTeams", spawnPlotName)
+	end
+
+	return spawnPlotName
+end
+
+local function PromptAllowsPlayer(player: Player, prompt: ProximityPrompt, spawnPlotName: string?): boolean
+	local allowedTeams = ParsePromptAllowedTeams(prompt)
+	if allowedTeams then
+		for _, token in allowedTeams do
+			if PromptTokenMatchesPlayer(player, token) then
+				return true
+			end
+		end
+		return false
+	end
+
+	if spawnPlotName and Teams:FindFirstChild(spawnPlotName) then
+		local team = player.Team
+		if not team then return false end
+		return PlayerTeamMatches(team.Name, spawnPlotName)
+	end
+
+	return true
+end
+
+local function IsPlayerNearPrompt(player: Player, prompt: ProximityPrompt): boolean
+	local character = player.Character
+	if not character then return false end
+
+	local humanoid = character:FindFirstChildOfClass("Humanoid")
+	if not humanoid or humanoid.Health <= 0 then return false end
+
+	local root = character:FindFirstChild("HumanoidRootPart")
+	if not root then return false end
+
+	local promptPosition = GetPromptWorldPosition(prompt)
+	if not promptPosition then return false end
+
+	local maxDistance = math.max(8, (prompt.MaxActivationDistance or 8) + PROMPT_DISTANCE_BUFFER)
+	return (root.Position - promptPosition).Magnitude <= maxDistance
+end
+
+local function RememberPromptContext(player: Player, prompt: ProximityPrompt)
+	local defaultPlotName = ConfigurePromptDefaults(prompt)
+	local spawnPlotName = ResolvePromptSpawnPlotName(player, prompt) or defaultPlotName
+	if not spawnPlotName then
+		ActivePromptContexts[player] = nil
+		return
+	end
+
+	if not PromptAllowsPlayer(player, prompt, spawnPlotName) then
+		ActivePromptContexts[player] = nil
+		return
+	end
+
+	ActivePromptContexts[player] = {
+		Prompt = prompt,
+		SpawnPlotName = spawnPlotName,
+		ExpiresAt = os.clock() + PROMPT_CONTEXT_TTL,
+	}
+end
+
+local function ValidatePromptContext(player: Player): (boolean, string)
+	local context = ActivePromptContexts[player]
+	if not context then
+		return false, "NotAuthorized"
+	end
+
+	local prompt = context.Prompt
+	if not (prompt and prompt.Parent and prompt:IsA("ProximityPrompt")) then
+		ActivePromptContexts[player] = nil
+		return false, "SpawnerUnavailable"
+	end
+
+	if (context.ExpiresAt or 0) < os.clock() then
+		ActivePromptContexts[player] = nil
+		return false, "NotAuthorized"
+	end
+
+	local spawnPlotName = ResolvePromptSpawnPlotName(player, prompt) or context.SpawnPlotName
+	if not spawnPlotName then
+		return false, "SpawnerUnavailable"
+	end
+
+	if not PromptAllowsPlayer(player, prompt, spawnPlotName) then
+		ActivePromptContexts[player] = nil
+		return false, "NotAuthorized"
+	end
+
+	if not IsPlayerNearPrompt(player, prompt) then
+		return false, "NotAuthorized"
+	end
+
+	context.SpawnPlotName = spawnPlotName
+	return true, spawnPlotName
+end
+
 local function ChangeColor(Vehicle:Model, ColorName:string)
 	local Color =  ColorName and ColorData[ColorName] or nil
 	local Body = Vehicle:FindFirstChild("Body")
@@ -87,11 +391,20 @@ local module = {}
 
 local CarSpawnLocation_OverlapParams = OverlapParams.new()
 CarSpawnLocation_OverlapParams.FilterType = Enum.RaycastFilterType.Exclude
-CarSpawnLocation_OverlapParams.FilterDescendantsInstances = {workspace.CarSpawnPlot}
+CarSpawnLocation_OverlapParams.FilterDescendantsInstances = {Workspace:FindFirstChild("CarSpawnPlot")}
 
-local function GetSpawnLocation(Player:Player, CarModel:Model)
-	local Team = Player.Team.Name
-	local SpawnPlot = Team and workspace.CarSpawnPlot:FindFirstChild(Team)
+local function GetSpawnLocation(Player:Player, CarModel:Model, SpawnPlotName:string?)
+	local spawnPlotsFolder = Workspace:FindFirstChild("CarSpawnPlot")
+	if not spawnPlotsFolder then return nil end
+
+	local team = Player.Team
+	local teamName = team and team.Name or nil
+	local SpawnPlot = SpawnPlotName and spawnPlotsFolder:FindFirstChild(SpawnPlotName) or nil
+	if not SpawnPlot and teamName then
+		SpawnPlot = spawnPlotsFolder:FindFirstChild(teamName)
+	end
+	if not SpawnPlot then return nil end
+
 	local ExtentsSize = CarModel:GetExtentsSize()
 
 	--[[
@@ -104,12 +417,13 @@ local function GetSpawnLocation(Player:Player, CarModel:Model)
 	]]
 
 	--Iterate to all positions
-	local SpawnPosition = nil
 	for _, Attachment:Attachment in SpawnPlot:GetChildren() do
+		if not Attachment:IsA("Attachment") then continue end
+
 		local cf = Attachment.WorldCFrame
 		cf += (Vector3.yAxis * ExtentsSize.Y * .5)
 
-		local PartsInPart = workspace:GetPartBoundsInBox(cf ,ExtentsSize, CarSpawnLocation_OverlapParams)--workspace:GetPartsInPart(Part, CarSpawnLocation_OverlapParams)
+		local PartsInPart = Workspace:GetPartBoundsInBox(cf ,ExtentsSize, CarSpawnLocation_OverlapParams)--workspace:GetPartsInPart(Part, CarSpawnLocation_OverlapParams)
 		local IsBlocked = false
 		for _, Part:BasePart in PartsInPart do
 			if Part.Name == "Collision_Part" then
@@ -124,22 +438,25 @@ local function GetSpawnLocation(Player:Player, CarModel:Model)
 end
 
 
-function module:SpawnVehicle(Player:Player, VehicleName:number, VehicleColor:string)
+function module:SpawnVehicle(Player:Player, VehicleName:number, VehicleColor:string, SpawnPlotName:string?)
 	--> Destroy Previous Car
 	DestroyPlayerCar(Player)
 
 	-- Check if vehicle is on list
 	local VehicleModel = VehiclePath:FindFirstChild(VehicleName) or VehiclePath:FindFirstChild("Falcon Explorer 2020")
-	if not VehicleModel then return end
+	if not VehicleModel then return false, "CarModelNotFound" end
 
 	local Character = Player.Character
 
 	local CarClone = VehicleModel:Clone()
-	CarClone.Parent = workspace
+	CarClone.Parent = Workspace
 	CarClone:AddTag("Car")
 
-	local SpawnPosition = GetSpawnLocation(Player, CarClone)
-	if not SpawnPosition then return false end
+	local SpawnPosition = GetSpawnLocation(Player, CarClone, SpawnPlotName)
+	if not SpawnPosition then
+		CarClone:Destroy()
+		return false, "SpawnerUnavailable"
+	end
 	CarClone:PivotTo(SpawnPosition)
 	CarClone:SetAttribute("Owner", Player.Name)
 
@@ -149,7 +466,7 @@ function module:SpawnVehicle(Player:Player, VehicleName:number, VehicleColor:str
 		task.wait(.5)
 
 		local VehicleSeat = CarClone:FindFirstChildOfClass("VehicleSeat")
-		if VehicleSeat then
+		if VehicleSeat and Character and Character.Parent and Character:FindFirstChildOfClass("Humanoid") then
 			Character:PivotTo(VehicleSeat:GetPivot() + Vector3.new(0, 3.5, 0))
 			VehicleSeat:Sit(Character.Humanoid)
 		end
@@ -158,10 +475,37 @@ function module:SpawnVehicle(Player:Player, VehicleName:number, VehicleColor:str
 
 	SpawnedCars[Player] = CarClone
 
-	return true
+	return true, "VehicleSpawned"
+end
+
+local function BindSpawnerPrompt(prompt: ProximityPrompt)
+	if PromptConnections[prompt] then return end
+	if prompt:GetAttribute("Interface") ~= CARSPAWNER_INTERFACE then return end
+	ConfigurePromptDefaults(prompt)
+
+	PromptConnections[prompt] = prompt.Triggered:Connect(function(player: Player)
+		RememberPromptContext(player, prompt)
+	end)
+end
+
+local function UnBindSpawnerPrompt(prompt: Instance)
+	local conn = PromptConnections[prompt]
+	if conn then
+		conn:Disconnect()
+		PromptConnections[prompt] = nil
+	end
+
+	for player, context in ActivePromptContexts do
+		if context.Prompt == prompt then
+			ActivePromptContexts[player] = nil
+		end
+	end
 end
 
 function module.Init()
+	local spawnPlotsFolder = Workspace:FindFirstChild("CarSpawnPlot")
+	CarSpawnLocation_OverlapParams.FilterDescendantsInstances = spawnPlotsFolder and {spawnPlotsFolder} or {}
+
 	InteractEvent.OnServerInvoke = function(player:Player, VehicleListIndex:number, VehicleName:string, VehicleColor:string)
 		local DataManager = DataService.GetManager('PlayerData')
 		local ThisVehicleData = VehicleData[VehicleListIndex]
@@ -183,11 +527,17 @@ function module.Init()
 					and MarketService.OwnsPass(player, ThisVehicleData.GamepassOnly)
 				) 
 		then
-			if not module:SpawnVehicle(player, VehicleName, VehicleColor) then
-				return false, "CarModelNotFound"
+			local maySpawn, spawnPlotOrErr = ValidatePromptContext(player)
+			if not maySpawn then
+				return false, spawnPlotOrErr
 			end
 
-			return true, "VehicleSpawned"
+			local succ, resultErr = module:SpawnVehicle(player, VehicleName, VehicleColor, spawnPlotOrErr)
+			if not succ then
+				return false, resultErr or "SpawnerUnavailable"
+			end
+
+			return true, resultErr or "VehicleSpawned"
 		else
 			--> Player attempt to purchase vehicle
 			print("ATTEMPT TO PURCHASE")
@@ -205,8 +555,22 @@ function module.Init()
 		end
 	end
 
-	game.Players.PlayerRemoving:Connect(function(player:Player)
+	for _, tagged in CollectionService:GetTagged(CARSPAWN_TAG) do
+		if tagged:IsA("ProximityPrompt") then
+			BindSpawnerPrompt(tagged)
+		end
+	end
+
+	CollectionService:GetInstanceAddedSignal(CARSPAWN_TAG):Connect(function(inst: Instance)
+		if not inst:IsA("ProximityPrompt") then return end
+		BindSpawnerPrompt(inst)
+	end)
+
+	CollectionService:GetInstanceRemovedSignal(CARSPAWN_TAG):Connect(UnBindSpawnerPrompt)
+
+	Players.PlayerRemoving:Connect(function(player:Player)
 		DestroyPlayerCar(player)
+		ActivePromptContexts[player] = nil
 	end)
 
 	return true

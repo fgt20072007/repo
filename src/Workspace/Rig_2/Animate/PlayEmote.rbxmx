@@ -1,0 +1,12 @@
+<roblox version="4">
+  <Item class="BindableFunction" referent="0">
+    <Properties>
+      <string name="Name">PlayEmote</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

@@ -9,10 +9,16 @@ local Notification = Net:RemoteEvent("Notification")
 
 local COUNTDOWN_TIME = 15
 local CHECK_INTERVAL = 1
+local MEXICO_ZONE_FOLDER_NAMES = table.freeze({"Restricted"})
+local VERIFIED_REVISIONS = table.freeze({
+	Approved = true,
+	Secondary = true,
+})
 
 local mexicoZoneParts: {BasePart} = {}
 local playerTimers: {[Player]: {thread: thread?, remaining: number?}} = {}
 local playerLoops: {[Player]: thread} = {}
+local trackAllMexicoParts = false
 
 local function isPointInsidePart(part: BasePart, point: Vector3): boolean
 	if not part or not part.Parent then return false end
@@ -61,6 +67,28 @@ local function killPlayer(player: Player)
 	if humanoid then humanoid.Health = 0 end
 end
 
+local function isMexicoZonePartName(name: string): boolean
+	return string.find(string.lower(name), "mexico", 1, true) ~= nil
+end
+
+local function shouldTrackMexicoZonePart(descendant: Instance): boolean
+	if not descendant:IsA("BasePart") then return false end
+	if trackAllMexicoParts then return true end
+
+	return isMexicoZonePartName(descendant.Name)
+end
+
+local function addMexicoZonePart(part: BasePart)
+	if table.find(mexicoZoneParts, part) then return end
+	part.Transparency = 1
+	table.insert(mexicoZoneParts, part)
+end
+
+local function removeMexicoZonePart(part: BasePart)
+	local index = table.find(mexicoZoneParts, part)
+	if index then table.remove(mexicoZoneParts, index) end
+end
+
 local function stopCountdown(player: Player)
 	local data = playerTimers[player]
 	if not data then return end
@@ -106,15 +134,16 @@ local function startCountdown(player: Player)
 	end)
 end
 
-local function revokeApproval(player: Player)
-	if player:GetAttribute("Revision") == "Approved" then
+local function revokeVerification(player: Player)
+	local revision = player:GetAttribute("Revision")
+	if type(revision) == "string" and VERIFIED_REVISIONS[revision] then
 		player:SetAttribute("Revision", nil)
 	end
 end
 
 local function checkPlayer(player: Player)
 	if isPlayerInMexicoZone(player) then
-		revokeApproval(player)
+		revokeVerification(player)
 		if isPlayerFederal(player) then startCountdown(player) end
 	else
 		stopCountdown(player)
@@ -122,26 +151,46 @@ local function checkPlayer(player: Player)
 end
 
 local function initZoneParts()
-	local folder = Workspace:FindFirstChild("Restricted")
-	if not folder then return end
+	local folders = {}
+	for _, folderName in ipairs(MEXICO_ZONE_FOLDER_NAMES) do
+		local folder = Workspace:FindFirstChild(folderName)
+		if folder then
+			table.insert(folders, folder)
+		end
+	end
+	if #folders == 0 then return end
 
-	for _, descendant in ipairs(folder:GetDescendants()) do
-		if descendant:IsA("BasePart") and descendant.Name == "Mexico" then
-			descendant.Transparency = 1
-			table.insert(mexicoZoneParts, descendant)
+	for _, folder in ipairs(folders) do
+		for _, descendant in ipairs(folder:GetDescendants()) do
+			if shouldTrackMexicoZonePart(descendant) then
+				addMexicoZonePart(descendant)
+			end
 		end
 	end
 
-	folder.DescendantAdded:Connect(function(descendant)
-		if not descendant:IsA("BasePart") or descendant.Name ~= "Mexico" then return end
-		descendant.Transparency = 1
-		table.insert(mexicoZoneParts, descendant)
-	end)
+	if #mexicoZoneParts == 0 then
+		trackAllMexicoParts = true
+		for _, folder in ipairs(folders) do
+			for _, descendant in ipairs(folder:GetDescendants()) do
+				if shouldTrackMexicoZonePart(descendant) then
+					addMexicoZonePart(descendant)
+				end
+			end
+		end
+	end
 
-	folder.DescendantRemoving:Connect(function(descendant)
-		local index = table.find(mexicoZoneParts, descendant)
-		if index then table.remove(mexicoZoneParts, index) end
-	end)
+	for _, folder in ipairs(folders) do
+		folder.DescendantAdded:Connect(function(descendant)
+			if shouldTrackMexicoZonePart(descendant) then
+				addMexicoZonePart(descendant)
+			end
+		end)
+
+		folder.DescendantRemoving:Connect(function(descendant)
+			if not descendant:IsA("BasePart") then return end
+			removeMexicoZonePart(descendant)
+		end)
+	end
 end
 
 local function bindPlayer(player: Player)

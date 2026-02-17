@@ -47,6 +47,11 @@ return table.freeze({
 			{Name = "M1911",
 				ThumbnailImage = `rbxassetid://80804918258681`,
 				DefaultEquipped = false},
+			
+			{Name = "Cone",
+				ThumbnailImage = `rbxassetid://81371698763110`,
+				DefaultEquipped = false},
+			
 		},
 	},
 	

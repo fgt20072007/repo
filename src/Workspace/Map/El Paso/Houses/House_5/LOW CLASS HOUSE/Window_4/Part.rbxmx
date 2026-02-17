@@ -14,8 +14,8 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>3529.848</X>
-        <Y>8.362446</Y>
+        <X>3509.6978</X>
+        <Y>6.737446</Y>
         <Z>-360.0166</Z>
         <R00>0</R00>
         <R01>1</R01>
@@ -80,7 +80,7 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>3.1499991</X>
+        <X>6.399999</X>
         <Y>0.3999999</Y>
         <Z>0.8</Z>
       </Vector3>

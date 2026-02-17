@@ -18,7 +18,7 @@ local TextBox = Frame:WaitForChild('TextBox')
 local SignRemote = Net:RemoteEvent('Sign_SetText')
 
 local MAX_CHARACTERS = 50
-local COOLDOWN_SECONDS = 60
+local COOLDOWN_SECONDS = 5
 local DEFAULT_BUTTON_TEXT = "Change Text"
 
 local ActiveTool = nil

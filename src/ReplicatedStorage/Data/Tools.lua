@@ -277,7 +277,7 @@ local List: {[string]: Data} = {
 		Illegal = true,
 		DetectionRate = 75,
 
-		SellPrice = 2_200,
+		SellPrice = 1_700,
 		CarryMax = 3,
 		Price = 750,
 	},
@@ -287,7 +287,7 @@ local List: {[string]: Data} = {
 		Illegal = true,
 		DetectionRate = 65,
 
-		SellPrice = 1_200,
+		SellPrice = 1_150,
 		CarryMax = 3,
 		Price = 480,
 	},

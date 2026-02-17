@@ -14,10 +14,10 @@
       <token name="BottomSurface">0</token>
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
-        <X>3157.7324</X>
-        <Y>-0.0719223</Y>
-        <Z>-159.36186</Z>
-        <R00>1</R00>
+        <X>3319.4482</X>
+        <Y>15.021847</Y>
+        <Z>-213.94589</Z>
+        <R00>-1</R00>
         <R01>0</R01>
         <R02>0</R02>
         <R10>0</R10>
@@ -25,16 +25,16 @@
         <R12>0</R12>
         <R20>0</R20>
         <R21>0</R21>
-        <R22>1</R22>
+        <R22>-1</R22>
       </CoordinateFrame>
-      <bool name="CanCollide">false</bool>
+      <bool name="CanCollide">true</bool>
       <bool name="CanQuery">true</bool>
       <bool name="CanTouch">true</bool>
       <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-      <bool name="CastShadow">false</bool>
+      <bool name="CastShadow">true</bool>
       <string name="CollisionGroup">Default</string>
       <int name="CollisionGroupId">0</int>
-      <Color3uint8 name="Color3uint8">16711680</Color3uint8>
+      <Color3uint8 name="Color3uint8">5263181</Color3uint8>
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
@@ -49,9 +49,9 @@
       <token name="LeftSurface">0</token>
       <token name="LeftSurfaceInput">0</token>
       <bool name="Locked">false</bool>
-      <bool name="Massless">true</bool>
-      <token name="Material">256</token>
-      <string name="MaterialVariantSerialized"></string>
+      <bool name="Massless">false</bool>
+      <token name="Material">816</token>
+      <string name="MaterialVariantSerialized">Concrete 2022</string>
       <CoordinateFrame name="PivotOffset">
         <X>0</X>
         <Y>0</Y>
@@ -80,9 +80,9 @@
       <bool name="DefinesCapabilities">false</bool>
       <token name="shape">1</token>
       <Vector3 name="size">
-        <X>4.609375</X>
-        <Y>0.7267504</Y>
-        <Z>18.849756</Z>
+        <X>1.2499908</X>
+        <Y>1.1499999</Y>
+        <Z>48.825214</Z>
       </Vector3>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>
@@ -90,7 +90,7 @@
       <float name="TopParamB">0.5</float>
       <token name="TopSurface">0</token>
       <token name="TopSurfaceInput">0</token>
-      <float name="Transparency">0.7</float>
+      <float name="Transparency">0</float>
       <Vector3 name="Velocity">
         <X>0</X>
         <Y>0</Y>

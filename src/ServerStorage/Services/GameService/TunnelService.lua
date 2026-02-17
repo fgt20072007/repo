@@ -23,6 +23,11 @@ local ExitRateLimit = RateLimit.New(3)
 
 local Manager = {}
 
+local function IsFederal(player: Player): boolean
+	local team = player.Team
+	return team and team:HasTag("Federal") or false
+end
+
 local function GetPrompt(partName: string): ProximityPrompt?
 	local part = workspace:WaitForChild(partName, 15)
 	if not part then
@@ -95,6 +100,11 @@ end
 local function HandleEnter(player: Player, target: CFrame, customCost: number?)
 	if not EnterRateLimit:CheckRate(player) then return end
 
+	if IsFederal(player) then
+		NotifyEvent:FireClient(player, "Tunnel/FedBlocked")
+		return
+	end
+
 	local cost = customCost
 	if typeof(cost) ~= "number" then
 		cost = GetEnterCost()
@@ -132,6 +142,12 @@ end
 
 local function HandleExit(player: Player, target: CFrame)
 	if not ExitRateLimit:CheckRate(player) then return end
+
+	if IsFederal(player) then
+		NotifyEvent:FireClient(player, "Tunnel/FedBlocked")
+		return
+	end
+
 	TeleportPlayer(player, target)
 end
 

@@ -112,6 +112,17 @@ local List: {[number]: Data} = {
 	},
 	
 	{
+		Name = "Bull Challenger",
+		Teams = {"Civilian"},
+		Price  =  129000,
+		TopSpeed = 150,
+		HorsePower = 380,
+		CarYear = 2021,
+		ImageRbxAssetId = "rbxassetid://133584568855777",
+		VehicleType = "Sedan"
+	},
+	
+	{
 		Name = "Bullghini Uros",
 		Teams = {"Civilian"},
 		Price  =  200000,
@@ -340,6 +351,17 @@ local List: {[number]: Data} = {
 	},
 	
 	{
+		Name = "Falcon Crown Trooper",
+		Teams = {"State Trooper"},
+		Price  =  20000,
+		TopSpeed = 120,
+		HorsePower = 290,
+		CarYear = 2012,
+		ImageRbxAssetId = "rbxassetid://106535484445434",
+		VehicleType = "Sedan"
+	},
+	
+	{
 		Name = "Bull Charger Trooper",
 		Teams = {"State Trooper"},
 		Price  =  24500,
@@ -351,15 +373,17 @@ local List: {[number]: Data} = {
 	},
 	
 	{
-		Name = "Falcon Crown Trooper",
+		Name = "Bull Challenger Trooper",
 		Teams = {"State Trooper"},
-		Price  =  20000,
-		TopSpeed = 120,
-		HorsePower = 290,
-		CarYear = 2012,
-		ImageRbxAssetId = "rbxassetid://106535484445434",
+		Price  =  106000,
+		TopSpeed = 150,
+		HorsePower = 370,
+		CarYear = 2021,
+		ImageRbxAssetId = "rbxassetid://98646761216448",
 		VehicleType = "Sedan"
 	},
+	
+	
 	
 	
 	
@@ -377,6 +401,19 @@ local List: {[number]: Data} = {
 		GamepassProvidesVehicle = true,
 		CarYear = 2005,
 		ImageRbxAssetId = "rbxassetid://137261039293760",
+		VehicleType = "Military"
+	},
+	
+	{
+		Name = "ATV BP",
+		Teams = {"Federal"},
+		Price  =  0,
+		TopSpeed = 120,
+		HorsePower = 300,
+		GamepassOnly = "BORTAC",
+		GamepassProvidesVehicle = true,
+		CarYear = 2019,
+		ImageRbxAssetId = "rbxassetid://98638228937568",
 		VehicleType = "Military"
 	},
 	
