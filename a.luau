@@ -21,7 +21,9 @@ function Exporter.new(config)
 end
 
 function Exporter:log(message)
-	if not self.debug then return end
+	if not self.debug then
+		return
+	end
 	print(message)
 end
 
@@ -31,13 +33,17 @@ end
 
 function Exporter:ensureDir(path)
 	local ok, isDir = pcall(fs.isDir, path)
-	if ok and isDir then return end
+	if ok and isDir then
+		return
+	end
 	fs.writeDir(path)
 end
 
 function Exporter:sanitizeName(name)
-	local sanitized = name:gsub("[<>:\"/\\|%?%*]", "_")
-	if sanitized == "" then return "_" end
+	local sanitized = name:gsub('[<>:"/\\|%?%*]', "_")
+	if sanitized == "" then
+		return "_"
+	end
 	return sanitized
 end
 
@@ -52,8 +58,12 @@ function Exporter:uniqueName(base, used)
 end
 
 function Exporter:describeInstance(instance)
-	local ok, fullName = pcall(function() return instance:GetFullName() end)
-	if ok then return instance.ClassName .. " " .. fullName end
+	local ok, fullName = pcall(function()
+		return instance:GetFullName()
+	end)
+	if ok then
+		return instance.ClassName .. " " .. fullName
+	end
 	return instance.ClassName .. " " .. instance.Name
 end
 
@@ -80,7 +90,12 @@ function Exporter:resolveInputPath()
 		end
 	end
 
-	error("Input place file not found. Expected '" .. self.inputPath .. "' or one of: build.rbxlx, place.rbxl, place.rbxlx", 0)
+	error(
+		"Input place file not found. Expected '"
+			.. self.inputPath
+			.. "' or one of: build.rbxlx, place.rbxl, place.rbxlx",
+		0
+	)
 end
 
 function Exporter:exportInstance(instance, parentPath, usedNames)
@@ -103,8 +118,11 @@ function Exporter:exportInstance(instance, parentPath, usedNames)
 
 	if className == "Script" or className == "LocalScript" or className == "ModuleScript" then
 		local ext = ".lua"
-		if className == "Script" then ext = ".server.lua"
-		elseif className == "LocalScript" then ext = ".client.lua" end
+		if className == "Script" then
+			ext = ".server.lua"
+		elseif className == "LocalScript" then
+			ext = ".client.lua"
+		end
 
 		if hasChildren then
 			self:ensureDir(targetPath)
@@ -142,28 +160,10 @@ function Exporter:exportService(service, serviceDir)
 end
 
 function Exporter:cleanOutput()
-	local ok, isDir = pcall(fs.isDir, self.outputDir)
-	if ok and isDir then
-		-- `fs.removeDir` can be very slow on large trees. Instead, move the folder aside
-		-- and delete it via the OS (`rm -rf`) so the export can start immediately.
-		local trashDir = self.outputDir .. "_old_" .. tostring(os.time())
-
-		self:log("[CLEAN] Moving " .. self.outputDir .. " -> " .. trashDir)
-		local movedOk = pcall(function()
-			fs.move(self.outputDir, trashDir, { overwrite = true })
-		end)
-
-		if movedOk then
-			self:log("[CLEAN] Deleting " .. trashDir .. " via rm -rf")
-			pcall(function()
-				process.exec("rm", { "-rf", trashDir })
-			end)
-		else
-			-- Fallback: try the built-in recursive delete.
-			self:log("[CLEAN] Move failed; falling back to fs.removeDir")
-			pcall(fs.removeDir, self.outputDir)
-		end
-	end
+	self:log("[CLEAN] Deleting " .. self.outputDir .. " via rm -rf")
+	pcall(function()
+		process.exec("rm", { "-rf", self.outputDir })
+	end)
 
 	self:ensureDir(self.outputDir)
 end
@@ -185,10 +185,22 @@ function Exporter:run()
 
 	self:cleanOutput()
 
-	local services = { "Lighting", "ReplicatedFirst", "ReplicatedStorage", "ServerScriptService", "ServerStorage", "StarterGui", "StarterPack", "Workspace", "SoundService" }
+	local services = {
+		"Lighting",
+		"ReplicatedFirst",
+		"ReplicatedStorage",
+		"ServerScriptService",
+		"ServerStorage",
+		"StarterGui",
+		"StarterPack",
+		"Workspace",
+		"SoundService",
+	}
 
 	for _, name in services do
-		local success, service = pcall(function() return game:GetService(name) end)
+		local success, service = pcall(function()
+			return game:GetService(name)
+		end)
 		if success and service then
 			self:exportService(service, self:pathJoin(self.outputDir, name))
 		else
@@ -196,13 +208,19 @@ function Exporter:run()
 		end
 	end
 
-	local success, starterPlayer = pcall(function() return game:GetService("StarterPlayer") end)
+	local success, starterPlayer = pcall(function()
+		return game:GetService("StarterPlayer")
+	end)
 	if success and starterPlayer then
 		local spScripts = starterPlayer:FindFirstChild("StarterPlayerScripts")
-		if spScripts then self:exportService(spScripts, self:pathJoin(self.outputDir, "StarterPlayerScripts")) end
+		if spScripts then
+			self:exportService(spScripts, self:pathJoin(self.outputDir, "StarterPlayerScripts"))
+		end
 
 		local scScripts = starterPlayer:FindFirstChild("StarterCharacterScripts")
-		if scScripts then self:exportService(scScripts, self:pathJoin(self.outputDir, "StarterCharacterScripts")) end
+		if scScripts then
+			self:exportService(scScripts, self:pathJoin(self.outputDir, "StarterCharacterScripts"))
+		end
 	end
 end
 

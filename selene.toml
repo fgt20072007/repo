@@ -1,0 +1,11 @@
+std = "luau"
+
+exclude = [
+	"a.luau",
+	"src/ReplicatedStorage/App/Shared/Libs/**",
+	"src/ReplicatedStorage/App/Client/Controllers/Satchel/Packages/**",
+]
+
+[lints]
+undefined_variable = "allow"
+incorrect_standard_library_use = "allow"

@@ -1,8 +1,7 @@
 <roblox version="4">
-  <Item class="Terrain" referent="0">
+  <Item class="Part" referent="0">
     <Properties>
-      <string name="Name">Terrain</string>
-      <token name="AcquisitionMethod">0</token>
+      <string name="Name">Baseplate</string>
       <bool name="Anchored">true</bool>
       <BinaryString name="AttributesSerialize"></BinaryString>
       <bool name="AudioCanCollide">true</bool>
@@ -16,7 +15,7 @@
       <token name="BottomSurfaceInput">0</token>
       <CoordinateFrame name="CFrame">
         <X>0</X>
-        <Y>0</Y>
+        <Y>-10</Y>
         <Z>0</Z>
         <R00>1</R00>
         <R01>0</R01>
@@ -35,17 +34,16 @@
       <bool name="CastShadow">true</bool>
       <string name="CollisionGroup">Default</string>
       <int name="CollisionGroupId">0</int>
-      <Color3uint8 name="Color3uint8">10724005</Color3uint8>
+      <Color3uint8 name="Color3uint8">6512482</Color3uint8>
       <PhysicalProperties name="CustomPhysicalProperties">
         <CustomPhysics>false</CustomPhysics>
       </PhysicalProperties>
-      <bool name="Decoration">false</bool>
       <bool name="EnableFluidForces">true</bool>
+      <token name="formFactorRaw">0</token>
       <float name="FrontParamA">-0.5</float>
       <float name="FrontParamB">0.5</float>
       <token name="FrontSurface">0</token>
       <token name="FrontSurfaceInput">0</token>
-      <float name="GrassLength">0.7</float>
       <float name="LeftParamA">-0.5</float>
       <float name="LeftParamB">0.5</float>
       <token name="LeftSurface">0</token>
@@ -53,9 +51,7 @@
       <bool name="Locked">true</bool>
       <bool name="Massless">false</bool>
       <token name="Material">256</token>
-      <BinaryString name="MaterialColors">AAAAAAAAb34+WFlWmJiYimFJz8unrJRsY2Rm3eTl6/3/lHxfeXBiS0pKjIJo/xhDUFRUhoZ2zNLfaoZA///+//PAj5CH</BinaryString>
       <string name="MaterialVariantSerialized"></string>
-      <BinaryString name="PhysicsGrid"><![CDATA[AgMAAAAAAAAAAAAAAAA=]]></BinaryString>
       <CoordinateFrame name="PivotOffset">
         <X>0</X>
         <Y>0</Y>
@@ -82,13 +78,12 @@
         <Z>0</Z>
       </Vector3>
       <bool name="DefinesCapabilities">false</bool>
+      <token name="shape">1</token>
       <Vector3 name="size">
-        <X>2044</X>
-        <Y>252</Y>
-        <Z>2044</Z>
+        <X>512</X>
+        <Y>20</Y>
+        <Z>512</Z>
       </Vector3>
-      <BinaryString name="SmoothGrid"><![CDATA[AQU=]]></BinaryString>
-      <bool name="SmoothVoxelsUpgraded">false</bool>
       <int64 name="SourceAssetId">-1</int64>
       <BinaryString name="Tags"></BinaryString>
       <float name="TopParamA">-0.5</float>
@@ -101,15 +96,6 @@
         <Y>0</Y>
         <Z>0</Z>
       </Vector3>
-      <Color3 name="WaterColor">
-        <R>0.04705883</R>
-        <G>0.32941177</G>
-        <B>0.36078432</B>
-      </Color3>
-      <float name="WaterReflectance">1</float>
-      <float name="WaterTransparency">0.3</float>
-      <float name="WaterWaveSize">0.15</float>
-      <float name="WaterWaveSpeed">10</float>
     </Properties>
   </Item>
 </roblox>
