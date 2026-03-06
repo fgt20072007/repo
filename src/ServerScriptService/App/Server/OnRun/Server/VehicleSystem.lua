@@ -48,10 +48,12 @@ function Structure:Build(Chassis: Model)
 			Motor6D.Part0 = Wheel.PrimaryPart
 			Motor6D.Part1 = Primary
 
+			local FreeLength = string.sub(Wheel.Name, 1, 1) == 'F' and Data.FrontFreeLength or Data.RearFreeLength
+
 			if string.sub(Wheel.Name, 2, 2) == 'L' then
-				Motor6D.C1 = Child.CFrame - Vector3.new(0, Data.RearFreeLength, 0)
+				Motor6D.C1 = Child.CFrame - Vector3.new(0, FreeLength, 0)
 			else
-				Motor6D.C1 = Child.CFrame*cframe_offset1 - Vector3.new(0, Data.RearFreeLength, 0)
+				Motor6D.C1 = Child.CFrame*cframe_offset1 - Vector3.new(0, FreeLength, 0)
 			end
 
 			Motor6D.Parent = Wheel.PrimaryPart
@@ -61,7 +63,7 @@ function Structure:Build(Chassis: Model)
 	end
 
 	Wheels.Parent = Chassis
-	
+
 	Primary:SetNetworkOwnershipAuto()
 	Primary.CustomPhysicalProperties = PhysicalProperties.new(
 		Data.Weight/(Primary.Size.X*Primary.Size.Y*Primary.Size.Z),
@@ -110,7 +112,7 @@ function Structure:Build(Chassis: Model)
 	end
 
 	Primary.Anchored = false
-	
+
 	local Attachment = Instance.new 'Attachment'
 	Attachment.Name = 'Gravity'
 	Attachment.Parent = Primary
@@ -123,7 +125,7 @@ function Structure:Build(Chassis: Model)
 
 	local Drive = Seats:FindFirstChildOfClass 'VehicleSeat'
 	if not Drive then return end
-	
+
 	local Ownership = nil
 	Drive:GetPropertyChangedSignal 'Occupant':Connect(function()
 		local Occupant = Drive.Occupant
@@ -155,10 +157,12 @@ function Structure:Build(Chassis: Model)
 				if Attachment then
 					local Motor6D = Wheel.PrimaryPart:FindFirstChildOfClass 'Motor6D'
 					if Motor6D then
+						local FreeLength = string.sub(Wheel.Name, 1, 1) == 'F' and Data.FrontFreeLength or Data.RearFreeLength
+
 						if string.sub(Wheel.Name, 2, 2) == 'L' then
-							Motor6D.C1 = Attachment.CFrame - Vector3.new(0, Data.RearFreeLength, 0)
+							Motor6D.C1 = Attachment.CFrame - Vector3.new(0, FreeLength, 0)
 						else
-							Motor6D.C1 = Attachment.CFrame*cframe_offset1 - Vector3.new(0, Data.RearFreeLength, 0)
+							Motor6D.C1 = Attachment.CFrame*cframe_offset1 - Vector3.new(0, FreeLength, 0)
 						end
 					end
 				end
@@ -174,7 +178,7 @@ function Structure:Build(Chassis: Model)
 			Ownership = nil
 		end
 	end)
-	
+
 	task.spawn(function()
 		while Primary:IsDescendantOf(workspace) do
 			if Ownership then
@@ -184,7 +188,7 @@ function Structure:Build(Chassis: Model)
 				Primary.AssemblyLinearVelocity = vector3_zero
 				Primary.AssemblyAngularVelocity = vector3_zero
 			end
-			
+
 			task.wait(0.5)
 		end
 	end)
