@@ -3,8 +3,8 @@ return {
 	PeakTorque = 470, -- n-m [Engine max torque]
 	PeakTorqueRPM = 6_100, -- [Engine max torque RPM]
 
-	IdleRPM = 900, -- [Engine idle RPM]
-	IdleTorque = 50, -- n-m [Engine idle torque]
+	IdleRPM = 2000, -- [Engine idle RPM]
+	IdleTorque = 5000, -- n-m [Engine idle torque]
 	IdleTorqueCurve = 0.3, -- 1/% [Engine idle torque curve curvature]
 
 	RedlineRPM = 9_000, -- [Engine max RPM]
@@ -16,7 +16,7 @@ return {
 	--// GEARBOX
 	TopSpeeds = { -- km/h [Top speed for each gear]
 		[-1] = 60,
-		[1] = 76,
+		[1] = 60,
 		[2] = 120,
 		[3] = 165,
 		[4] = 210,

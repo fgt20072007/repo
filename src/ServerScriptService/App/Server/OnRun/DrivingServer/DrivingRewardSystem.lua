@@ -19,11 +19,19 @@ local RunLoop = require(appServer:WaitForChild("System"):WaitForChild("RunLoop")
 local Net = require(appShared.Net) :: any
 local Config = require(appShared.Data.Driving.Rewards)
 
---// Constants
-local TICK_RATE: number = Config.TickRate
-local MONEY_PER_STUD: number = Config.MoneyPerStud
-local XP_PER_DRIVE_SECOND: number = Config.XPPerDriveSecond
-local MIN_SPEED_THRESHOLD: number = Config.MinSpeedThreshold
+--// Constants — Driving
+local TICK_RATE: number = Config.Driving.TickRate
+local MIN_SPEED_THRESHOLD: number = Config.Driving.MinSpeedThreshold
+
+local XP_PER_DRIVE_SECOND: number = Config.Driving.XP.PerDriveSecond
+local XP_PUBLISH_INTERVAL: number = Config.Driving.XP.PublishInterval
+
+local MONEY_PER_STUD: number = Config.Driving.Money.PerStud
+local MONEY_PUBLISH_INTERVAL: number = Config.Driving.Money.PublishInterval
+
+--// Constants — PlayTime
+local PLAYTIME_MONEY_PER_INTERVAL: number = Config.PlayTime.Money.PerInterval
+local PLAYTIME_PUBLISH_INTERVAL: number = Config.PlayTime.Money.PublishInterval
 
 --// Types
 type DriverState = {
@@ -33,12 +41,21 @@ type DriverState = {
 	AccumStuds: number,
 	FlushTimer: number,
 	LastPosition: Vector3,
+	XPPublishTimer: number,
+	XPPending: number,
+	MoneyPublishTimer: number,
+	MoneyPending: number,
+}
+
+type PlayTimeState = {
+	Timer: number,
 }
 
 --// State
 local activeDrivers: { [Player]: DriverState } = {}
+local activePlayers: { [Player]: PlayTimeState } = {}
 
---// Private
+--// Private — Driving
 local function flushDriver(player: Player, state: DriverState)
 	local driveSeconds = state.AccumTime
 	local studsDriven = state.AccumStuds
@@ -66,8 +83,7 @@ local function flushDriver(player: Player, state: DriverState)
 		if economy then
 			economy.Money += moneyDelta
 			PlayerProfileService:SetValue(player, "Economy", economy)
-		else
-			moneyDelta = 0
+			state.MoneyPending += moneyDelta
 		end
 	end
 
@@ -77,13 +93,8 @@ local function flushDriver(player: Player, state: DriverState)
 		if profile then
 			profile.XP += xpDelta
 			PlayerProfileService:SetValue(player, "Profile", profile)
-		else
-			xpDelta = 0
+			state.XPPending += xpDelta
 		end
-	end
-
-	if moneyDelta > 0 or xpDelta > 0 then
-		Net.DrivingReward.Fire(player, moneyDelta, xpDelta)
 	end
 end
 
@@ -104,6 +115,10 @@ local function startTracking(player: Player, chassis: Model)
 		AccumStuds = 0,
 		FlushTimer = 0,
 		LastPosition = primary.Position,
+		XPPublishTimer = 0,
+		XPPending = 0,
+		MoneyPublishTimer = 0,
+		MoneyPending = 0,
 	}
 end
 
@@ -115,6 +130,14 @@ local function stopTracking(player: Player)
 
 	activeDrivers[player] = nil
 	flushDriver(player, state)
+
+	if state.XPPending > 0 then
+		Net.DrivingXPReward.Fire(player, math.floor(state.XPPending))
+	end
+
+	if state.MoneyPending > 0 then
+		Net.DrivingMoneyReward.Fire(player, math.floor(state.MoneyPending * 100) / 100)
+	end
 end
 
 local function bindSeat(seat: VehicleSeat, chassis: Model)
@@ -136,6 +159,15 @@ local function bindSeat(seat: VehicleSeat, chassis: Model)
 	end)
 end
 
+--// Private — PlayTime
+local function startPlayTimeTracking(player: Player)
+	activePlayers[player] = { Timer = 0 }
+end
+
+local function stopPlayTimeTracking(player: Player)
+	activePlayers[player] = nil
+end
+
 --// Public
 local DrivingRewardSystem = {}
 
@@ -145,6 +177,7 @@ function DrivingRewardSystem:Start()
 	local pendingRemoval: { Player } = {}
 
 	loop:Bind("Heartbeat", "DrivingReward", function(dt: number)
+		--// Driving rewards
 		for player, state in activeDrivers do
 			if not player.Parent or not state.Primary:IsDescendantOf(workspace) then
 				table.insert(pendingRemoval, player)
@@ -165,12 +198,45 @@ function DrivingRewardSystem:Start()
 			if state.FlushTimer >= TICK_RATE then
 				flushDriver(player, state)
 			end
+
+			state.XPPublishTimer += dt
+			if state.XPPublishTimer >= XP_PUBLISH_INTERVAL and state.XPPending > 0 then
+				Net.DrivingXPReward.Fire(player, math.floor(state.XPPending))
+				state.XPPending = 0
+				state.XPPublishTimer = 0
+			end
+
+			state.MoneyPublishTimer += dt
+			if state.MoneyPublishTimer >= MONEY_PUBLISH_INTERVAL and state.MoneyPending > 0 then
+				Net.DrivingMoneyReward.Fire(player, math.floor(state.MoneyPending * 100) / 100)
+				state.MoneyPending = 0
+				state.MoneyPublishTimer = 0
+			end
 		end
 
 		for _, player in pendingRemoval do
 			stopTracking(player)
 		end
 		table.clear(pendingRemoval)
+
+		--// PlayTime rewards
+		for player, state in activePlayers do
+			if not player.Parent then
+				continue
+			end
+
+			state.Timer += dt
+			if state.Timer >= PLAYTIME_PUBLISH_INTERVAL then
+				state.Timer = 0
+
+				local economy = PlayerProfileService:GetValue(player, "Economy")
+				if economy then
+					economy.Money += PLAYTIME_MONEY_PER_INTERVAL
+					PlayerProfileService:SetValue(player, "Economy", economy)
+					Net.PlayTimeMoneyReward.Fire(player, PLAYTIME_MONEY_PER_INTERVAL)
+				end
+			end
+		end
 	end)
 
 	local vehicles = workspace:FindFirstChild("Vehicles")
@@ -190,8 +256,17 @@ function DrivingRewardSystem:Start()
 		end
 	end
 
+	for _, player in Players:GetPlayers() do
+		startPlayTimeTracking(player)
+	end
+
+	Players.PlayerAdded:Connect(function(player: Player)
+		startPlayTimeTracking(player)
+	end)
+
 	Players.PlayerRemoving:Connect(function(player: Player)
 		stopTracking(player)
+		stopPlayTimeTracking(player)
 	end)
 end
 

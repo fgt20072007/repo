@@ -11,9 +11,23 @@ funct GetServerTime = {
 	rets: f64,
 }
 
-event DrivingReward = {
+event DrivingXPReward = {
 	from: Server,
 	type: Reliable,
 	call: ManyAsync,
-	data: (moneyDelta: f64, xpDelta: f64)
+	data: (xpDelta: f64)
+}
+
+event DrivingMoneyReward = {
+	from: Server,
+	type: Reliable,
+	call: ManyAsync,
+	data: (moneyDelta: f64)
+}
+
+event PlayTimeMoneyReward = {
+	from: Server,
+	type: Reliable,
+	call: ManyAsync,
+	data: (moneyDelta: f64)
 }

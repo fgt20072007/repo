@@ -132,10 +132,16 @@ if not RunService:IsRunning() then
 	local noop = function() end
 	return table.freeze({
 		SendEvents = noop,
+		PlayTimeMoneyReward = table.freeze({
+			On = noop
+		}),
 		GetServerTime = table.freeze({
 			Call = noop
 		}),
-		DrivingReward = table.freeze({
+		DrivingXPReward = table.freeze({
+			On = noop
+		}),
+		DrivingMoneyReward = table.freeze({
 			On = noop
 		}),
 	}) :: Events
@@ -162,12 +168,16 @@ end
 
 RunService.Heartbeat:Connect(SendEvents)
 
-local reliable_events = table.create(2)
-local reliable_event_queue: { [number]: { any } } = table.create(2)
+local reliable_events = table.create(4)
+local reliable_event_queue: { [number]: { any } } = table.create(4)
 local function_call_id = 0
+reliable_events[2] = {}
+reliable_event_queue[2] = {}
 reliable_events[0] = {}
 reliable_event_queue[0] = {}
-reliable_event_queue[1] = table.create(255)
+reliable_events[1] = {}
+reliable_event_queue[1] = {}
+reliable_event_queue[3] = table.create(255)
 reliable.OnClientEvent:Connect(function(buff, inst)
 	incoming_buff = buff
 	incoming_inst = inst
@@ -176,30 +186,55 @@ reliable.OnClientEvent:Connect(function(buff, inst)
 	local len = buffer.len(buff)
 	while incoming_read < len do
 		local id = buffer.readu8(buff, read(1))
-		if id == 0 then -- DrivingReward
-			local value, value2
+		if id == 2 then -- PlayTimeMoneyReward
+			local value
 			value = buffer.readf64(incoming_buff, read(8))
-			value2 = buffer.readf64(incoming_buff, read(8))
-			if reliable_events[0][1] then
-				for _, cb in reliable_events[0] do
-					task.spawn(cb, value, value2)
+			if reliable_events[2][1] then
+				for _, cb in reliable_events[2] do
+					task.spawn(cb, value)
 				end
 			else
-				table.insert(reliable_event_queue[0], { value, value2 })
-				if #reliable_event_queue[0] > 64 then
-					warn(`[ZAP] {#reliable_event_queue[0]} events in queue for DrivingReward. Did you forget to attach a listener?`)
+				table.insert(reliable_event_queue[2], value)
+				if #reliable_event_queue[2] > 64 then
+					warn(`[ZAP] {#reliable_event_queue[2]} events in queue for PlayTimeMoneyReward. Did you forget to attach a listener?`)
 				end
 			end
-		elseif id == 1 then -- GetServerTime
+		elseif id == 0 then -- DrivingXPReward
+			local value
+			value = buffer.readf64(incoming_buff, read(8))
+			if reliable_events[0][1] then
+				for _, cb in reliable_events[0] do
+					task.spawn(cb, value)
+				end
+			else
+				table.insert(reliable_event_queue[0], value)
+				if #reliable_event_queue[0] > 64 then
+					warn(`[ZAP] {#reliable_event_queue[0]} events in queue for DrivingXPReward. Did you forget to attach a listener?`)
+				end
+			end
+		elseif id == 1 then -- DrivingMoneyReward
+			local value
+			value = buffer.readf64(incoming_buff, read(8))
+			if reliable_events[1][1] then
+				for _, cb in reliable_events[1] do
+					task.spawn(cb, value)
+				end
+			else
+				table.insert(reliable_event_queue[1], value)
+				if #reliable_event_queue[1] > 64 then
+					warn(`[ZAP] {#reliable_event_queue[1]} events in queue for DrivingMoneyReward. Did you forget to attach a listener?`)
+				end
+			end
+		elseif id == 3 then -- GetServerTime
 			local call_id = buffer.readu8(incoming_buff, read(1))
 			local value
 			value = buffer.readf64(incoming_buff, read(8))
-			local thread = reliable_event_queue[1][call_id]
+			local thread = reliable_event_queue[3][call_id]
 			-- When using actors it's possible for multiple Zap clients to exist, but only one called the Zap remote function.
 			if thread then
 				task.spawn(thread, value)
 			end
-			reliable_event_queue[1][call_id] = nil
+			reliable_event_queue[3][call_id] = nil
 		else
 			error("Unknown event id")
 		end
@@ -210,11 +245,23 @@ table.freeze(polling_queues_unreliable)
 
 local returns = {
 	SendEvents = SendEvents,
+	PlayTimeMoneyReward = {
+		On = function(Callback: (moneyDelta: (number)) -> ())
+			table.insert(reliable_events[2], Callback)
+			for _, value in reliable_event_queue[2] do
+				task.spawn(Callback, value)
+			end
+			reliable_event_queue[2] = {}
+			return function()
+				table.remove(reliable_events[2], table.find(reliable_events[2], Callback))
+			end
+		end,
+	},
 	GetServerTime = {
 		Call = function(): ((number))
 			function_call_id += 1
 			function_call_id %= 256
-			if reliable_event_queue[1][function_call_id] then
+			if reliable_event_queue[3][function_call_id] then
 				function_call_id -= 1
 				error("Zap has more than 256 calls awaiting a response, and therefore this packet has been dropped")
 			end
@@ -222,19 +269,31 @@ local returns = {
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, function_call_id)
-			reliable_event_queue[1][function_call_id] = coroutine.running()
+			reliable_event_queue[3][function_call_id] = coroutine.running()
 			return coroutine.yield()
 		end,
 	},
-	DrivingReward = {
-		On = function(Callback: (moneyDelta: (number), xpDelta: (number)) -> ())
+	DrivingXPReward = {
+		On = function(Callback: (xpDelta: (number)) -> ())
 			table.insert(reliable_events[0], Callback)
 			for _, value in reliable_event_queue[0] do
-				task.spawn(Callback, unpack(value))
+				task.spawn(Callback, value)
 			end
 			reliable_event_queue[0] = {}
 			return function()
 				table.remove(reliable_events[0], table.find(reliable_events[0], Callback))
+			end
+		end,
+	},
+	DrivingMoneyReward = {
+		On = function(Callback: (moneyDelta: (number)) -> ())
+			table.insert(reliable_events[1], Callback)
+			for _, value in reliable_event_queue[1] do
+				task.spawn(Callback, value)
+			end
+			reliable_event_queue[1] = {}
+			return function()
+				table.remove(reliable_events[1], table.find(reliable_events[1], Callback))
 			end
 		end,
 	},

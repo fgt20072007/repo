@@ -134,10 +134,24 @@ if not RunService:IsRunning() then
 	local noop = function() end
 	return table.freeze({
 		SendEvents = noop,
+		PlayTimeMoneyReward = table.freeze({
+			Fire = noop,
+			FireAll = noop,
+			FireExcept = noop,
+			FireList = noop,
+			FireSet = noop
+		}),
 		GetServerTime = table.freeze({
 			SetCallback = noop
 		}),
-		DrivingReward = table.freeze({
+		DrivingXPReward = table.freeze({
+			Fire = noop,
+			FireAll = noop,
+			FireExcept = noop,
+			FireList = noop,
+			FireSet = noop
+		}),
+		DrivingMoneyReward = table.freeze({
 			Fire = noop,
 			FireAll = noop,
 			FireExcept = noop,
@@ -210,7 +224,7 @@ reliable.OnServerEvent:Connect(function(player, buff, inst)
 					local ret_1 = reliable_events[0](player_2, value_1)
 					load_player(player_2)
 					alloc(1)
-					buffer.writeu8(outgoing_buff, outgoing_apos, 1)
+					buffer.writeu8(outgoing_buff, outgoing_apos, 3)
 					alloc(1)
 					buffer.writeu8(outgoing_buff, outgoing_apos, call_id_2)
 					alloc(8)
@@ -228,6 +242,78 @@ table.freeze(polling_queues_unreliable)
 
 local returns = {
 	SendEvents = SendEvents,
+	PlayTimeMoneyReward = {
+		Fire = function(Player: Player, moneyDelta: (number))
+			load_player(Player)
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 2)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			player_map[Player] = save()
+		end,
+		FireAll = function(moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 2)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireExcept = function(Except: Player, moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 2)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				if player ~= Except then
+					load_player(player)
+					alloc(used)
+					buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+					table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+					player_map[player] = save()
+				end
+			end
+		end,
+		FireList = function(List: { [unknown]: Player }, moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 2)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in List do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireSet = function(Set: { [Player]: any }, moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 2)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for player in Set do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+	},
 	GetServerTime = {
 		SetCallback = function(Callback: (Player: Player) -> ((number))): () -> ()
 			reliable_events[0] = Callback
@@ -236,23 +322,19 @@ local returns = {
 			end
 		end,
 	},
-	DrivingReward = {
-		Fire = function(Player: Player, moneyDelta: (number), xpDelta: (number))
+	DrivingXPReward = {
+		Fire = function(Player: Player, xpDelta: (number))
 			load_player(Player)
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
-			alloc(8)
 			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			player_map[Player] = save()
 		end,
-		FireAll = function(moneyDelta: (number), xpDelta: (number))
+		FireAll = function(xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
-			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
 			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
@@ -264,12 +346,10 @@ local returns = {
 				player_map[player] = save()
 			end
 		end,
-		FireExcept = function(Except: Player, moneyDelta: (number), xpDelta: (number))
+		FireExcept = function(Except: Player, xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
-			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
 			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
@@ -283,12 +363,10 @@ local returns = {
 				end
 			end
 		end,
-		FireList = function(List: { [unknown]: Player }, moneyDelta: (number), xpDelta: (number))
+		FireList = function(List: { [unknown]: Player }, xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
-			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
 			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
@@ -300,14 +378,84 @@ local returns = {
 				player_map[player] = save()
 			end
 		end,
-		FireSet = function(Set: { [Player]: any }, moneyDelta: (number), xpDelta: (number))
+		FireSet = function(Set: { [Player]: any }, xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
-			alloc(8)
 			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for player in Set do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+	},
+	DrivingMoneyReward = {
+		Fire = function(Player: Player, moneyDelta: (number))
+			load_player(Player)
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			player_map[Player] = save()
+		end,
+		FireAll = function(moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireExcept = function(Except: Player, moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				if player ~= Except then
+					load_player(player)
+					alloc(used)
+					buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+					table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+					player_map[player] = save()
+				end
+			end
+		end,
+		FireList = function(List: { [unknown]: Player }, moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in List do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireSet = function(Set: { [Player]: any }, moneyDelta: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
 			for player in Set do
 				load_player(player)
