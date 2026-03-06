@@ -31,3 +31,10 @@ event PlayTimeMoneyReward = {
 	call: ManyAsync,
 	data: (moneyDelta: f64)
 }
+
+event ProximityPromptTriggered = {
+	from: Client,
+	type: Reliable,
+	call: ManyAsync,
+	data: (tag: string.utf8)
+}

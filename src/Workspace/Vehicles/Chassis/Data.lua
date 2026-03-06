@@ -3,9 +3,9 @@ return {
 	PeakTorque = 470, -- n-m [Engine max torque]
 	PeakTorqueRPM = 6_100, -- [Engine max torque RPM]
 
-	IdleRPM = 2000, -- [Engine idle RPM]
-	IdleTorque = 5000, -- n-m [Engine idle torque]
-	IdleTorqueCurve = 0.3, -- 1/% [Engine idle torque curve curvature]
+	IdleRPM = 10000, -- [Engine idle RPM]
+	IdleTorque = 10000, -- n-m [Engine idle torque]
+	IdleTorqueCurve = 0.9, -- 1/% [Engine idle torque curve curvature]
 
 	RedlineRPM = 9_000, -- [Engine max RPM]
 	RedlineTorque = 370, -- n-m [Engine redline torque]
