@@ -50,7 +50,7 @@ return {
 	RearMinLength = 0.5, -- studs
 	RearFreeLength = 2.2, -- studs
 	RearMaxLength = 3.1, -- studs
-	
+
 	--// ANTIROLL
 	FrontAntirollStiffness = 3_000, -- kg/s2
 	RearAntirollStiffness = 10_000, -- kg/s2
@@ -65,7 +65,7 @@ return {
 	SteerMinSpeed = 50, -- %
 	SteerDecay = 320, -- cutoff km/h
 	SteerMinDecayAngle = 15, -- %
-	
+
 	--// SYSTEMS
 	ABSLimit = 0,
 	ABSThreshold = 4, -- km/h
@@ -76,5 +76,5 @@ return {
 
 	--// BODY
 	Weight = 1_435, -- kg
-	Gravity = 35, -- studs/s2
+	Gravity = 196.2, -- studs/s2
 }
