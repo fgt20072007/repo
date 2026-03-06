@@ -229,7 +229,8 @@ end
 
 function Structure:SetSystems(BASE)
 	self.Systems.ABS.Limit = BASE.ABSLimit/100
-
+	self.Systems.ABS.Threshold = BASE.ABSThreshold * Units.KMH_Studs
+	
 	self.Systems.TCS.Limit = 1 - BASE.TCSLimit/100
 	self.Systems.TCS.Gradient = BASE.TCSGradient*Units.KMH_Studs
 	self.Systems.TCS.Threshold = BASE.TCSThreshold*Units.KMH_Studs
