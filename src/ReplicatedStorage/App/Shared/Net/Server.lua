@@ -106,7 +106,7 @@ local function load(data: {
 	inst: { Instance },
 	outgoing_ids: { number },
 	incoming_ids: { number },
-})
+	})
 	outgoing_buff = data.buff
 	outgoing_used = data.used
 	outgoing_size = data.size
@@ -134,18 +134,15 @@ if not RunService:IsRunning() then
 	local noop = function() end
 	return table.freeze({
 		SendEvents = noop,
-		Pong = table.freeze({
+		GetServerTime = table.freeze({
+			SetCallback = noop
+		}),
+		DrivingReward = table.freeze({
 			Fire = noop,
 			FireAll = noop,
 			FireExcept = noop,
 			FireList = noop,
 			FireSet = noop
-		}),
-		Ping = table.freeze({
-			SetCallback = noop
-		}),
-		GetServerTime = table.freeze({
-			SetCallback = noop
 		}),
 	}) :: Events
 end
@@ -196,7 +193,7 @@ end
 
 RunService.Heartbeat:Connect(SendEvents)
 
-local reliable_events = table.create(2)
+local reliable_events = table.create(1)
 reliable.OnServerEvent:Connect(function(player, buff, inst)
 	incoming_buff = buff
 	incoming_inst = inst
@@ -205,19 +202,12 @@ reliable.OnServerEvent:Connect(function(player, buff, inst)
 	local len = buffer.len(buff)
 	while incoming_read < len do
 		local id = buffer.readu8(buff, read(1))
-		if id == 0 then -- Ping
-			local value, value2
-			value = buffer.readf64(incoming_buff, read(8))
-			value2 = buffer.readu16(incoming_buff, read(2))
-			if reliable_events[0] then
-				task.spawn(reliable_events[0], player, value, value2)
-			end
-		elseif id == 1 then -- GetServerTime
+		if id == 0 then -- GetServerTime
 			local call_id = buffer.readu8(buff, read(1))
 			local value
-			if reliable_events[1] then
+			if reliable_events[0] then
 				task.spawn(function(player_2, call_id_2, value_1)
-					local ret_1 = reliable_events[1](player_2, value_1)
+					local ret_1 = reliable_events[0](player_2, value_1)
 					load_player(player_2)
 					alloc(1)
 					buffer.writeu8(outgoing_buff, outgoing_apos, 1)
@@ -238,29 +228,33 @@ table.freeze(polling_queues_unreliable)
 
 local returns = {
 	SendEvents = SendEvents,
-	Pong = {
-		Fire = function(Player: Player, clientSendTime: (number), serverTime: (number), nonce: (number))
+	GetServerTime = {
+		SetCallback = function(Callback: (Player: Player) -> ((number))): () -> ()
+			reliable_events[0] = Callback
+			return function()
+				reliable_events[0] = nil
+			end
+		end,
+	},
+	DrivingReward = {
+		Fire = function(Player: Player, moneyDelta: (number), xpDelta: (number))
 			load_player(Player)
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, clientSendTime)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, serverTime)
-			alloc(2)
-			buffer.writeu16(outgoing_buff, outgoing_apos, nonce)
+			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			player_map[Player] = save()
 		end,
-		FireAll = function(clientSendTime: (number), serverTime: (number), nonce: (number))
+		FireAll = function(moneyDelta: (number), xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, clientSendTime)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, serverTime)
-			alloc(2)
-			buffer.writeu16(outgoing_buff, outgoing_apos, nonce)
+			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
 			for _, player in Players:GetPlayers() do
 				load_player(player)
@@ -270,16 +264,14 @@ local returns = {
 				player_map[player] = save()
 			end
 		end,
-		FireExcept = function(Except: Player, clientSendTime: (number), serverTime: (number), nonce: (number))
+		FireExcept = function(Except: Player, moneyDelta: (number), xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, clientSendTime)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, serverTime)
-			alloc(2)
-			buffer.writeu16(outgoing_buff, outgoing_apos, nonce)
+			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
 			for _, player in Players:GetPlayers() do
 				if player ~= Except then
@@ -291,16 +283,14 @@ local returns = {
 				end
 			end
 		end,
-		FireList = function(List: { [unknown]: Player }, clientSendTime: (number), serverTime: (number), nonce: (number))
+		FireList = function(List: { [unknown]: Player }, moneyDelta: (number), xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, clientSendTime)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, serverTime)
-			alloc(2)
-			buffer.writeu16(outgoing_buff, outgoing_apos, nonce)
+			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
 			for _, player in List do
 				load_player(player)
@@ -310,16 +300,14 @@ local returns = {
 				player_map[player] = save()
 			end
 		end,
-		FireSet = function(Set: { [Player]: any }, clientSendTime: (number), serverTime: (number), nonce: (number))
+		FireSet = function(Set: { [Player]: any }, moneyDelta: (number), xpDelta: (number))
 			load_empty()
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, clientSendTime)
+			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
 			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, serverTime)
-			alloc(2)
-			buffer.writeu16(outgoing_buff, outgoing_apos, nonce)
+			buffer.writef64(outgoing_buff, outgoing_apos, xpDelta)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
 			for player in Set do
 				load_player(player)
@@ -327,22 +315,6 @@ local returns = {
 				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
 				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
 				player_map[player] = save()
-			end
-		end,
-	},
-	Ping = {
-		SetCallback = function(Callback: (Player: Player, clientSendTime: (number), nonce: (number)) -> ()): () -> ()
-			reliable_events[0] = Callback
-			return function()
-				reliable_events[0] = nil
-			end
-		end,
-	},
-	GetServerTime = {
-		SetCallback = function(Callback: (Player: Player) -> ((number))): () -> ()
-			reliable_events[1] = Callback
-			return function()
-				reliable_events[1] = nil
 			end
 		end,
 	},

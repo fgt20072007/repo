@@ -104,7 +104,7 @@ local function load(data: {
 	inst: { Instance },
 	outgoing_ids: { number },
 	incoming_ids: { number },
-})
+	})
 	outgoing_buff = data.buff
 	outgoing_used = data.used
 	outgoing_size = data.size
@@ -132,14 +132,11 @@ if not RunService:IsRunning() then
 	local noop = function() end
 	return table.freeze({
 		SendEvents = noop,
-		Pong = table.freeze({
-			On = noop
-		}),
-		Ping = table.freeze({
-			Fire = noop
-		}),
 		GetServerTime = table.freeze({
 			Call = noop
+		}),
+		DrivingReward = table.freeze({
+			On = noop
 		}),
 	}) :: Events
 end
@@ -179,19 +176,18 @@ reliable.OnClientEvent:Connect(function(buff, inst)
 	local len = buffer.len(buff)
 	while incoming_read < len do
 		local id = buffer.readu8(buff, read(1))
-		if id == 0 then -- Pong
-			local value, value2, value3
+		if id == 0 then -- DrivingReward
+			local value, value2
 			value = buffer.readf64(incoming_buff, read(8))
 			value2 = buffer.readf64(incoming_buff, read(8))
-			value3 = buffer.readu16(incoming_buff, read(2))
 			if reliable_events[0][1] then
 				for _, cb in reliable_events[0] do
-					task.spawn(cb, value, value2, value3)
+					task.spawn(cb, value, value2)
 				end
 			else
-				table.insert(reliable_event_queue[0], { value, value2, value3 })
+				table.insert(reliable_event_queue[0], { value, value2 })
 				if #reliable_event_queue[0] > 64 then
-					warn(`[ZAP] {#reliable_event_queue[0]} events in queue for Pong. Did you forget to attach a listener?`)
+					warn(`[ZAP] {#reliable_event_queue[0]} events in queue for DrivingReward. Did you forget to attach a listener?`)
 				end
 			end
 		elseif id == 1 then -- GetServerTime
@@ -214,28 +210,6 @@ table.freeze(polling_queues_unreliable)
 
 local returns = {
 	SendEvents = SendEvents,
-	Pong = {
-		On = function(Callback: (clientSendTime: (number), serverTime: (number), nonce: (number)) -> ())
-			table.insert(reliable_events[0], Callback)
-			for _, value in reliable_event_queue[0] do
-				task.spawn(Callback, unpack(value))
-			end
-			reliable_event_queue[0] = {}
-			return function()
-				table.remove(reliable_events[0], table.find(reliable_events[0], Callback))
-			end
-		end,
-	},
-	Ping = {
-		Fire = function(clientSendTime: (number), nonce: (number))
-			alloc(1)
-			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
-			alloc(8)
-			buffer.writef64(outgoing_buff, outgoing_apos, clientSendTime)
-			alloc(2)
-			buffer.writeu16(outgoing_buff, outgoing_apos, nonce)
-		end,
-	},
 	GetServerTime = {
 		Call = function(): ((number))
 			function_call_id += 1
@@ -245,11 +219,23 @@ local returns = {
 				error("Zap has more than 256 calls awaiting a response, and therefore this packet has been dropped")
 			end
 			alloc(1)
-			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, function_call_id)
 			reliable_event_queue[1][function_call_id] = coroutine.running()
 			return coroutine.yield()
+		end,
+	},
+	DrivingReward = {
+		On = function(Callback: (moneyDelta: (number), xpDelta: (number)) -> ())
+			table.insert(reliable_events[0], Callback)
+			for _, value in reliable_event_queue[0] do
+				task.spawn(Callback, unpack(value))
+			end
+			reliable_event_queue[0] = {}
+			return function()
+				table.remove(reliable_events[0], table.find(reliable_events[0], Callback))
+			end
 		end,
 	},
 }

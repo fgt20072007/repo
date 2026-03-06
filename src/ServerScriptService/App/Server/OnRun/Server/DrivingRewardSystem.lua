@@ -16,6 +16,7 @@ local PlayerProfileService = require(
 ) :: any
 
 local RunLoop = require(appServer:WaitForChild("System"):WaitForChild("RunLoop"))
+local Net = require(appShared.Net) :: any
 local Config = require(appShared.Data.Driving.Rewards)
 
 --// Constants
@@ -59,22 +60,30 @@ local function flushDriver(player: Player, state: DriverState)
 	stats.StudsDriven += studsDriven
 	PlayerProfileService:SetValue(player, "Stats", stats)
 
-	local moneyDelta = studsDriven * MONEY_PER_STUD
+	local moneyDelta: number = studsDriven * MONEY_PER_STUD
 	if moneyDelta > 0 then
 		local economy = PlayerProfileService:GetValue(player, "Economy")
 		if economy then
 			economy.Money += moneyDelta
 			PlayerProfileService:SetValue(player, "Economy", economy)
+		else
+			moneyDelta = 0
 		end
 	end
 
-	local xpDelta = driveSeconds * XP_PER_DRIVE_SECOND
+	local xpDelta: number = driveSeconds * XP_PER_DRIVE_SECOND
 	if xpDelta > 0 then
 		local profile = PlayerProfileService:GetValue(player, "Profile")
 		if profile then
 			profile.XP += xpDelta
 			PlayerProfileService:SetValue(player, "Profile", profile)
+		else
+			xpDelta = 0
 		end
+	end
+
+	if moneyDelta > 0 or xpDelta > 0 then
+		Net.DrivingReward.Fire(player, moneyDelta, xpDelta)
 	end
 end
 
