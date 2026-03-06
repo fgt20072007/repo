@@ -4,7 +4,6 @@
 local fields = {
 	-- Progress
 	Profile = {
-		Level = 1,
 		XP = 0,
 	},
 
