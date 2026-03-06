@@ -1,0 +1,30 @@
+<roblox version="4">
+  <Item class="Sound" referent="0">
+    <Properties>
+      <string name="Name">ENG_Mid</string>
+      <bool name="AcousticSimulationEnabled">true</bool>
+      <BinaryString name="AttributesSerialize">CQAAABEAAABCYXNlUGxheWJhY2tTcGVlZAYAAAAAAAAAAAoAAABCYXNlVm9sdW1lBgAAAAAAAAAACAAAAFJhbmdlRW5kBgAAAAAABMBACgAAAFJhbmdlU3RhcnQGAAAAAABYq0AUAAAAUmVkbGluZVBsYXliYWNrU3BlZWQGAAAAAAAA8D8NAAAAUmVkbGluZVZvbHVtZQYAAAAAAAAYQA4AAABUaHJvdHRsZVZvbHVtZQYAAAAAAAAAQA0AAABUcmFuc2l0aW9uRW5kBgAAAAAAZLlADwAAAFRyYW5zaXRpb25TdGFydAYAAAAAAMCyQA==</BinaryString>
+      <Content name="AudioContent">
+        <uri>rbxassetid://126931505884504</uri>
+      </Content>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="IsMutedForCapture">false</bool>
+      <NumberRange name="LoopRegion">0 60000 </NumberRange>
+      <bool name="Looped">true</bool>
+      <bool name="PlayOnRemove">false</bool>
+      <NumberRange name="PlaybackRegion">0 60000 </NumberRange>
+      <bool name="PlaybackRegionsEnabled">false</bool>
+      <float name="PlaybackSpeed">1</float>
+      <bool name="Playing">false</bool>
+      <float name="xmlRead_MaxDistance_3">100</float>
+      <float name="EmitterSize">10</float>
+      <token name="RollOffMode">3</token>
+      <bool name="DefinesCapabilities">false</bool>
+      <Ref name="SoundGroup">null</Ref>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+      <double name="TimePosition">0</double>
+      <float name="Volume">0.5</float>
+    </Properties>
+  </Item>
+</roblox>
