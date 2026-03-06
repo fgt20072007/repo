@@ -50,7 +50,7 @@ return {
 	RearMinLength = 0.8, -- studs [Rear suspension min compression length]
 	RearFreeLength = 2.4, -- studs [Rear suspension free length]
 	RearMaxLength = 3.3, -- studs [Rear suspension max extension length]
-	
+
 	--// ANTIROLL
 	FrontAntirollStiffness = 3_000, -- kg/s2 [Front antiroll bar rigidty]
 	RearAntirollStiffness = 10_000, -- kg/s2 [Rear antiroll bar rigidty]
@@ -65,7 +65,7 @@ return {
 	SteerMinSpeed = 50, -- % [Steering min during speed decay]
 	SteerDecay = 320, -- km/h [Steering cutoff speed]
 	SteerMinDecayAngle = 15, -- % [Steering max during speed decay]
-	
+
 	--// SYSTEMS
 	ABSLimit = 0, -- [Braking unblock percent when ABS active]
 	ABSThreshold = 4, -- km/h [ABS activation threshold]

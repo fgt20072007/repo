@@ -149,11 +149,11 @@ function Structure:SetBrakes(BASE)
 	self.Brakes[1].MaxTorque = BASE.ParkingBrakeForce*Units.Torque_Nm
 	self.Brakes[2].MaxTorque = BASE.ParkingBrakeForce*Units.Torque_Nm
 	
-	local bM = 1 - BASE.DifferentialBias
+	local bM = 1 - BASE.BrakeBias
 	self.Brakes[3].MaxTorque = BASE.BrakeForce*bM*Units.Torque_Nm
 	self.Brakes[4].MaxTorque = BASE.BrakeForce*bM*Units.Torque_Nm
 	
-	local fM = BASE.DifferentialBias
+	local fM = BASE.BrakeBias
 	self.Brakes[5].MaxTorque = BASE.BrakeForce*fM*Units.Torque_Nm
 	self.Brakes[6].MaxTorque = BASE.BrakeForce*fM*Units.Torque_Nm
 end
@@ -229,8 +229,6 @@ end
 
 function Structure:SetSystems(BASE)
 	self.Systems.ABS.Limit = BASE.ABSLimit/100
-	self.Systems.ABS.Low = BASE.ABSLow
-	self.Systems.ABS.High = BASE.ABSHigh
 
 	self.Systems.TCS.Limit = 1 - BASE.TCSLimit/100
 	self.Systems.TCS.Gradient = BASE.TCSGradient*Units.KMH_Studs
