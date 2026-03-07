@@ -134,6 +134,9 @@ if not RunService:IsRunning() then
 	local noop = function() end
 	return table.freeze({
 		SendEvents = noop,
+		ProximityPromptTriggered = table.freeze({
+			On = noop
+		}),
 		PlayTimeMoneyReward = table.freeze({
 			Fire = noop,
 			FireAll = noop,
@@ -207,7 +210,8 @@ end
 
 RunService.Heartbeat:Connect(SendEvents)
 
-local reliable_events = table.create(1)
+local reliable_events = table.create(2)
+reliable_events[0] = {}
 reliable.OnServerEvent:Connect(function(player, buff, inst)
 	incoming_buff = buff
 	incoming_inst = inst
@@ -216,12 +220,20 @@ reliable.OnServerEvent:Connect(function(player, buff, inst)
 	local len = buffer.len(buff)
 	while incoming_read < len do
 		local id = buffer.readu8(buff, read(1))
-		if id == 0 then -- GetServerTime
+		if id == 0 then -- ProximityPromptTriggered
+			local value
+			local len_1 = buffer.readu16(incoming_buff, read(2))
+			value = buffer.readstring(incoming_buff, read(len_1), len_1)
+			assert(utf8.len(value) ~= nil, "value is not valid utf-8")
+			for _, cb in reliable_events[0] do
+				task.spawn(cb, player, value)
+			end
+		elseif id == 1 then -- GetServerTime
 			local call_id = buffer.readu8(buff, read(1))
 			local value
-			if reliable_events[0] then
+			if reliable_events[1] then
 				task.spawn(function(player_2, call_id_2, value_1)
-					local ret_1 = reliable_events[0](player_2, value_1)
+					local ret_1 = reliable_events[1](player_2, value_1)
 					load_player(player_2)
 					alloc(1)
 					buffer.writeu8(outgoing_buff, outgoing_apos, 3)
@@ -242,6 +254,14 @@ table.freeze(polling_queues_unreliable)
 
 local returns = {
 	SendEvents = SendEvents,
+	ProximityPromptTriggered = {
+		On = function(Callback: (Player: Player, tag: (string)) -> ()): () -> ()
+			table.insert(reliable_events[0], Callback)
+			return function()
+				table.remove(reliable_events[0], table.find(reliable_events[0], Callback))
+			end
+		end,
+	},
 	PlayTimeMoneyReward = {
 		Fire = function(Player: Player, moneyDelta: (number))
 			load_player(Player)
@@ -316,9 +336,9 @@ local returns = {
 	},
 	GetServerTime = {
 		SetCallback = function(Callback: (Player: Player) -> ((number))): () -> ()
-			reliable_events[0] = Callback
+			reliable_events[1] = Callback
 			return function()
-				reliable_events[0] = nil
+				reliable_events[1] = nil
 			end
 		end,
 	},

@@ -132,6 +132,9 @@ if not RunService:IsRunning() then
 	local noop = function() end
 	return table.freeze({
 		SendEvents = noop,
+		ProximityPromptTriggered = table.freeze({
+			Fire = noop
+		}),
 		PlayTimeMoneyReward = table.freeze({
 			On = noop
 		}),
@@ -245,6 +248,18 @@ table.freeze(polling_queues_unreliable)
 
 local returns = {
 	SendEvents = SendEvents,
+	ProximityPromptTriggered = {
+		Fire = function(tag: (string))
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
+			local len_1 = #tag
+			assert(utf8.len(tag) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+			alloc(len_1)
+			buffer.writestring(outgoing_buff, outgoing_apos, tag, len_1)
+		end,
+	},
 	PlayTimeMoneyReward = {
 		On = function(Callback: (moneyDelta: (number)) -> ())
 			table.insert(reliable_events[2], Callback)
@@ -266,7 +281,7 @@ local returns = {
 				error("Zap has more than 256 calls awaiting a response, and therefore this packet has been dropped")
 			end
 			alloc(1)
-			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, function_call_id)
 			reliable_event_queue[3][function_call_id] = coroutine.running()
