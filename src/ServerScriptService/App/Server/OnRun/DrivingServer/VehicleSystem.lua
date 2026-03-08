@@ -127,7 +127,8 @@ function Structure:Build(Chassis: Model)
 			Weld.Parent = Descendant
 
 			Descendant.Anchored = false
-			Descendant.Massless = false
+			Descendant.Massless = true
+			Descendant.EnableFluidForces = false
 		end
 	end
 
@@ -140,7 +141,8 @@ function Structure:Build(Chassis: Model)
 			Weld.Parent = Descendant
 
 			Descendant.Anchored = false
-			Descendant.Massless = false
+			Descendant.Massless = true
+			Descendant.EnableFluidForces = false
 		end
 	end
 
@@ -153,7 +155,8 @@ function Structure:Build(Chassis: Model)
 			Weld.Parent = Descendant
 
 			Descendant.Anchored = false
-			Descendant.Massless = false
+			Descendant.Massless = true
+			Descendant.EnableFluidForces = false
 
 			Descendant.CollisionGroup = "Vehicles"
 		end

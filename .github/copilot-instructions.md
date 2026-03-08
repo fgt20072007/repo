@@ -26,7 +26,7 @@ If a solution works but breaks structural clarity, refactor it.
 
 ---
 
-## 0) Hard prohibitions
+## 1) Hard prohibitions
 - **No `print`, `warn`, `assert`, or `error()` for control-flow.**
   - For debugging or instrumentation, use the official Roblox `debug` library (https://create.roblox.com/docs/reference/engine/libraries/debug).
   - Prefer structured instrumentation such as `debug.profilebegin()` / `debug.profileend()` for scoped profiling.
@@ -98,5 +98,5 @@ Types are part of the architecture. Prefer type-first design for shared/public s
   - Do **not** introduce “type gymnastics” for small one-off scripts.
 - Do not introduce new type-heavy helper frameworks. Use patterns already present in the repo.
 
--## 7) When uncertain
+## 7) When uncertain
 - If you cannot confidently determine the correct folder/module pattern from existing code, **do not guess**. Ask for the intended location or present 2 options with brief reasoning.
