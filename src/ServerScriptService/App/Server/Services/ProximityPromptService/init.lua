@@ -32,9 +32,8 @@ local standardHandlers = if standardFolder then HandlerResolver.Build(standardFo
 local paidHandlers = if paidFolder then HandlerResolver.Build(paidFolder) else {}
 
 local rateLimit = RateLimit.New(RATE_PER_SECOND)
-local restrictedPlayers: { [Player]: boolean } = {}
 
-local function queryPolicyRestriction(player: Player): boolean
+local function isPaidRestricted(player: Player): boolean
 	local ok, policyInfo = pcall(PolicyService.GetPolicyInfoForPlayerAsync, PolicyService, player)
 
 	if ok ~= true then
@@ -42,17 +41,6 @@ local function queryPolicyRestriction(player: Player): boolean
 	end
 
 	return policyInfo.ArePaidRandomItemsRestricted == true
-end
-
-local function isPlayerRestricted(player: Player): boolean
-	local cached = restrictedPlayers[player]
-	if cached ~= nil then
-		return cached
-	end
-
-	local restricted = queryPolicyRestriction(player)
-	restrictedPlayers[player] = restricted
-	return restricted
 end
 
 local function findTaggedPromptNear(player: Player, tag: string): ProximityPrompt?
@@ -90,8 +78,7 @@ local function findTaggedPromptNear(player: Player, tag: string): ProximityPromp
 end
 
 local function evaluatePaidAccess(player: Player)
-	local restricted = isPlayerRestricted(player)
-	if restricted ~= true then
+	if isPaidRestricted(player) ~= true then
 		return
 	end
 
@@ -111,7 +98,7 @@ local function onClientTriggered(player: Player, tag: string)
 
 	local paidHandler = paidHandlers[tag]
 	if paidHandler ~= nil then
-		if isPlayerRestricted(player) then
+		if isPaidRestricted(player) then
 			return
 		end
 
@@ -146,17 +133,12 @@ function Service:Start(_registry)
 		task.spawn(evaluatePaidAccess, player)
 	end))
 
-	self.Maid:Add(Players.PlayerRemoving:Connect(function(player)
-		restrictedPlayers[player] = nil
-	end))
-
 	for _, player in Players:GetPlayers() do
 		task.spawn(evaluatePaidAccess, player)
 	end
 
 	self.Maid:Add(function()
 		rateLimit:Destroy()
-		table.clear(restrictedPlayers)
 	end)
 end
 
