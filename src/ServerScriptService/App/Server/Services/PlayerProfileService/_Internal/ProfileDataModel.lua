@@ -12,9 +12,7 @@ local ProfileSchemaUtil = require(profilesData:WaitForChild("ProfileSchemaUtil")
 local fields = PlayerProfileSchema.Fields
 local storeNames = PlayerProfileSchema.StoreNames or {}
 
-local resolvedStoreName = if RunService:IsStudio()
-	then (storeNames.Dev or "Dev")
-	else (storeNames.Live or "Live")
+local resolvedStoreName = if RunService:IsStudio() then (storeNames.Dev or "Dev") else (storeNames.Live or "Live")
 
 local ProfileDataModel = {
 	StoreName = resolvedStoreName,
@@ -54,6 +52,10 @@ function ProfileDataModel.NormalizeValue(fieldName: string, value: any): (boolea
 	end
 
 	return ProfileSchemaUtil.NormalizeValue(fieldDefinition, value)
+end
+
+function ProfileDataModel.CloneValue(value: any): any
+	return ProfileSchemaUtil.CloneValue(value)
 end
 
 function ProfileDataModel.IsNumericField(fieldName: string): boolean

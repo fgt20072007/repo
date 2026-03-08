@@ -20,7 +20,7 @@ local HandlerResolver = require(internal:WaitForChild("HandlerResolver"))
 
 local SERVICE_NAME = "MarketplaceService"
 
-local Service = BaseService.New(SERVICE_NAME, { "PlayerProfileService" })
+local Service = BaseService.New(SERVICE_NAME, { "PlayerProfileService", "GarageService" })
 
 local gamePassHandlersFolder = internal:WaitForChild("GamePasses")
 local productHandlersFolder = internal:WaitForChild("Products")
@@ -49,6 +49,7 @@ end
 function Service:_BuildContext()
 	return {
 		ProfileService = self._profileService,
+		GarageService = self._garageService,
 	}
 end
 
@@ -114,14 +115,37 @@ function Service:_ProcessReceipt(receiptInfo: any)
 	return Enum.ProductPurchaseDecision.NotProcessedYet
 end
 
+function Service:_OnProductPurchaseFinished(userId: number, productId: number, wasPurchased: boolean)
+	local handler = productHandlersById[productId]
+	if handler == nil then
+		return
+	end
+
+	if type(handler.OnPromptFinished) ~= "function" then
+		return
+	end
+
+	local player = Players:GetPlayerByUserId(userId)
+	if player == nil then
+		return
+	end
+
+	handler.OnPromptFinished(player, wasPurchased, self:_BuildContext())
+end
+
 function Service:Init(registry)
 	self._profileService = registry:Get("PlayerProfileService")
+	self._garageService = registry:Get("GarageService")
 end
 
 function Service:Start(_registry)
 	MarketplaceService.ProcessReceipt = function(receiptInfo)
 		return self:_ProcessReceipt(receiptInfo)
 	end
+
+	self.Maid:Add(MarketplaceService.PromptProductPurchaseFinished:Connect(function(userId, productId, wasPurchased)
+		self:_OnProductPurchaseFinished(userId, productId, wasPurchased)
+	end))
 
 	self.Maid:Add(MarketplaceService.PromptGamePassPurchaseFinished:Connect(function(player, gamePassId, wasPurchased)
 		self:_OnGamePassPurchaseFinished(player, gamePassId, wasPurchased)

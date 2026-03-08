@@ -23,7 +23,7 @@ local DESTROY_PROMPT_PREFIX = "DestroyPrompt_"
 local SERVICE_NAME = "ProximityPromptService"
 local RATE_PER_SECOND = 4
 
-local Service = BaseService.New(SERVICE_NAME)
+local Service = BaseService.New(SERVICE_NAME, { "GarageService" })
 
 local standardFolder = handlersFolder:FindFirstChild("Standard")
 local paidFolder = handlersFolder:FindFirstChild("PaidRandomItems")
@@ -87,7 +87,13 @@ local function evaluatePaidAccess(player: Player)
 	end
 end
 
-local function onClientTriggered(player: Player, tag: string)
+function Service:_BuildContext()
+	return {
+		GarageService = self._garageService,
+	}
+end
+
+function Service:_OnClientTriggered(player: Player, tag: string)
 	if type(tag) ~= "string" then
 		return
 	end
@@ -107,7 +113,7 @@ local function onClientTriggered(player: Player, tag: string)
 			return
 		end
 
-		paidHandler.OnTriggered(player, prompt)
+		paidHandler.OnTriggered(player, prompt, self:_BuildContext())
 		return
 	end
 
@@ -121,13 +127,17 @@ local function onClientTriggered(player: Player, tag: string)
 		return
 	end
 
-	standardHandler.OnTriggered(player, prompt)
+	standardHandler.OnTriggered(player, prompt, self:_BuildContext())
 end
 
-function Service:Init(_registry) end
+function Service:Init(registry)
+	self._garageService = registry:Get("GarageService")
+end
 
 function Service:Start(_registry)
-	Net.ProximityPromptTriggered.On(onClientTriggered)
+	Net.ProximityPromptTriggered.On(function(player, tag)
+		self:_OnClientTriggered(player, tag)
+	end)
 
 	self.Maid:Add(Players.PlayerAdded:Connect(function(player)
 		task.spawn(evaluatePaidAccess, player)

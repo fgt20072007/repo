@@ -9,7 +9,8 @@ local libs = appServer:WaitForChild("Libs")
 local system = appServer:WaitForChild("System")
 
 local BaseService = require(system:WaitForChild("BaseService"))
-local Maid = require(ReplicatedStorage:WaitForChild("App"):WaitForChild("Shared"):WaitForChild("Util"):WaitForChild("Maid"))
+local Maid =
+	require(ReplicatedStorage:WaitForChild("App"):WaitForChild("Shared"):WaitForChild("Util"):WaitForChild("Maid"))
 local ProfileStore = require(libs:WaitForChild("ProfileStore"))
 local ReplicaServer = require(libs:WaitForChild("ReplicaServer"))
 
@@ -61,7 +62,7 @@ local function pushReplicaField(record: PlayerRecord, fieldName: string, value: 
 	end
 
 	if record.Replica ~= nil and record.Replica:IsActive() == true then
-		record.Replica:Set({ fieldName }, value)
+		record.Replica:Set({ fieldName }, ProfileDataModel.CloneValue(value))
 	end
 end
 
@@ -147,7 +148,6 @@ function PlayerProfileService:_LoadPlayer(player: Player)
 	loadingPlayers[player] = nil
 
 	if profile == nil then
-		warn(`No se pudo abrir sesion de perfil para {player.Name}`)
 		if player.Parent == Players then
 			player:Kick(LOAD_FAILURE_KICK_REASON)
 		end
@@ -229,7 +229,7 @@ function PlayerProfileService:GetValue(player: Player, fieldName: string)
 		return nil
 	end
 
-	return record.Profile.Data[fieldName]
+	return ProfileDataModel.CloneValue(record.Profile.Data[fieldName])
 end
 
 function PlayerProfileService:SetValue(player: Player, fieldName: string, value: any): (boolean, any)
@@ -243,10 +243,47 @@ function PlayerProfileService:SetValue(player: Player, fieldName: string, value:
 		return false, nil
 	end
 
-	record.Profile.Data[fieldName] = normalized
-	pushReplicaField(record, fieldName, normalized)
+	local storedValue = ProfileDataModel.CloneValue(normalized)
+	record.Profile.Data[fieldName] = storedValue
+	pushReplicaField(record, fieldName, storedValue)
 
-	return true, normalized
+	return true, ProfileDataModel.CloneValue(storedValue)
+end
+
+function PlayerProfileService:UpdateValue(
+	player: Player,
+	fieldName: string,
+	transform: (value: any) -> any
+): (boolean, any)
+	if type(transform) ~= "function" then
+		return false, nil
+	end
+	if ProfileDataModel.GetRule(fieldName) == nil then
+		return false, nil
+	end
+
+	local record = getRecord(player)
+	if record == nil then
+		return false, nil
+	end
+
+	local currentValue = ProfileDataModel.CloneValue(record.Profile.Data[fieldName])
+	local ok, nextValue = pcall(transform, currentValue)
+	if ok ~= true then
+		return false, nil
+	end
+
+	local candidateValue = if nextValue == nil then currentValue else nextValue
+	local normalizedOk, normalized = ProfileDataModel.NormalizeValue(fieldName, candidateValue)
+	if normalizedOk ~= true then
+		return false, nil
+	end
+
+	local storedValue = ProfileDataModel.CloneValue(normalized)
+	record.Profile.Data[fieldName] = storedValue
+	pushReplicaField(record, fieldName, storedValue)
+
+	return true, ProfileDataModel.CloneValue(storedValue)
 end
 
 function PlayerProfileService:IncrementValue(player: Player, fieldName: string, delta: number): (boolean, number?)

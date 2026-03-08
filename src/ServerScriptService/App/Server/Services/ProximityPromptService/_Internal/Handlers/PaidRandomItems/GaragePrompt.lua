@@ -2,11 +2,6 @@
 
 local MarketplaceService = game:GetService("MarketplaceService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerScriptService = game:GetService("ServerScriptService")
-
-local appServer = ServerScriptService:WaitForChild("App"):WaitForChild("Server")
-local servicesFolder = appServer:WaitForChild("Services")
-local GarageService = require(servicesFolder:WaitForChild("Functions"):WaitForChild("GarageService"))
 
 local sharedData = ReplicatedStorage:WaitForChild("App"):WaitForChild("Shared"):WaitForChild("Data")
 local Products = require(sharedData:WaitForChild("Market"):WaitForChild("Products"))
@@ -26,8 +21,17 @@ end
 
 local GaragePrompt = {}
 
-function GaragePrompt.OnTriggered(player: Player, prompt: ProximityPrompt)
-	if player == nil or prompt == nil then
+local function getGarageService(context: any)
+	if type(context) ~= "table" then
+		return nil
+	end
+
+	return context.GarageService
+end
+
+function GaragePrompt.OnTriggered(player: Player, prompt: ProximityPrompt, context: any)
+	local garageService = getGarageService(context)
+	if garageService == nil then
 		return
 	end
 
@@ -44,10 +48,15 @@ function GaragePrompt.OnTriggered(player: Player, prompt: ProximityPrompt)
 	local parentName = parent.Name
 
 	if parentName == "Robux" then
-		GarageService.SetPending(player, garageModel)
+		if garageService:HasPending(player) then
+			return
+		end
+		if garageService:SetPending(player, garageModel) ~= true then
+			return
+		end
 		MarketplaceService:PromptProductPurchase(player, GARAGE_PRODUCT_ID)
 	elseif parentName == "Money" then
-		GarageService.Activate(player, garageModel, false)
+		garageService:Activate(player, garageModel, false)
 	end
 end
 
