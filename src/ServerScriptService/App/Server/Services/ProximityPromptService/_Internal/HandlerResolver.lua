@@ -21,7 +21,7 @@ function HandlerResolver.Build(handlersFolder: Instance): { [string]: Handler }
 
 		local handler = require(child :: ModuleScript) :: any
 		if type(handler) ~= "table" or type(handler.OnTriggered) ~= "function" then
-			error(`f: Handler "{tag}" must expose OnTriggered(player, prompt)`)
+			error(`Handler "{tag}" must expose OnTriggered(player, prompt)`)
 		end
 
 		handlersByTag[tag] = handler
