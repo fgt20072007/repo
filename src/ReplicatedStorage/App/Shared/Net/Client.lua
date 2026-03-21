@@ -147,6 +147,12 @@ if not RunService:IsRunning() then
 		DrivingMoneyReward = table.freeze({
 			On = noop
 		}),
+		VehicleFuelChanged = table.freeze({
+			On = noop
+		}),
+		NotificationPushed = table.freeze({
+			On = noop
+		}),
 	}) :: Events
 end
 local remotes = ReplicatedStorage:WaitForChild("AppNet")
@@ -171,8 +177,8 @@ end
 
 RunService.Heartbeat:Connect(SendEvents)
 
-local reliable_events = table.create(4)
-local reliable_event_queue: { [number]: { any } } = table.create(4)
+local reliable_events = table.create(6)
+local reliable_event_queue: { [number]: { any } } = table.create(6)
 local function_call_id = 0
 reliable_events[2] = {}
 reliable_event_queue[2] = {}
@@ -181,6 +187,10 @@ reliable_event_queue[0] = {}
 reliable_events[1] = {}
 reliable_event_queue[1] = {}
 reliable_event_queue[3] = table.create(255)
+reliable_events[4] = {}
+reliable_event_queue[4] = {}
+reliable_events[5] = {}
+reliable_event_queue[5] = {}
 reliable.OnClientEvent:Connect(function(buff, inst)
 	incoming_buff = buff
 	incoming_inst = inst
@@ -238,6 +248,52 @@ reliable.OnClientEvent:Connect(function(buff, inst)
 				task.spawn(thread, value)
 			end
 			reliable_event_queue[3][call_id] = nil
+		elseif id == 4 then -- VehicleFuelChanged
+			local value
+			value = buffer.readf64(incoming_buff, read(8))
+			local value_2
+			value_2 = buffer.readf64(incoming_buff, read(8))
+			local value_3
+			value_3 = buffer.readf64(incoming_buff, read(8))
+			if reliable_events[4][1] then
+				for _, cb in reliable_events[4] do
+					task.spawn(cb, value, value_2, value_3)
+				end
+			else
+				table.insert(reliable_event_queue[4], { value, value_2, value_3 })
+				if #reliable_event_queue[4] > 64 then
+					warn(`[ZAP] {#reliable_event_queue[4]} events in queue for VehicleFuelChanged. Did you forget to attach a listener?`)
+				end
+			end
+		elseif id == 5 then -- NotificationPushed
+			local value
+			local len_1 = buffer.readu16(incoming_buff, read(2))
+			value = buffer.readstring(incoming_buff, read(len_1), len_1)
+			assert(utf8.len(value) ~= nil, "value is not valid utf-8")
+			local value_2
+			local len_2 = buffer.readu16(incoming_buff, read(2))
+			value_2 = buffer.readstring(incoming_buff, read(len_2), len_2)
+			assert(utf8.len(value_2) ~= nil, "value is not valid utf-8")
+			local value_3
+			local len_3 = buffer.readu16(incoming_buff, read(2))
+			value_3 = buffer.readstring(incoming_buff, read(len_3), len_3)
+			assert(utf8.len(value_3) ~= nil, "value is not valid utf-8")
+			local value_4
+			local len_4 = buffer.readu16(incoming_buff, read(2))
+			value_4 = buffer.readstring(incoming_buff, read(len_4), len_4)
+			assert(utf8.len(value_4) ~= nil, "value is not valid utf-8")
+			local value_5
+			value_5 = buffer.readf64(incoming_buff, read(8))
+			if reliable_events[5][1] then
+				for _, cb in reliable_events[5] do
+					task.spawn(cb, value, value_2, value_3, value_4, value_5)
+				end
+			else
+				table.insert(reliable_event_queue[5], { value, value_2, value_3, value_4, value_5 })
+				if #reliable_event_queue[5] > 64 then
+					warn(`[ZAP] {#reliable_event_queue[5]} events in queue for NotificationPushed. Did you forget to attach a listener?`)
+				end
+			end
 		else
 			error("Unknown event id")
 		end
@@ -249,7 +305,7 @@ table.freeze(polling_queues_unreliable)
 local returns = {
 	SendEvents = SendEvents,
 	ProximityPromptTriggered = {
-		Fire = function(tag: (string))
+		Fire = function(tag: (string), prompt: ProximityPrompt)
 			alloc(1)
 			buffer.writeu8(outgoing_buff, outgoing_apos, 0)
 			local len_1 = #tag
@@ -258,6 +314,9 @@ local returns = {
 			buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
 			alloc(len_1)
 			buffer.writestring(outgoing_buff, outgoing_apos, tag, len_1)
+			table.insert(outgoing_inst, prompt)
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, #outgoing_inst)
 		end,
 	},
 	PlayTimeMoneyReward = {
@@ -309,6 +368,30 @@ local returns = {
 			reliable_event_queue[1] = {}
 			return function()
 				table.remove(reliable_events[1], table.find(reliable_events[1], Callback))
+			end
+		end,
+	},
+	VehicleFuelChanged = {
+		On = function(Callback: (fuelAmount: (number), fuelCapacity: (number), fuelPercent: (number)) -> ())
+			table.insert(reliable_events[4], Callback)
+			for _, value in reliable_event_queue[4] do
+				task.spawn(Callback, value[1], value[2], value[3])
+			end
+			reliable_event_queue[4] = {}
+			return function()
+				table.remove(reliable_events[4], table.find(reliable_events[4], Callback))
+			end
+		end,
+	},
+	NotificationPushed = {
+		On = function(Callback: (notificationType: (string), message: (string), category: (string), key: (string), timestamp: (number)) -> ())
+			table.insert(reliable_events[5], Callback)
+			for _, value in reliable_event_queue[5] do
+				task.spawn(Callback, value[1], value[2], value[3], value[4], value[5])
+			end
+			reliable_event_queue[5] = {}
+			return function()
+				table.remove(reliable_events[5], table.find(reliable_events[5], Callback))
 			end
 		end,
 	},

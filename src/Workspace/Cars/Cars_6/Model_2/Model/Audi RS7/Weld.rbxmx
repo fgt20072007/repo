@@ -1,0 +1,43 @@
+<roblox version="4">
+  <Item class="Weld" referent="0">
+    <Properties>
+      <string name="Name">Weld</string>
+      <BinaryString name="AttributesSerialize"></BinaryString>
+      <CoordinateFrame name="C0">
+        <X>0</X>
+        <Y>-3.0130005</Y>
+        <Z>0</Z>
+        <R00>1</R00>
+        <R01>0</R01>
+        <R02>0.000000000000000028833</R02>
+        <R10>-0.000000000000014239688</R10>
+        <R11>0</R11>
+        <R12>-1</R12>
+        <R20>0</R20>
+        <R21>1</R21>
+        <R22>0.00000000000079580786</R22>
+      </CoordinateFrame>
+      <CoordinateFrame name="C1">
+        <X>34.31128</X>
+        <Y>10.000351</Y>
+        <Z>-261.69574</Z>
+        <R00>1</R00>
+        <R01>0.00000023841599</R01>
+        <R02>0.000000049412087</R02>
+        <R10>0.00000004941202</R10>
+        <R11>0.00000028300417</R11>
+        <R12>-1</R12>
+        <R20>-0.000000238416</R20>
+        <R21>1</R21>
+        <R22>0.00000028300417</R22>
+      </CoordinateFrame>
+      <SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+      <bool name="Enabled">true</bool>
+      <Ref name="Part0">null</Ref>
+      <Ref name="Part1">null</Ref>
+      <bool name="DefinesCapabilities">false</bool>
+      <int64 name="SourceAssetId">-1</int64>
+      <BinaryString name="Tags"></BinaryString>
+    </Properties>
+  </Item>
+</roblox>

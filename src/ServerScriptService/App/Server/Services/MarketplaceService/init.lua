@@ -49,7 +49,7 @@ end
 function Service:_BuildContext()
 	return {
 		ProfileService = self._profileService,
-		GarageService = self._garageService,
+		GarageService = self._GarageService,
 	}
 end
 
@@ -135,7 +135,7 @@ end
 
 function Service:Init(registry)
 	self._profileService = registry:Get("PlayerProfileService")
-	self._garageService = registry:Get("GarageService")
+	self._GarageService = registry:Get("GarageService")
 end
 
 function Service:Start(_registry)

@@ -141,15 +141,15 @@ return function(icon, Icon)
 	paddingRight.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	paddingRight.Parent = contents
 
-	local iconLabelContainer = Instance.new("Frame")
-	iconLabelContainer.Name = "IconLabelContainer"
-	iconLabelContainer.LayoutOrder = 4
-	iconLabelContainer.ZIndex = 3
-	iconLabelContainer.AnchorPoint = Vector2.new(0, 0.5)
-	iconLabelContainer.Size = UDim2.new(0, 0, 0.5, 0)
-	iconLabelContainer.BackgroundTransparency = 1
-	iconLabelContainer.Position = UDim2.new(0.5, 0, 0.5, 0)
-	iconLabelContainer.Parent = contents
+	local iconLabelGarage = Instance.new("Frame")
+	iconLabelGarage.Name = "IconLabelGarage"
+	iconLabelGarage.LayoutOrder = 4
+	iconLabelGarage.ZIndex = 3
+	iconLabelGarage.AnchorPoint = Vector2.new(0, 0.5)
+	iconLabelGarage.Size = UDim2.new(0, 0, 0.5, 0)
+	iconLabelGarage.BackgroundTransparency = 1
+	iconLabelGarage.Position = UDim2.new(0.5, 0, 0.5, 0)
+	iconLabelGarage.Parent = contents
 
 	local iconLabel = Instance.new("TextLabel")
 	local viewportX = workspace.CurrentCamera.ViewportSize.X+200
@@ -170,7 +170,7 @@ return function(icon, Icon)
 	iconLabel.TextScaled = false
 	iconLabel.Active = false
 	iconLabel.AutoLocalize = true
-	iconLabel.Parent = iconLabelContainer
+	iconLabel.Parent = iconLabelGarage
 
 	local iconImage = Instance.new("ImageLabel")
 	iconImage.Name = "IconImage"
@@ -208,19 +208,19 @@ return function(icon, Icon)
 			local NORMAL_BUTTON_SIZE = UDim2.fromScale(1, 1)
 			local buttonSize = NORMAL_BUTTON_SIZE
 			if usingImage and not usingText then
-				iconLabelContainer.Visible = false
+				iconLabelGarage.Visible = false
 				iconImage.Visible = true
 				paddingLeft.Visible = false
 				paddingCenter.Visible = false
 				paddingRight.Visible = false
 			elseif not usingImage and usingText then
-				iconLabelContainer.Visible = true
+				iconLabelGarage.Visible = true
 				iconImage.Visible = false
 				paddingLeft.Visible = true
 				paddingCenter.Visible = false
 				paddingRight.Visible = true
 			elseif usingImage and usingText then
-				iconLabelContainer.Visible = true
+				iconLabelGarage.Visible = true
 				iconImage.Visible = true
 				paddingLeft.Visible = true
 				paddingCenter.Visible = not usingIndicator
@@ -236,7 +236,7 @@ return function(icon, Icon)
 			local contentsPadding = contentsList.Padding.Offset
 			local initialWidgetWidth = contentsPadding --0
 			local textWidth = iconLabel.TextBounds.X
-			iconLabelContainer.Size = UDim2.new(0, textWidth, iconLabel.Size.Y.Scale, 0)
+			iconLabelGarage.Size = UDim2.new(0, textWidth, iconLabel.Size.Y.Scale, 0)
 			for _, child in pairs(contents:GetChildren()) do
 				if child:IsA("GuiObject") and child.Visible == true then
 					local itemWidth = getItemWidth(child)

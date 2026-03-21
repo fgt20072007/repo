@@ -2,6 +2,7 @@
 
 export type Handler = {
 	OnTriggered: (player: Player, prompt: ProximityPrompt, context: any) -> (),
+	OnLoad: ((prompt: ProximityPrompt, context: any) -> ())?,
 }
 
 local HandlerResolver = {}
@@ -22,6 +23,9 @@ function HandlerResolver.Build(handlersFolder: Instance): { [string]: Handler }
 		local handler = require(child :: ModuleScript) :: any
 		if type(handler) ~= "table" or type(handler.OnTriggered) ~= "function" then
 			error(`Handler "{tag}" must expose OnTriggered(player, prompt, context)`)
+		end
+		if handler.OnLoad ~= nil and type(handler.OnLoad) ~= "function" then
+			error(`Handler "{tag}" optional OnLoad must expose OnLoad(prompt, context)`)
 		end
 
 		handlersByTag[tag] = handler

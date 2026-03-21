@@ -134,16 +134,16 @@ function Utility.localPlayerRespawned(callback)
 	localPlayer.CharacterRemoving:Connect(callback)
 end
 
-function Utility.getClippedContainer(screenGui)
+function Utility.getClippedGarage(screenGui)
 	-- We always want clipped items to display in front hence
 	-- why we have this
-	local clippedContainer = screenGui:FindFirstChild("ClippedContainer")
-	if not clippedContainer then
-		clippedContainer = Instance.new("Folder")
-		clippedContainer.Name = "ClippedContainer"
-		clippedContainer.Parent = screenGui
+	local clippedGarage = screenGui:FindFirstChild("ClippedGarage")
+	if not clippedGarage then
+		clippedGarage = Instance.new("Folder")
+		clippedGarage.Name = "ClippedGarage"
+		clippedGarage.Parent = screenGui
 	end
-	return clippedContainer
+	return clippedGarage
 end
 
 local Janitor = require(script.Parent.Packages.Janitor)
@@ -179,12 +179,12 @@ function Utility.clipOutside(icon, instance)
 
 	local screenGui
 	local Icon = require(icon.iconModule)
-	local container = Icon.container
+	local Garage = Icon.Garage
 	local function updateScreenGui()
 		local originalScreenGui = originalParent:FindFirstAncestorWhichIsA("ScreenGui")
-		screenGui = if string.match(originalScreenGui.Name, "Clipped") then originalScreenGui else container[originalScreenGui.Name.."Clipped"]
+		screenGui = if string.match(originalScreenGui.Name, "Clipped") then originalScreenGui else Garage[originalScreenGui.Name.."Clipped"]
 		instance.AnchorPoint = Vector2.new(0, 0)
-		instance.Parent = Utility.getClippedContainer(screenGui)
+		instance.Parent = Utility.getClippedGarage(screenGui)
 	end
 	cloneJanitor:add(icon.alignmentChanged:Connect(updateScreenGui))
 	updateScreenGui()

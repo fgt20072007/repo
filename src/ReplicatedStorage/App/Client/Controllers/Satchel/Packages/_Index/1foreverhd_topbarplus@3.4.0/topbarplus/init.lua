@@ -95,10 +95,10 @@ local preferredInput = {
 Icon.baseDisplayOrderChanged = Signal.new()
 Icon.baseDisplayOrder = 10
 Icon.baseTheme = require(themes.Default)
-Icon.isOldTopbar = false -- Logic has been moved to Container
+Icon.isOldTopbar = false -- Logic has been moved to Garage
 Icon.iconsDictionary = iconsDict
 Icon.insetHeightChanged = Signal.new()
-Icon.container = require(elements.Container)(Icon)
+Icon.Garage = require(elements.Container)(Icon)
 Icon.topbarEnabled = true
 Icon.iconAdded = Signal.new()
 Icon.iconRemoved = Signal.new()
@@ -139,7 +139,7 @@ function Icon.setTopbarEnabled(bool, isInternal)
 	if not isInternal then
 		Icon.topbarEnabled = bool
 	end
-	for _, screenGui in pairs(Icon.container) do
+	for _, screenGui in pairs(Icon.Garage) do
 		screenGui.Enabled = bool
 	end
 end
@@ -168,7 +168,7 @@ task.defer(Gamepad.start, Icon)
 task.defer(Overflow.start, Icon)
 task.defer(function()
 	local playerGui = localPlayer:WaitForChild("PlayerGui")
-	for _, screenGui in pairs(Icon.container) do
+	for _, screenGui in pairs(Icon.Garage) do
 		screenGui.Parent = playerGui
 	end
 	require(iconModule.Attribute)
@@ -773,7 +773,7 @@ function Icon:align(leftCenterOrRight, isFromParentIcon)
 	if direction ~= "left" and direction ~= "center" and direction ~= "right" then
 		direction = "left"
 	end
-	local screenGui = (direction == "center" and Icon.container.TopbarCentered) or Icon.container.TopbarStandard
+	local screenGui = (direction == "center" and Icon.Garage.TopbarCentered) or Icon.Garage.TopbarStandard
 	local holders = screenGui.Holders
 	local finalDirection = string.upper(string.sub(direction, 1, 1))..string.sub(direction, 2)
 	if not isFromParentIcon then
@@ -1151,7 +1151,7 @@ function Icon:convertLabelToNumberSpinner(numberSpinner, callback)
 			return TotalSize, numOfDigits
 		end
 		
-		local function getLabelParentContainerXSize()
+		local function getLabelParentGarageXSize()
 			local firstParent = label.Parent
 			local nextParent = firstParent and firstParent.Parent
 			if nextParent == nil then
@@ -1188,8 +1188,8 @@ function Icon:convertLabelToNumberSpinner(numberSpinner, callback)
 				totalDigitXSize, numOfDigits = getSpinnerSizeAndDigitCount()
 			end
 
-			local labelParentContainerXSize = getLabelParentContainerXSize()
-			while totalDigitXSize > labelParentContainerXSize and self.isDestroyed ~= true do
+			local labelParentGarageXSize = getLabelParentGarageXSize()
+			while totalDigitXSize > labelParentGarageXSize and self.isDestroyed ~= true do
 				task.wait(0.05)
 				if numOfDigits < maxDigits and numOfDigits > minDigits then
 					numberSpinner.TextSize = label.TextSize
@@ -1198,7 +1198,7 @@ function Icon:convertLabelToNumberSpinner(numberSpinner, callback)
 					numberSpinner.TextSize -= 1
 				end
 
-				labelParentContainerXSize = getLabelParentContainerXSize()
+				labelParentGarageXSize = getLabelParentGarageXSize()
 				totalDigitXSize, numOfDigits = getSpinnerSizeAndDigitCount()
 			end
 		end

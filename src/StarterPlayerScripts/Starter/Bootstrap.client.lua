@@ -6,10 +6,10 @@ local shared = app:WaitForChild("Shared")
 
 local ReplicaClient = require(shared:WaitForChild("Libs"):WaitForChild("ReplicaClient"))
 
-local function getEntryModules(container: Instance): { ModuleScript }
+local function getEntryModules(Garage: Instance): { ModuleScript }
 	local modules = {}
 
-	for _, child in container:GetChildren() do
+	for _, child in Garage:GetChildren() do
 		if child:IsA("ModuleScript") then
 			table.insert(modules, child)
 		elseif child:IsA("Folder") then
@@ -59,8 +59,8 @@ local function initializeModule(moduleScript: ModuleScript)
 	end
 end
 
-local function initializeCollection(container: Instance)
-	for _, moduleScript in getEntryModules(container) do
+local function initializeCollection(Garage: Instance)
+	for _, moduleScript in getEntryModules(Garage) do
 		initializeModule(moduleScript)
 	end
 end

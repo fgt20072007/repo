@@ -34,8 +34,8 @@ end
 local systemFolder = server:WaitForChild("System")
 local servicesFolder = server:WaitForChild("Services")
 
-local ServiceRegistry = safeRequire(systemFolder:WaitForChild("ServiceRegistry"))
-local registry = ServiceRegistry.New()
+local serviceRegistry = safeRequire(systemFolder:WaitForChild("ServiceRegistry"))
+local registry = serviceRegistry.New()
 
 for _, moduleScript in getEntryModules(servicesFolder, true) do
 	local service = safeRequire(moduleScript)

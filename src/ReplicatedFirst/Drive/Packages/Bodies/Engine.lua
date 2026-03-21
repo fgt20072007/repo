@@ -37,6 +37,7 @@ local DYNAMIC_RESISTANCE = 10*Units.Torque_Nm
 
 local math_pi = math.pi
 local math_max = math.max
+local math_abs = math.abs
 local math_sign = math.sign
 local math_clamp = math.clamp
 
@@ -91,7 +92,7 @@ end
 
 function Structure:_stepAfter(DT)
 	self.AngularVelocity += self.AccumulatedImpulse/self.Inertia
-	self.Resistance = STATIC_RESISTANCE + DYNAMIC_RESISTANCE*math.abs(self.AngularVelocity)*Units.Rads_RPM/1000
+	self.Resistance = STATIC_RESISTANCE + DYNAMIC_RESISTANCE*math_abs(self.AngularVelocity)*Units.Rads_RPM/1000
 end
 
 return function(BASE: any): Definition

@@ -22,10 +22,10 @@ local fields = {
 
 	-- Garage
 	Garage = {
-		BaseSlots = 3,
-		PremiumSlots = 0,      -- +X por gamepass
-		Vehicles = {},         -- lista de autos
-		ActiveVehicleId = nil, -- auto actualmente spawneado/equipado
+		CurrentGarage = "Default",
+		Vehicles = {
+			["bmw"] = {},
+		},  
 	},
 
 	-- Trade
@@ -38,7 +38,7 @@ local fields = {
 return table.freeze({
 	StoreNames = table.freeze({
 		Live = "Live",
-		Dev = "Dev",
+		Dev = "Dev2",
 	}),
 	UseMock = true,
 	ReplicaToken = "PlayerProfile",

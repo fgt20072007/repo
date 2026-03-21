@@ -7,12 +7,12 @@ return table.freeze({
 
 		XP = {
 			PerDriveSecond = 1,
-			PublishInterval = 4,
+			PublishInterval = 30,
 		},
 
 		Money = {
 			PerStud = 0.1,
-			PublishInterval = 1,
+			PublishInterval = 50,
 		},
 	},
 

@@ -26,7 +26,7 @@ function Overflow.start(incomingIcon)
 	Icon = incomingIcon
 	iconsDict = Icon.iconsDictionary
 	local primaryScreenGui
-	for _, screenGui in pairs(Icon.container) do
+	for _, screenGui in pairs(Icon.Garage) do
 		if primaryScreenGui == nil and screenGui.ScreenInsets == Enum.ScreenInsets.TopbarSafeInsets then
 			primaryScreenGui = screenGui
 		end

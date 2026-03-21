@@ -161,6 +161,20 @@ if not RunService:IsRunning() then
 			FireList = noop,
 			FireSet = noop
 		}),
+		VehicleFuelChanged = table.freeze({
+			Fire = noop,
+			FireAll = noop,
+			FireExcept = noop,
+			FireList = noop,
+			FireSet = noop
+		}),
+		NotificationPushed = table.freeze({
+			Fire = noop,
+			FireAll = noop,
+			FireExcept = noop,
+			FireList = noop,
+			FireSet = noop
+		}),
 	}) :: Events
 end
 
@@ -225,8 +239,10 @@ reliable.OnServerEvent:Connect(function(player, buff, inst)
 			local len_1 = buffer.readu16(incoming_buff, read(2))
 			value = buffer.readstring(incoming_buff, read(len_1), len_1)
 			assert(utf8.len(value) ~= nil, "value is not valid utf-8")
+			local promptIndex = buffer.readu16(incoming_buff, read(2))
+			local prompt = incoming_inst[promptIndex]
 			for _, cb in reliable_events[0] do
-				task.spawn(cb, player, value)
+				task.spawn(cb, player, value, prompt)
 			end
 		elseif id == 1 then -- GetServerTime
 			local call_id = buffer.readu8(buff, read(1))
@@ -255,7 +271,7 @@ table.freeze(polling_queues_unreliable)
 local returns = {
 	SendEvents = SendEvents,
 	ProximityPromptTriggered = {
-		On = function(Callback: (Player: Player, tag: (string)) -> ()): () -> ()
+		On = function(Callback: (Player: Player, tag: (string), prompt: ProximityPrompt?) -> ()): () -> ()
 			table.insert(reliable_events[0], Callback)
 			return function()
 				table.remove(reliable_events[0], table.find(reliable_events[0], Callback))
@@ -476,6 +492,290 @@ local returns = {
 			buffer.writeu8(outgoing_buff, outgoing_apos, 1)
 			alloc(8)
 			buffer.writef64(outgoing_buff, outgoing_apos, moneyDelta)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for player in Set do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+	},
+	VehicleFuelChanged = {
+		Fire = function(Player: Player, fuelAmount: (number), fuelCapacity: (number), fuelPercent: (number))
+			load_player(Player)
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelAmount)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelCapacity)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelPercent)
+			player_map[Player] = save()
+		end,
+		FireAll = function(fuelAmount: (number), fuelCapacity: (number), fuelPercent: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelAmount)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelCapacity)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelPercent)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireExcept = function(Except: Player, fuelAmount: (number), fuelCapacity: (number), fuelPercent: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelAmount)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelCapacity)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelPercent)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				if player ~= Except then
+					load_player(player)
+					alloc(used)
+					buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+					table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+					player_map[player] = save()
+				end
+			end
+		end,
+		FireList = function(List: { [unknown]: Player }, fuelAmount: (number), fuelCapacity: (number), fuelPercent: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelAmount)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelCapacity)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelPercent)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in List do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireSet = function(Set: { [Player]: any }, fuelAmount: (number), fuelCapacity: (number), fuelPercent: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelAmount)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelCapacity)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, fuelPercent)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for player in Set do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+	},
+	NotificationPushed = {
+		Fire = function(Player: Player, notificationType: (string), message: (string), category: (string), key: (string), timestamp: (number))
+			load_player(Player)
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 5)
+			local len_1 = #notificationType
+			assert(utf8.len(notificationType) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+			alloc(len_1)
+			buffer.writestring(outgoing_buff, outgoing_apos, notificationType, len_1)
+			local len_2 = #message
+			assert(utf8.len(message) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_2)
+			alloc(len_2)
+			buffer.writestring(outgoing_buff, outgoing_apos, message, len_2)
+			local len_3 = #category
+			assert(utf8.len(category) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_3)
+			alloc(len_3)
+			buffer.writestring(outgoing_buff, outgoing_apos, category, len_3)
+			local len_4 = #key
+			assert(utf8.len(key) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_4)
+			alloc(len_4)
+			buffer.writestring(outgoing_buff, outgoing_apos, key, len_4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, timestamp)
+			player_map[Player] = save()
+		end,
+		FireAll = function(notificationType: (string), message: (string), category: (string), key: (string), timestamp: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 5)
+			local len_1 = #notificationType
+			assert(utf8.len(notificationType) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+			alloc(len_1)
+			buffer.writestring(outgoing_buff, outgoing_apos, notificationType, len_1)
+			local len_2 = #message
+			assert(utf8.len(message) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_2)
+			alloc(len_2)
+			buffer.writestring(outgoing_buff, outgoing_apos, message, len_2)
+			local len_3 = #category
+			assert(utf8.len(category) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_3)
+			alloc(len_3)
+			buffer.writestring(outgoing_buff, outgoing_apos, category, len_3)
+			local len_4 = #key
+			assert(utf8.len(key) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_4)
+			alloc(len_4)
+			buffer.writestring(outgoing_buff, outgoing_apos, key, len_4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, timestamp)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireExcept = function(Except: Player, notificationType: (string), message: (string), category: (string), key: (string), timestamp: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 5)
+			local len_1 = #notificationType
+			assert(utf8.len(notificationType) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+			alloc(len_1)
+			buffer.writestring(outgoing_buff, outgoing_apos, notificationType, len_1)
+			local len_2 = #message
+			assert(utf8.len(message) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_2)
+			alloc(len_2)
+			buffer.writestring(outgoing_buff, outgoing_apos, message, len_2)
+			local len_3 = #category
+			assert(utf8.len(category) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_3)
+			alloc(len_3)
+			buffer.writestring(outgoing_buff, outgoing_apos, category, len_3)
+			local len_4 = #key
+			assert(utf8.len(key) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_4)
+			alloc(len_4)
+			buffer.writestring(outgoing_buff, outgoing_apos, key, len_4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, timestamp)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in Players:GetPlayers() do
+				if player ~= Except then
+					load_player(player)
+					alloc(used)
+					buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+					table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+					player_map[player] = save()
+				end
+			end
+		end,
+		FireList = function(List: { [unknown]: Player }, notificationType: (string), message: (string), category: (string), key: (string), timestamp: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 5)
+			local len_1 = #notificationType
+			assert(utf8.len(notificationType) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+			alloc(len_1)
+			buffer.writestring(outgoing_buff, outgoing_apos, notificationType, len_1)
+			local len_2 = #message
+			assert(utf8.len(message) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_2)
+			alloc(len_2)
+			buffer.writestring(outgoing_buff, outgoing_apos, message, len_2)
+			local len_3 = #category
+			assert(utf8.len(category) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_3)
+			alloc(len_3)
+			buffer.writestring(outgoing_buff, outgoing_apos, category, len_3)
+			local len_4 = #key
+			assert(utf8.len(key) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_4)
+			alloc(len_4)
+			buffer.writestring(outgoing_buff, outgoing_apos, key, len_4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, timestamp)
+			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
+			for _, player in List do
+				load_player(player)
+				alloc(used)
+				buffer.copy(outgoing_buff, outgoing_apos, buff, 0, used)
+				table.move(inst, 1, #inst, #outgoing_inst + 1, outgoing_inst)
+				player_map[player] = save()
+			end
+		end,
+		FireSet = function(Set: { [Player]: any }, notificationType: (string), message: (string), category: (string), key: (string), timestamp: (number))
+			load_empty()
+			alloc(1)
+			buffer.writeu8(outgoing_buff, outgoing_apos, 5)
+			local len_1 = #notificationType
+			assert(utf8.len(notificationType) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_1)
+			alloc(len_1)
+			buffer.writestring(outgoing_buff, outgoing_apos, notificationType, len_1)
+			local len_2 = #message
+			assert(utf8.len(message) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_2)
+			alloc(len_2)
+			buffer.writestring(outgoing_buff, outgoing_apos, message, len_2)
+			local len_3 = #category
+			assert(utf8.len(category) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_3)
+			alloc(len_3)
+			buffer.writestring(outgoing_buff, outgoing_apos, category, len_3)
+			local len_4 = #key
+			assert(utf8.len(key) ~= nil, "value is not valid utf-8")
+			alloc(2)
+			buffer.writeu16(outgoing_buff, outgoing_apos, len_4)
+			alloc(len_4)
+			buffer.writestring(outgoing_buff, outgoing_apos, key, len_4)
+			alloc(8)
+			buffer.writef64(outgoing_buff, outgoing_apos, timestamp)
 			local buff, used, inst = outgoing_buff, outgoing_used, outgoing_inst
 			for player in Set do
 				load_player(player)

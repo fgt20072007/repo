@@ -15,7 +15,7 @@ function ProximityPromptListener:Init()
 	ProximityPromptService.PromptTriggered:Connect(function(prompt: ProximityPrompt, _player: Player)
 		local tags = CollectionService:GetTags(prompt)
 		for _, tag in tags do
-			Net.ProximityPromptTriggered.Fire(tag)
+			Net.ProximityPromptTriggered.Fire(tag, prompt)
 		end
 	end)
 end

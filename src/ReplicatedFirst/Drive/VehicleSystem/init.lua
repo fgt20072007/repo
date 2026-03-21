@@ -44,7 +44,7 @@ UI.Parent = Client:WaitForChild 'PlayerGui'
 local WHEEL_ORDERS = {['RL'] = 1, ['RR'] = 2, ['FL'] = 3, ['FR'] = 4}
 
 local MAX_HISTORY_SIZE = 10
-local INTERPOLATION_DELAY = 0.1
+local INTERPOLATION_DELAY = 0.2
 
 local VehicleHistories: {
 	[Player]: {
@@ -152,7 +152,7 @@ function Structure:Replicate(Payload: {[number]: buffer})
 			Throttle = buffer_readu16(bufferData, 10)/1_000,
 
 			Steer_FL = buffer_readf32(bufferData, 12),
-			Steer_FR = buffer_readf32(bufferData, 14),
+			Steer_FR = buffer_readf32(bufferData, 16),
 
 			Rot_RL = buffer_readf32(bufferData, 20),
 			Rot_RR = buffer_readf32(bufferData, 24),
@@ -234,7 +234,7 @@ function Structure:Step(dt)
 	
 	local renderTime = workspace:GetServerTimeNow() - INTERPOLATION_DELAY
 	for Player, History in VehicleHistories do
-		if #History.Snapshots < 2 then continue end
+		if #History.Snapshots < MAX_HISTORY_SIZE then continue end
 		
 		local prevSnapshot = nil
 		local lastSnapshot = nil
@@ -294,7 +294,7 @@ function Structure:Step(dt)
 	end
 	
 	for Player, History in VehicleHistories do
-		if #History.Snapshots < 2 then continue end
+		if #History.Snapshots < MAX_HISTORY_SIZE then continue end
 		if History.Frame == VehicleFrame then continue end
 		
 		if History.Root then

@@ -7,7 +7,7 @@ return function(Icon)
 	local GuiService = game:GetService("GuiService")
 	local Players =  game:GetService("Players")
 	local UserInputService = game:GetService("UserInputService")
-	local container = {}
+	local Garage = {}
 	local Signal = require(script.Parent.Parent.Packages.GoodSignal)
 	local insetChanged = Signal.new()
 	local guiInset = GuiService:GetGuiInset()
@@ -105,7 +105,7 @@ return function(Icon)
 	screenGui.IgnoreGuiInset = true
 	screenGui.ResetOnSpawn = false
 	screenGui.ScreenInsets = Enum.ScreenInsets.TopbarSafeInsets
-	container[screenGui.Name] = screenGui
+	Garage[screenGui.Name] = screenGui
 	Icon.baseDisplayOrderChanged:Connect(function()
 		screenGui.DisplayOrder = Icon.baseDisplayOrder
 	end)
@@ -134,7 +134,7 @@ return function(Icon)
 	Icon.baseDisplayOrderChanged:Connect(function()
 		screenGuiCenter.DisplayOrder = Icon.baseDisplayOrder
 	end)
-	container[screenGuiCenter.Name] = screenGuiCenter
+	Garage[screenGuiCenter.Name] = screenGuiCenter
 	
 	insetChanged:Connect(updateCenteredHoldersHeight)
 	updateCenteredHoldersHeight()
@@ -145,7 +145,7 @@ return function(Icon)
 	Icon.baseDisplayOrderChanged:Connect(function()
 		screenGuiClipped.DisplayOrder = (Icon.baseDisplayOrder + 1)
 	end)
-	container[screenGuiClipped.Name] = screenGuiClipped
+	Garage[screenGuiClipped.Name] = screenGuiClipped
 	
 	local screenGuiCenterClipped = screenGuiCenter:Clone()
 	screenGuiCenterClipped.Name = screenGuiCenterClipped.Name.."Clipped"
@@ -153,7 +153,7 @@ return function(Icon)
 	Icon.baseDisplayOrderChanged:Connect(function()
 		screenGuiCenterClipped.DisplayOrder = (Icon.baseDisplayOrder + 1)
 	end)
-	container[screenGuiCenterClipped.Name] = screenGuiCenterClipped
+	Garage[screenGuiCenterClipped.Name] = screenGuiCenterClipped
 	
 	local holderReduction = -24
 	local left = Instance.new("ScrollingFrame")
@@ -211,5 +211,5 @@ return function(Icon)
 	-- This is important so that all elements update instantly
 	insetChanged:Fire(guiInset)
 
-	return container
+	return Garage
 end

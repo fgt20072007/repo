@@ -13,7 +13,7 @@ MAD STUDIO
 
 ----- Private -----
 
-local CONTAINER_NAME = "RemoteEvents"
+local Garage_NAME = "RemoteEvents"
 local REMOTE_MISSING_TIME = 20
 
 local RunService = game:GetService("RunService")
@@ -23,35 +23,35 @@ local IsStudio = RunService:IsStudio()
 local IsServer = RunService:IsServer()
 local DefinedRemotes = {} -- [name] = true, ...
 
-local Container, OnContainerReady do
+local Garage, OnGarageReady do
 	
 	if IsServer == true then
 		
-		Container = ReplicatedStorage:FindFirstChild(CONTAINER_NAME)
+		Garage = ReplicatedStorage:FindFirstChild(Garage_NAME)
 		
-		if Container ~= nil then
+		if Garage ~= nil then
 			if IsStudio == true then
-				warn(`[{script.Name}]: ReplicatedStorage "{CONTAINER_NAME}" container was already defined`)
+				warn(`[{script.Name}]: ReplicatedStorage "{Garage_NAME}" Garage was already defined`)
 			end
 		else
-			Container = Instance.new("Folder")
-			Container.Name = CONTAINER_NAME
-			Container.Parent = ReplicatedStorage
+			Garage = Instance.new("Folder")
+			Garage.Name = Garage_NAME
+			Garage.Parent = ReplicatedStorage
 		end
 		
 	else
 		
-		Container = ReplicatedStorage:FindFirstChild(CONTAINER_NAME)
+		Garage = ReplicatedStorage:FindFirstChild(Garage_NAME)
 		
-		if Container == nil then
+		if Garage == nil then
 			
-			OnContainerReady = Instance.new("BindableEvent")
+			OnGarageReady = Instance.new("BindableEvent")
 			
 			task.spawn(function()
 				while task.wait() do
-					Container = ReplicatedStorage:FindFirstChild(CONTAINER_NAME)
-					if Container ~= nil then
-						OnContainerReady:Fire()
+					Garage = ReplicatedStorage:FindFirstChild(Garage_NAME)
+					if Garage ~= nil then
+						OnGarageReady:Fire()
 						break
 					end
 				end
@@ -102,13 +102,13 @@ function Remote.New(name: string, is_unreliable: boolean?): RemoteEvent
 		
 		local remote = Instance.new(if is_unreliable == true then "UnreliableRemoteEvent" else "RemoteEvent")
 		remote.Name = name
-		remote.Parent = Container
+		remote.Parent = Garage
 		
 		return remote
 		
 	else
 		
-		local remote: RemoteEvent = Container and Container:FindFirstChild(name)
+		local remote: RemoteEvent = Garage and Garage:FindFirstChild(name)
 		
 		if remote ~= nil then
 			return remote
@@ -138,12 +138,12 @@ function Remote.New(name: string, is_unreliable: boolean?): RemoteEvent
 			RemoteEvent = nil,
 		}, Remote)
 		
-		local function on_container_ready()
+		local function on_Garage_ready()
 			
 			local missing_start = os.clock()
 
 			while true do
-				remote = Container:FindFirstChild(name)
+				remote = Garage:FindFirstChild(name)
 				if remote == nil then
 					if missing_start ~= nil and os.clock() - missing_start > REMOTE_MISSING_TIME then
 						missing_start = nil
@@ -166,13 +166,13 @@ function Remote.New(name: string, is_unreliable: boolean?): RemoteEvent
 			
 		end
 		
-		if Container ~= nil then
-			task.spawn(on_container_ready)
+		if Garage ~= nil then
+			task.spawn(on_Garage_ready)
 		else
 			local wait_connection
-			wait_connection = OnContainerReady.Event:Connect(function()
+			wait_connection = OnGarageReady.Event:Connect(function()
 				wait_connection:Disconnect()
-				on_container_ready()
+				on_Garage_ready()
 			end)
 		end
 		

@@ -2,9 +2,9 @@ return function(Icon)
 
 	-- Credit to lolmansReturn and Canary Software for
 	-- retrieving these values
-	local selectionContainer = Instance.new("Frame")
-	selectionContainer.Name = "SelectionContainer"
-	selectionContainer.Visible = false
+	local selectionGarage = Instance.new("Frame")
+	selectionGarage.Name = "SelectionGarage"
+	selectionGarage.Visible = false
 	
 	local selection = Instance.new("Frame")
 	selection.Name = "Selection"
@@ -12,7 +12,7 @@ return function(Icon)
 	selection.BackgroundTransparency = 1
 	selection.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	selection.BorderSizePixel = 0
-	selection.Parent = selectionContainer
+	selection.Parent = selectionGarage
 
 	local UIStroke = Instance.new("UIStroke")
 	UIStroke.Name = "UIStroke"
@@ -44,6 +44,6 @@ return function(Icon)
 		selectionGradient.Rotation = (os.clock() * rotationSpeed * 100) % 360
 	end)
 
-	return selectionContainer
+	return selectionGarage
 	
 end

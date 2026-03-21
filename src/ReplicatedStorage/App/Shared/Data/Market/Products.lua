@@ -2,7 +2,7 @@
 
 -- [ProductKey] = Developer Product Id
 local Products: { [string]: number } = {
-	Garage = 123,
+	Container = 3559609079,
 }
 
 return table.freeze(Products)

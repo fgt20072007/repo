@@ -11,6 +11,8 @@ local system = appServer:WaitForChild("System")
 local BaseService = require(system:WaitForChild("BaseService"))
 local Maid =
 	require(ReplicatedStorage:WaitForChild("App"):WaitForChild("Shared"):WaitForChild("Util"):WaitForChild("Maid"))
+local Signal =
+	require(ReplicatedStorage:WaitForChild("App"):WaitForChild("Shared"):WaitForChild("Util"):WaitForChild("Signal"))
 local ProfileStore = require(libs:WaitForChild("ProfileStore"))
 local ReplicaServer = require(libs:WaitForChild("ReplicaServer"))
 
@@ -20,6 +22,27 @@ type PlayerRecord = {
 	Profile: any,
 	Replica: any,
 	Maid: any,
+	LastSessionEndReason: "Manual" | "External" | "Shutdown" | nil,
+}
+
+type ProfileData = {
+	XP: number,
+}
+
+type EconomyData = {
+	Money: number,
+}
+
+type StatsData = {
+	StudsDriven: number,
+	DriveSeconds: number,
+	CarsSold: number,
+	Kills: number,
+}
+
+type GarageData = {
+	CurrentGarage: string,
+	Vehicles: { [any]: any },
 }
 
 local SERVICE_NAME = "PlayerProfileService"
@@ -27,6 +50,8 @@ local LOAD_FAILURE_KICK_REASON = "No se pudo cargar tu perfil. Vuelve a entrar."
 local SESSION_LOST_KICK_REASON = "Tu sesion se abrio en otro servidor."
 
 local PlayerProfileService = BaseService.New(SERVICE_NAME)
+PlayerProfileService.ProfileLoaded = Signal.New()
+PlayerProfileService.ProfileReleased = Signal.New()
 
 local baseProfileStore = ProfileStore.New(ProfileDataModel.StoreName, ProfileDataModel.BuildTemplate())
 local profileStore = if ProfileDataModel.UseMock == true then baseProfileStore.Mock else baseProfileStore
@@ -119,15 +144,20 @@ function PlayerProfileService:_DestroyRecord(player: Player, releaseProfile: boo
 	if releaseProfile == true and record.Profile:IsActive() == true then
 		record.Profile:EndSession()
 	end
+
+	self.ProfileReleased:Fire(player)
 end
 
 function PlayerProfileService:_OnSessionEnded(player: Player)
-	if recordsByPlayer[player] == nil then
+	local record = recordsByPlayer[player]
+	if record == nil then
 		return
 	end
 
+	local sessionEndReason = record.LastSessionEndReason
 	self:_DestroyRecord(player, false)
-	if player.Parent == Players then
+
+	if sessionEndReason ~= "Manual" and sessionEndReason ~= "Shutdown" and player.Parent == Players then
 		player:Kick(SESSION_LOST_KICK_REASON)
 	end
 end
@@ -176,15 +206,21 @@ function PlayerProfileService:_LoadPlayer(player: Player)
 		Profile = profile,
 		Replica = replica,
 		Maid = recordMaid,
+		LastSessionEndReason = nil,
 	}
 
 	recordsByPlayer[player] = record
+
+	recordMaid:Add(profile.OnLastSave:Connect(function(reason: "Manual" | "External" | "Shutdown")
+		record.LastSessionEndReason = reason
+	end))
 
 	recordMaid:Add(profile.OnSessionEnd:Connect(function()
 		self:_OnSessionEnded(player)
 	end))
 
 	subscribeReplicaForPlayer(player, record)
+	self.ProfileLoaded:Fire(player)
 end
 
 function PlayerProfileService:Init(_registry)
@@ -217,6 +253,30 @@ function PlayerProfileService:GetSnapshot(player: Player)
 	end
 
 	return ProfileDataModel.BuildReplicaData(record.Profile.Data)
+end
+
+function PlayerProfileService:IsLoaded(player: Player): boolean
+	return getRecord(player) ~= nil
+end
+
+function PlayerProfileService:GetCurrentGarage(player: Player): string?
+	local record = getRecord(player)
+	if record == nil then
+		return nil
+	end
+
+	local garageData = (record.Profile.Data.Garage :: any) :: GarageData
+	return garageData.CurrentGarage
+end
+
+function PlayerProfileService:GetGarageVehicles(player: Player): { [any]: any }?
+	local record = getRecord(player)
+	if record == nil then
+		return nil
+	end
+
+	local garageData = (record.Profile.Data.Garage :: any) :: GarageData
+	return ProfileDataModel.CloneValue(garageData.Vehicles)
 end
 
 function PlayerProfileService:GetValue(player: Player, fieldName: string)
@@ -313,6 +373,75 @@ function PlayerProfileService:IncrementValue(player: Player, fieldName: string, 
 	pushReplicaField(record, fieldName, normalized)
 
 	return true, normalized
+end
+
+function PlayerProfileService:UpdateProfile(
+	player: Player,
+	transform: (profile: ProfileData) -> ProfileData
+): (boolean, ProfileData?)
+	local ok, value = self:UpdateValue(player, "Profile", function(profile)
+		return transform((profile :: any) :: ProfileData)
+	end)
+
+	if ok ~= true or value == nil then
+		return false, nil
+	end
+
+	return true, ((value :: any) :: ProfileData)
+end
+
+function PlayerProfileService:UpdateEconomy(
+	player: Player,
+	transform: (economy: EconomyData) -> EconomyData
+): (boolean, EconomyData?)
+	local ok, value = self:UpdateValue(player, "Economy", function(economy)
+		return transform((economy :: any) :: EconomyData)
+	end)
+
+	if ok ~= true or value == nil then
+		return false, nil
+	end
+
+	return true, ((value :: any) :: EconomyData)
+end
+
+function PlayerProfileService:UpdateStats(
+	player: Player,
+	transform: (stats: StatsData) -> StatsData
+): (boolean, StatsData?)
+	local ok, value = self:UpdateValue(player, "Stats", function(stats)
+		return transform((stats :: any) :: StatsData)
+	end)
+
+	if ok ~= true or value == nil then
+		return false, nil
+	end
+
+	return true, ((value :: any) :: StatsData)
+end
+
+function PlayerProfileService:SpendMoney(player: Player, amount: number): (boolean, number?)
+	if isFiniteNumber(amount) ~= true or amount < 0 then
+		return false, nil
+	end
+
+	local spent = false
+	local ok, economy = self:UpdateEconomy(player, function(currentEconomy)
+		if currentEconomy.Money < amount then
+			return currentEconomy
+		end
+
+		currentEconomy.Money -= amount
+		spent = true
+
+		return currentEconomy
+	end)
+
+	if ok ~= true or spent ~= true or economy == nil then
+		return false, nil
+	end
+
+	return true, economy.Money
 end
 
 return PlayerProfileService

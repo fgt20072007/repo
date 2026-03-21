@@ -13,29 +13,29 @@ export type Definition = Types.Body <{
 	SuspensionMinLength: number,
 	SuspensionFreeLength: number,
 	SuspensionMaxLength: number,
-
+	
 	AntirollStiffness: number,
-
+	
 	Side: boolean,
 	Mass: number,
 	Radius: number,
 	uStiffness: number,
 	vStiffness: number,
 	FrictionCoefficient: number,
-
+	
 	RayParameters: RaycastParams,
-
+	
 	HubMotor: Motor6D,
 	HubAttachment: Attachment,
 	ContactAttachment: Attachment,
 	SuspensionAttachment: Attachment,
 	SuspensionSpring: SpringConstraint,
-
+	
 	VectorForce: VectorForce,
-
+	
 	Root: any,
 	Model: Model,
-
+	
 	AccumulatedTime: number,
 	Zhat: Vector3,
 	Resistance: number,
@@ -80,25 +80,25 @@ function Structure:_stepBefore(dt)
 	end
 
 	local WheelRadius = self.Radius
-
+	
 	local SuspensionStiffness = self.SuspensionStiffness
 	local SuspensionMinLength = self.SuspensionMinLength
 	local SuspensionFreeLength = self.SuspensionFreeLength
 	local SuspensionMaxLength = self.SuspensionMaxLength
-
+	
 	local HubCFrame = cframe_angles(0, self.Steer, 0) + self.HubAttachment.Position
 	self.HubAttachment.CFrame = HubCFrame
-
+	
 	local HubTransform = self.HubAttachment.WorldCFrame
 	local HubDir = HubTransform.UpVector*(-SuspensionMaxLength - WheelRadius)
-
+	
 	local Cast = raycast(workspace, HubTransform.Position, HubDir, self.RayParameters)
 	local ContactLength = SuspensionFreeLength do
 		if Cast then
 			ContactLength = math_clamp(Cast.Distance - WheelRadius, SuspensionMinLength, SuspensionFreeLength)
 		end
 	end
-
+	
 	local AngularVelocity = self.AngularVelocity
 	local Rotation = self.Rotation + dt*AngularVelocity
 	self.Rotation = Rotation
@@ -106,7 +106,7 @@ function Structure:_stepBefore(dt)
 	local ContactCompression = SuspensionFreeLength - ContactLength
 	self.Compression = ContactCompression
 	self.Length = ContactLength
-
+	
 	if Cast and ContactCompression > 0.01 then
 		local Contact = HubTransform.Rotation + Cast.Position
 		self.ContactAttachment.WorldCFrame = Contact
@@ -135,7 +135,7 @@ function Structure:_stepBefore(dt)
 	else
 		self.SuspensionSpring.Stiffness = 0
 		self.SuspensionSpring.Damping = 0
-
+		
 		self.AccumulatedTime = 0
 		self.Zhat = vector3_zero
 		self.VectorForce.Force = vector3_zero
@@ -144,7 +144,7 @@ function Structure:_stepBefore(dt)
 	self.AngularVelocity = AngularVelocity
 
 	Util.updateHubMotor(self.HubMotor, HubCFrame, self.Side, Util.wrapAngle(Rotation), 0, ContactLength)
-
+	
 	self.Impulse = -math_sign(AngularVelocity)*self.Resistance*dt
 	self.AccumulatedImpulse += self.Impulse
 end
@@ -170,12 +170,12 @@ end
 
 function Structure:_replace()
 	self.ContactAttachment.Parent = self.HubAttachment.Parent
-
+	
 	if self.Model.PrimaryPart then
 		self.HubMotor = self.Model.PrimaryPart:FindFirstChildOfClass 'Motor6D' :: Motor6D
 		self.Mass = self.Model.PrimaryPart.AssemblyMass
 	end
-
+	
 	self.Radius = 0.5*self.Model:GetExtentsSize().Y
 	self.Inertia = 0.5*self.Mass*self.Radius*self.Radius
 end
@@ -186,10 +186,10 @@ return function(BASE: any): Definition
 		self.SuspensionDamping = self.SuspensionDamping or 5_000
 		self.SuspensionLength = self.SuspensionLength or 1
 	end
-
+	
 	self.Rotation = 0
 	self.AngularVelocity = 0
-
+	
 	self.AccumulatedTime = 0
 	self.Zhat = vector3_zero
 	self.Resistance = 0
@@ -222,6 +222,6 @@ return function(BASE: any): Definition
 	self.uStiffness = 2_400
 	self.vStiffness = 1_200
 	self.FrictionCoefficient = 1.52
-
+	
 	return setmetatable(self, Structure) :: any
 end
